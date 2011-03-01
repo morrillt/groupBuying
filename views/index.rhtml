@@ -11,8 +11,8 @@
   <body>
     <div class="container">
       <h1>Group Buying Dynamics</h1>
-      <h3>Groupon</h3>
-      <div class="span-8 last">
+      <h2>Groupon</h2>
+      <div class="span-12 last">
         <p>
           <label># of active deals being tracked</label>
           <span><%= @active_count %></span>
@@ -39,17 +39,20 @@
         </p>
       </div>
       <hr/>
-      <div class="span-8 last">
+      <div class="span-12 last">
         <a href="#">Day</a>
         <a href="#">Week</a>
         <a href="#">Month</a>
         <a href="#">Quarter</a>
 
         <table>
-          <tr>
-            <td colspan="2"></td>
-            <td>% Change</td>
-          </tr>
+          <thead>
+            <tr>
+              <th colspan="2"></th>
+              <th>% Change</th>
+            </tr>
+          </thead>
+          <tbody>
           <tr>
             <td># of closed deals</td>
             <td><%= @closed_today %></td>
@@ -71,8 +74,23 @@
             <td>$<%= @revenue_today %></td>
             <td>5%</td>
           </tr>
+          </tbody>
+        </table>
       </div>
 
+      <hr/>
+      <div class="span-12 last">
+        <h2>Currently trending on Groupon</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Deal</th>
+              <th>City</th>
+              <th>Hotness Index</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
     </div>
   </body>
 </html>

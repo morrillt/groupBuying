@@ -1,5 +1,5 @@
 $:.unshift File.dirname(__FILE__)
 require 'charts'
+require 'config/environment'
 
-
-run Charts.new
+run Sinatra::Application
