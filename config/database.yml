@@ -1,0 +1,17 @@
+development:
+  adapter: mysql
+  database: htmlParser
+  username: root
+  password: root
+
+test:
+  adapter: mysql
+  database: htmlParser_test
+  username: root
+  password: root
+
+production:
+  adapter: mysql
+  database: htmlParser
+  username: root
+  password:
