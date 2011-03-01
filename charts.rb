@@ -28,6 +28,9 @@ end
 get "/chart" do
   @categories, @values = GrouponDeal.chart_data
   @categories = @categories.map { |c| "'#{c.to_s}'"}
+#  @categories = []
+#  @values = []
+  @total = GrouponDeal.unique.length
   erb :chart
 end
 
