@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>Charts</title>
+    <script type="text/javascript" src="/javascript/jquery.js"></script>
+    <script src="/javascript/highcharts.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="/stylesheets/screen.css" type="text/css" media="screen, projection">
+    <!--[if lt IE 8]><link rel="stylesheet" href="/stylesheets/ie.css" type="text/css" media="screen, projection"><![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <h1>Group Buying Dynamics</h1>
+      <h3>Groupon</h3>
+      <div class="span-8 last">
+        <p>
+          <label># of active deals being tracked</label>
+          <span><%= @active_count %></span>
+        </p>
+        <p>
+          <label># of deals tracked to date</label>
+          <span><%= @deals_tracked %></span>
+        </p>
+        <p>
+          <label># of coupons purachased to date</label>
+          <span><%= @total_coupons %></span>
+        </p>
+        <p>
+          <label>Total spent on deals to date: </label>
+          <span>$<%= @total_spent %></span>
+        </p>
+        <p>
+          <label>Average revenue per deal</label>
+          <span>$<%= @average_revenue %></span>
+        </p>
+        <p>
+          <label># of Zip codes we're following</label>
+          <span><%= @num_zip_codes %></span>
+        </p>
+      </div>
+      <hr/>
+      <div class="span-8 last">
+        <a href="#">Day</a>
+        <a href="#">Week</a>
+        <a href="#">Month</a>
+        <a href="#">Quarter</a>
+
+        <table>
+          <tr>
+            <td colspan="2"></td>
+            <td>% Change</td>
+          </tr>
+          <tr>
+            <td># of closed deals</td>
+            <td><%= @closed_today %></td>
+            <td>5%</td>
+          </tr>
+          <tr>
+            <td># of coupons purchased</td>
+            <td><%= @coupons_today %></td>
+
+            <td>5%</td>
+          </tr>
+          <tr>
+            <td>$ spent on deals</td>
+            <td>$<%= @spent_today %></td>
+            <td>5%</td>
+          </tr>
+          <tr>
+            <td>Average Revenue per deal</td>
+            <td>$<%= @revenue_today %></td>
+            <td>5%</td>
+          </tr>
+      </div>
+
+    </div>
+  </body>
+</html>
