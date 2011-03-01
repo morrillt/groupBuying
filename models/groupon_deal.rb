@@ -9,7 +9,7 @@ class GrouponDeal < ActiveRecord::Base
 
   case ActiveRecord::Base.connection.adapter_name
   when "PostgreSQL"
-    scope :unique, select("SELECT DISTINCT ON (groupon.deal_id) groupon.deal_id, groupon.count, pricetext, status")
+    scope :unique, select("DISTINCT ON (groupon.deal_id) groupon.deal_id, groupon.count, pricetext, status")
   else
     scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, status").group("deal_id").order("time")
   end
