@@ -5,6 +5,7 @@ require 'fastercsv'
 require 'ostruct'
 require 'config/environment'
 require 'models/groupon_deal'
+require 'lib/string.rb'
 
 get '/' do
   @active_count = GrouponDeal.active.length
@@ -18,5 +19,7 @@ get '/' do
   @coupons_today = GrouponDeal.num_coupons(:today)
   @spent_today = GrouponDeal.spent(:today)
   @revenue_today = GrouponDeal.average_revenue(:today)
+
+  @hot_deals = GrouponDeal.unique[0..30].sort{ |a,b| b.hotness_index <=> a.hotness_index }.take(10)
   erb :index
 end
