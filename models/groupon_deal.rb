@@ -4,8 +4,15 @@ class GrouponDeal < ActiveRecord::Base
   scope :active, lambda { unique.where(:status   => true ) }
   scope :closed, lambda { unique.where(:status   => false) }
   scope :today,  lambda { unique.where(:datadate => Date.today) }
-  scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, status").group("deal_id").order("time")
+
   scope :zip_codes, select("DISTINCT(location)")
+
+  case ActiveRecord::Base.connection.adapter_name
+  when "PostgreSQL"
+    scope :unique, select("SELECT DISTINCT ON (groupon.deal_id) groupon.deal_id, groupon.count, pricetext, status")
+  else
+    scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, status").group("deal_id").order("time")
+  end
 
   def self.num_coupons(range=:unique)
     self.send(range).map(&:count).inject(0) { |sum, n| sum += n.to_i }
