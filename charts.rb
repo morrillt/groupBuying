@@ -14,7 +14,7 @@ get '/' do
   @average_revenue = GrouponDeal.average_revenue(:unique)
   @num_zip_codes = GrouponDeal.zip_codes.count
 
-  @closed_today = GrouponDeal.today.closed.count
+  @closed_today = GrouponDeal.today.closed.length
   @coupons_today = GrouponDeal.num_coupons(:today)
   @spent_today = GrouponDeal.spent(:today)
   @revenue_today = GrouponDeal.average_revenue(:today)

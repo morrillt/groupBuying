@@ -1,10 +1,10 @@
 class GrouponDeal < ActiveRecord::Base
   set_table_name "groupon"
 
-  scope :active, lambda { unique.where( :status   => true) }
-  scope :closed, lambda { unique.where( :status   => false) }
-  scope :today,  lambda { unique.where(  :datadate => Date.today) }
-  scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext").group("deal_id").order("time")
+  scope :active, lambda { unique.where(:status   => true ) }
+  scope :closed, lambda { unique.where(:status   => false) }
+  scope :today,  lambda { unique.where(:datadate => Date.today) }
+  scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, status").group("deal_id").order("time")
   scope :zip_codes, select("DISTINCT(location)")
 
   def self.num_coupons(range=:unique)
