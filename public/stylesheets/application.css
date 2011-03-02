@@ -3,11 +3,12 @@ input[type=text] { width: 150px; display: inline;}
 div.nav { margin-top: -15px; margin-bottom: 15px;}
 div.nav a { padding-right: 15px; }
 
+div#chart { width: 700px; }
 
 div.sidebar {
    width: 140px;
    float: right;
-margin-right: 90px;
+   margin-right: 90px;
 }
 div.rounded {
   border: 1px solid #999;
