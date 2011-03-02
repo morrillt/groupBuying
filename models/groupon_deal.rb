@@ -13,6 +13,7 @@ class GrouponDeal < ActiveRecord::Base
   scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, datadate, location, status, urltext").order("time").group("deal_id")
   scope :by_deal, lambda { |id| select("datadate, time, count, location, deal_id").where(:deal_id => id).where(:status => true).order("datadate DESC, time DESC") }
   scope :by_day, lambda { |day| where(:datadate => day) }
+  scope :hot, lambda { unique.active.where(:datadate => Date.today).where("count != 0").limit(10) }
 
   def self.num_coupons(range=:unique)
     self.send(range).map(&:count).inject(0) { |sum, n| sum += n.to_i }

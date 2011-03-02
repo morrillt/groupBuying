@@ -20,8 +20,7 @@ get '/groupon' do
   @spent_today = GrouponDeal.spent(:today)
   @revenue_today = GrouponDeal.average_revenue(:today)
   calculate_daily_changes
-
-  @hot_deals = GrouponDeal.unique.order("count DESC")[0..30].sort{ |a,b| b.hotness_index <=> a.hotness_index }.take(10)
+  @hot_deals = GrouponDeal.hot.sort { |a,b| b.hotness_index <=> a.hotness_index }
   erb :groupon
 end
 
