@@ -10,7 +10,7 @@ class GrouponDeal < ActiveRecord::Base
   scope :yesterday,  lambda { unique.where(:datadate => Date.today - 1.days) }
   scope :today,  lambda { unique.where(:datadate => Date.today) }
   scope :zip_codes, select("DISTINCT(location)")
-  scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, datadate, location, status").order("time").group("deal_id")
+  scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, datadate, location, status, urltext").order("time").group("deal_id")
   scope :by_deal, lambda { |id| select("datadate, time, count, location, deal_id").where(:deal_id => id).order("datadate DESC, time DESC") }
   scope :by_day, lambda { |day| where(:datadate => day) }
 
@@ -22,8 +22,8 @@ class GrouponDeal < ActiveRecord::Base
     self.send(range).inject(0) { |sum, deal| sum +=  deal.pricetext.to_i * deal.count.to_i }
   end
 
-  def self.average_revenue(range=:unique, args=nil)
-    self.spent(range) / self.send(range).length
+  def self.average_revenue(range=:unique)
+    self.spent(range) / (self.send(range).length + 0.01)
   end
 
   def hotness_index
@@ -35,7 +35,7 @@ class GrouponDeal < ActiveRecord::Base
   end
 
   def self.change(past, present)
-    value = ((present.to_f - past.to_f) / past.to_f) * 100
+    value = ((present.to_f - past.to_f) / past.to_f ) * 100
     GrouponDeal.round(value)
   end
 
