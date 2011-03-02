@@ -27,7 +27,7 @@ end
 
 get "/groupbuying" do
   @categories, @values = GrouponDeal.chart_data
-  @categories = @categories.map { |c| "'#{c.to_s}'"}
+  @categories = @categories.map { |c| "'#{c.strftime('%a %d')}'"}
   @total = GrouponDeal.unique.length
   erb :chart
 end
