@@ -11,7 +11,7 @@ class GrouponDeal < ActiveRecord::Base
   scope :today,  lambda { unique.where(:datadate => Date.today) }
   scope :zip_codes, select("DISTINCT(location)")
   scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, datadate, location, status, urltext").order("time").group("deal_id")
-  scope :by_deal, lambda { |id| select("datadate, time, count, location, deal_id").where(:deal_id => id).order("datadate DESC, time DESC") }
+  scope :by_deal, lambda { |id| select("datadate, time, count, location, deal_id").where(:deal_id => id).where(:status => true).order("datadate DESC, time DESC") }
   scope :by_day, lambda { |day| where(:datadate => day) }
 
   def self.num_coupons(range=:unique)
@@ -28,6 +28,7 @@ class GrouponDeal < ActiveRecord::Base
 
   def hotness_index
     @deals ||= GrouponDeal.by_deal(deal_id)
+    return 0 if @deals.empty?
     present = @deals.first.count.to_f
     past = @deals.last.count.to_f
     return 0 if present == 0 or past == 0
