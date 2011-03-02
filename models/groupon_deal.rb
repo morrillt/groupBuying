@@ -42,17 +42,16 @@ class GrouponDeal < ActiveRecord::Base
   # TODO DRY this up
   def self.chart_data
     daily_data = []
-    aggregate = Hash.new(0)
+    aggregates = []
     10.times do |i|
       daily_data.unshift GrouponDeal.by_day(Date.today - i.days)
     end
-    daily_data = daily_data.find_all { |day| !day.empty? }
-
+    daily_data = daily_data.find_all { |day| day.present? }
     daily_data.each do |day|
       total = day.inject(0){ |sum, deal| sum += deal.pricetext.to_i * deal.count.to_i }
-      aggregate[day.first.datadate] = total / day.length
+      aggregates << [day.first.datadate, total / day.length]
     end
-    [aggregate.keys, aggregate.values]
+    [aggregates.map(&:first), aggregates.map(&:last)]
   end
 
   # workaround rounding bug in MRI 1.8.7

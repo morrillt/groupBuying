@@ -96,20 +96,24 @@ describe GrouponDeal do
   describe ".average_revenue" do
     context "with params" do
       it "returns the average revenue (spent / num_coupons) for a given range" do
-        GrouponDeal.average_revenue(:yesterday).should == 12025
+        GrouponDeal.average_revenue(:yesterday).should be_within(100).of(11905)
       end
     end
 
     context "without params" do
       it "returns the average revenue (spent / num_coupons) for all time" do
-        GrouponDeal.average_revenue.should == 10597
+        GrouponDeal.average_revenue.should be_within(100).of(10597)
       end
     end
   end
 
   describe ".chart_data" do
-    it "" do
-      GrouponDeal.chart_data
+    let(:data) { GrouponDeal.chart_data }
+    let(:categories) { data.first }
+    let(:totals) { data.last }
+
+    it "returns the data sorted by date" do
+      categories.should == categories.sort
     end
   end
 
@@ -118,8 +122,6 @@ describe GrouponDeal do
     subject { deal.hotness_index }
     it { should == 2075 }
   end
-
-
 end
 
 
