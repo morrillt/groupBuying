@@ -14,4 +14,3 @@ production:
   adapter: mysql
   database: htmlParser
   username: root
-  password:

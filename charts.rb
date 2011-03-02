@@ -25,11 +25,9 @@ get '/groupon' do
   erb :groupon
 end
 
-get "/chart" do
+get "/groupbuying" do
   @categories, @values = GrouponDeal.chart_data
   @categories = @categories.map { |c| "'#{c.to_s}'"}
-#  @categories = []
-#  @values = []
   @total = GrouponDeal.unique.length
   erb :chart
 end
