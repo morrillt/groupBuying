@@ -56,15 +56,19 @@ class GrouponDeal < ActiveRecord::Base
   def self.chart_data
     daily_data = []
     aggregates = []
-    24.times do |i|
+    23.times do |i|
       daily_data.unshift GrouponDeal.by_hour(i)
     end
 
     daily_data.each do |day|
       count = day.count
-      p count
-      average_price = day.map {|x| x.pricetext.to_f}.sum / count
-      num_deals = day.map {|x| x.count.to_f}.sum / count
+      average_price = 0
+      num_deals = 0
+      if count != 0
+        average_price = day.map {|x| x.pricetext.to_f}.sum / count
+        num_deals = day.map {|x| x.count.to_f}.sum / count
+      end
+
       aggregates << [day.first.time, self.round(count * average_price * num_deals)]
     end
     [aggregates.map(&:first), aggregates.map(&:last)]
