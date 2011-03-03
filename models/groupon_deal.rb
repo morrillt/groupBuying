@@ -35,7 +35,7 @@ class GrouponDeal < ActiveRecord::Base
   end
 
   def self.by_hour(hours)
-    find_by_sql("SELECT deal_id, pricetext, count, datadate FROM groupon WHERE day(datadate)=(day(now())) AND status='1' AND hour(time)=hour(DATE_SUB(NOW(), INTERVAL #{hours} HOUR));")
+    find_by_sql("SELECT deal_id, pricetext, time, count, datadate FROM groupon WHERE day(datadate)=(day(now())) AND status='1' AND hour(time)=hour(DATE_SUB(NOW(), INTERVAL #{hours} HOUR));")
   end
 
   def hotness_index
