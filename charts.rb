@@ -13,7 +13,7 @@ get '/groupon' do
   @total_coupons = GrouponDeal.hourly.num_coupons
   @total_spent = GrouponDeal.hourly.spent(:unique)
   @average_revenue = GrouponDeal.hourly.average_revenue(:unique)
-  @num_zip_codes = GrouponDeal.zip_codes(GrouponDeal.hourly)
+  @num_zip_codes = GrouponDeal.zipcodes(GrouponDeal.hourly)
 
   @closed_today = GrouponDeal.today.closed.length
   @coupons_today = GrouponDeal.num_coupons(:today)
