@@ -56,7 +56,7 @@ class GrouponDeal < ActiveRecord::Base
   def self.chart_data
     daily_data = []
     aggregates = []
-    5.times do |i|
+    24.times do |i|
       daily_data.unshift GrouponDeal.by_hour(i)
     end
 
