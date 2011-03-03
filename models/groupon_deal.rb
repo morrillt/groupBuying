@@ -65,7 +65,7 @@ class GrouponDeal < ActiveRecord::Base
       p count
       average_price = day.map {|x| x.pricetext.to_f}.sum / count
       num_deals = day.map {|x| x.count.to_f}.sum / count
-      aggregates << [day.first.time, count * average_price * num_deals]
+      aggregates << [day.first.time, self.round(count * average_price * num_deals)]
     end
     [aggregates.map(&:first), aggregates.map(&:last)]
   end
