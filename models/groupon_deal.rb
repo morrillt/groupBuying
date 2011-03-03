@@ -65,8 +65,15 @@ class GrouponDeal < ActiveRecord::Base
       count = day.count
       next if count == 0 || i == 0
       average_price = day.map {|x| x.pricetext.to_f}.sum / count
-      now_avg_count = daily_data[i].inject(0) {|sum, x| sum += x.count.to_f} / daily_data[i].count
-      earlier_avg_count = daily_data[i-1].inject(0) {|sum, x| sum += x.count.to_f} / daily_data[i-1].count
+
+      begin
+        now_avg_count = daily_data[i].inject(0) {|sum, x| sum += x.count.to_f} / daily_data[i].count
+        earlier_avg_count = daily_data[i-1].inject(0) {|sum, x| sum += x.count.to_f} /
+        daily_data[i-1].count
+      rescue
+        next
+      end
+
       num_deals = now_avg_count - earlier_avg_count
 
       aggregates << [day.first.time, self.round(count * average_price * num_deals)]
