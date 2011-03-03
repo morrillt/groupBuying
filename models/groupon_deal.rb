@@ -10,13 +10,16 @@ class GrouponDeal < ActiveRecord::Base
   scope :yesterday,  lambda { unique.where(:datadate => Date.today - 1.days) }
   scope :today,  lambda { unique.where(:datadate => Date.today) }
   scope :zip_codes, select("DISTINCT(location)")
-  scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, datadate, location, status, urltext").order("time").group("deal_id")
+  scope :unique, select("DISTINCT(deal_id), hotindex, groupon.count, pricetext, datadate, location, status, urltext").order("time").group("deal_id")
   scope :by_deal, lambda { |id| select("datadate, time, count, location, deal_id").where(:deal_id => id).where(:status => true).order("datadate DESC, time DESC") }
   scope :by_day, lambda { |day| where(:datadate => day) }
-  scope :hot, lambda { unique.active.where(:datadate => Date.today).where("count != 0").limit(10) }
 
   def self.num_coupons(range=:unique)
     self.send(range).map(&:count).inject(0) { |sum, n| sum += n.to_i }
+  end
+
+  def self.hot
+    GrouponDeal.find_by_sql("SELECT DISTINCT deal_id, hotindex, urltext, location FROM groupon WHERE status = '1' AND time=(hour(now())) ORDER BY hotindex DESC LIMIT 10;")
   end
 
   def self.spent(range=:unique)

@@ -20,7 +20,7 @@ get '/groupon' do
   @spent_today = GrouponDeal.spent(:today)
   @revenue_today = GrouponDeal.average_revenue(:today)
   calculate_daily_changes
-  @hot_deals = GrouponDeal.where(:status => "1").order("hotindex DESC").limit(10)
+  @hot_deals = GrouponDeal.hot
   erb :groupon
 end
 
