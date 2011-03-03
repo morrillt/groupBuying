@@ -34,6 +34,10 @@ class GrouponDeal < ActiveRecord::Base
     arr.map(&:location).uniq.length
   end
 
+  def self.by_hour(hours)
+    find_by_sql("SELECT deal_id, pricetext, count, datadate FROM groupon WHERE day(datadate)=(day(now())) AND status='1' AND hour(time)=hour(DATE_SUB(NOW(), INTERVAL #{hours} HOUR));")
+  end
+
   def hotness_index
     @deals ||= GrouponDeal.by_deal(deal_id)
     return 0 if @deals.empty?
@@ -52,14 +56,16 @@ class GrouponDeal < ActiveRecord::Base
   def self.chart_data
     daily_data = []
     aggregates = []
-    10.times do |i|
-      daily_data.unshift GrouponDeal.by_day(Date.today - i.days)
+    5.times do |i|
+      daily_data.unshift GrouponDeal.by_hour(i)
     end
-    daily_data = daily_data.find_all { |day| day.present? }
+
     daily_data.each do |day|
-      daily_price =
-      total = day.inject(0){ |sum, deal| sum += deal.pricetext.to_i * deal.count.to_i }
-      aggregates << [day.first.datadate, total / day.length]
+      count = day.count
+      p count
+      average_price = day.map {|x| x.pricetext.to_f}.sum / count
+      num_deals = day.map {|x| x.count.to_f}.sum / count
+      aggregates << [day.first.datadate, count * average_price * num_deals]
     end
     [aggregates.map(&:first), aggregates.map(&:last)]
   end
