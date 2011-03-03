@@ -8,10 +8,10 @@ require 'models/groupon_deal'
 require 'lib/string.rb'
 
 get '/groupon' do
-  @active_count = GrouponDeal.today.hourly.active.length
-  @deals_tracked = GrouponDeal.today.hourly.unique.length
-  @total_coupons = GrouponDeal.today.hourly.num_coupons
-  @total_spent = GrouponDeal.today.hourly.spent(:unique)
+  @active_count = GrouponDeal.hourly.length
+  @deals_tracked = GrouponDeal.hourly.length
+  @total_coupons = GrouponDeal.hourly.num_coupons
+  @total_spent = GrouponDeal.hourly.spent(:unique)
   @average_revenue = GrouponDeal.hourly.average_revenue(:unique)
   @num_zip_codes = GrouponDeal.hourly.zip_codes.count
 
