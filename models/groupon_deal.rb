@@ -9,8 +9,9 @@ class GrouponDeal < ActiveRecord::Base
   scope :closed, lambda { unique.where(:status   => false) }
   scope :yesterday,  lambda { unique.where(:datadate => Date.today - 1.days) }
   scope :today,  lambda { unique.where(:datadate => Date.today) }
+  scope :hourly, lambda { unique.where("time=(hour(now()))") }
   scope :zip_codes, select("DISTINCT(location)")
-  scope :unique, select("DISTINCT(deal_id), hotindex, groupon.count, pricetext, datadate, location, status, urltext").order("time").group("deal_id")
+  scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, datadate, location, status, urltext").order("time").group("deal_id")
   scope :by_deal, lambda { |id| select("datadate, time, count, location, deal_id").where(:deal_id => id).where(:status => true).order("datadate DESC, time DESC") }
   scope :by_day, lambda { |day| where(:datadate => day) }
 
