@@ -19,7 +19,7 @@ class GrouponDeal < ActiveRecord::Base
   end
 
   def self.hot
-    GrouponDeal.find_by_sql("SELECT DISTINCT deal_id, hotindex, urltext, location FROM groupon WHERE status = '1' AND time=(hour(now())) ORDER BY hotindex DESC LIMIT 10;")
+    GrouponDeal.find_by_sql("SELECT DISTINCT deal_id, hotindex, urltext, location FROM groupon WHERE status = '1' AND hour(time)=(hour(now())) ORDER BY hotindex DESC LIMIT 10;")
   end
 
   def self.spent(range=:unique)
