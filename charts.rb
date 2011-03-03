@@ -8,10 +8,10 @@ require 'models/groupon_deal'
 require 'lib/string.rb'
 
 get '/groupon' do
-  @active_count = GrouponDeal.active.length
-  @deals_tracked = GrouponDeal.unique.length
-  @total_coupons = GrouponDeal.num_coupons
-  @total_spent = GrouponDeal.spent(:unique)
+  @active_count = GrouponDeal.today.active.length
+  @deals_tracked = GrouponDeal.today.unique.length
+  @total_coupons = GrouponDeal.today.num_coupons
+  @total_spent = GrouponDeal.today.spent(:unique)
   @average_revenue = GrouponDeal.average_revenue(:unique)
   @num_zip_codes = GrouponDeal.zip_codes.count
 
@@ -20,7 +20,7 @@ get '/groupon' do
   @spent_today = GrouponDeal.spent(:today)
   @revenue_today = GrouponDeal.average_revenue(:today)
   calculate_daily_changes
-  @hot_deals = GrouponDeal.hot.sort { |a,b| b.hotness_index <=> a.hotness_index }
+  @hot_deals = GrouponDeal.where(:status => "1").order("hotindex DESC").limit(10)
   erb :groupon
 end
 

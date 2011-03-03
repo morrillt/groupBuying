@@ -50,6 +50,7 @@ class GrouponDeal < ActiveRecord::Base
     end
     daily_data = daily_data.find_all { |day| day.present? }
     daily_data.each do |day|
+      daily_price =
       total = day.inject(0){ |sum, deal| sum += deal.pricetext.to_i * deal.count.to_i }
       aggregates << [day.first.datadate, total / day.length]
     end
