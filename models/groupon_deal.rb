@@ -40,7 +40,7 @@ class GrouponDeal < ActiveRecord::Base
     else
       day_sql = "day(datadate)=(day(now()))"
     end
-    find_by_sql("SELECT deal_id, pricetext, time, count, datadate FROM groupon WHERE #{day_sql} AND status='1' AND hour(time)=#{hours}:00;")
+    find_by_sql("SELECT deal_id, pricetext, time, count, datadate FROM groupon WHERE #{day_sql} AND status='1' AND hour(time)'=#{hours}';")
   end
 
   def hotness_index
