@@ -34,8 +34,13 @@ class GrouponDeal < ActiveRecord::Base
     arr.map(&:location).uniq.length
   end
 
-  def self.by_hour(hours)
-    find_by_sql("SELECT deal_id, pricetext, time, count, datadate FROM groupon WHERE day(datadate)=(day(now())) AND status='1' AND hour(time)=hour(DATE_SUB(NOW(), INTERVAL #{hours} HOUR));")
+  def self.by_hours(hours, yesterday=false)
+    if yesterday
+      day_sql = "day(datadate)=day(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY))"
+    else
+      day_sql = "day(datadate)=(day(now()))"
+    end
+    find_by_sql("SELECT deal_id, pricetext, time, count, datadate FROM groupon WHERE #{day_sql} AND status='1' AND hour(time)=hour(DATE_SUB(NOW(), INTERVAL #{hours} HOUR));")
   end
 
   def hotness_index
@@ -56,7 +61,16 @@ class GrouponDeal < ActiveRecord::Base
   def self.chart_data
     daily_data = []
     aggregates = []
+    yesterday_hours = []
     hours = Time.now.hour
+    if hours < 12
+      yesterday_hours = (0..23).to_a[-9..-1]
+    end
+
+    yesterday_hours.each do |hour|
+      daily_data.unshift GrouponDeal.by_hour(i, true)
+    end
+
     hours.times do |i|
       daily_data.unshift GrouponDeal.by_hour(i)
     end
