@@ -67,7 +67,7 @@ class GrouponDeal < ActiveRecord::Base
       yesterday_hours = (0..23).to_a[-9..-1]
     end
 
-    yesterday_hours.each do |hour|
+    yesterday_hours.each_with_index do |hour, i|
       daily_data.unshift GrouponDeal.by_hour(i, true)
     end
 
