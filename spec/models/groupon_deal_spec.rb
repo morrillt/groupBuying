@@ -116,12 +116,6 @@ describe GrouponDeal do
       categories.should == categories.sort
     end
   end
-
-  describe "#hotness_index" do
-    let(:deal) { GrouponDeal.find_by_deal_id("beyouteful") }
-    subject { deal.hotness_index }
-    it { should == 2075 }
-  end
 end
 
 
