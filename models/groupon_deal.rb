@@ -68,12 +68,13 @@ class GrouponDeal < ActiveRecord::Base
     end
 
     yesterday_hours.each do |hour|
-      daily_data.unshift GrouponDeal.by_hour(hour, true)
+      daily_data.push GrouponDeal.by_hour(hour, true)
     end
 
     hours.times do |i|
-      daily_data.unshift GrouponDeal.by_hour(i)
+      daily_data.push GrouponDeal.by_hour(i)
     end
+
 
     daily_data.each_with_index do |day, i|
       count = day.count
