@@ -64,7 +64,7 @@ class GrouponDeal < ActiveRecord::Base
     yesterday_hours = []
     hours = Time.now.hour
     if hours < 12
-      yesterday_hours = (0..23).to_a[-9..-1]
+      yesterday_hours = (0..23).to_a[-(12-hours)..-1]
     end
 
     yesterday_hours.each_with_index do |hour, i|
