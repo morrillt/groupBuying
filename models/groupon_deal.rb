@@ -40,7 +40,7 @@ class GrouponDeal < ActiveRecord::Base
     else
       day_sql = "day(datadate)=(day(now()))"
     end
-    find_by_sql("SELECT deal_id, pricetext, time, count, datadate FROM groupon WHERE #{day_sql} AND status='1' AND hour(time)=#{hours};")
+    find_by_sql("SELECT deal_id, pricetext, time, count, datadate FROM groupon WHERE #{day_sql} AND status='1' AND hour(time)=#{hours}:00;")
   end
 
   def hotness_index
@@ -67,8 +67,8 @@ class GrouponDeal < ActiveRecord::Base
       yesterday_hours = (0..23).to_a[-(12-hours)..-1]
     end
 
-    yesterday_hours.each_with_index do |hour, i|
-      daily_data.unshift GrouponDeal.by_hour(i, true)
+    yesterday_hours.each do |hour|
+      daily_data.unshift GrouponDeal.by_hour(hour, true)
     end
 
     hours.times do |i|
