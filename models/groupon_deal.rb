@@ -34,7 +34,7 @@ class GrouponDeal < ActiveRecord::Base
     arr.map(&:location).uniq.length
   end
 
-  def self.by_hours(hours, yesterday=false)
+  def self.by_hour(hours, yesterday=false)
     if yesterday
       day_sql = "day(datadate)=day(DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY))"
     else
@@ -89,7 +89,7 @@ class GrouponDeal < ActiveRecord::Base
 
       num_deals = now_count - earlier_count
 
-      aggregates << [day.first.time, self.round(average_price * num_deals)]
+      aggregates << [day.first.time, self.round(average_price * num_deals.abs)]
     end
     [aggregates.map(&:first), aggregates.map(&:last)]
   end
