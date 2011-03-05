@@ -1,17 +1,20 @@
 development:
-  adapter: mysql
-  database: htmlParser
-  username: root
-  password: root
+  adapter: mysql2
+  database: groupBuy
+  username: groupBuy
+  password: blahblah
+  host: mysql-server
 
 test:
-  adapter: mysql
-  database: htmlParser_test
-  username: root
-  password: root
+  adapter: mysql2
+  database: groupBuy
+  username: groupBuy
+  password: blahblah
+  host: mysql-server
 
 production:
-  adapter: mysql
-  database: htmlParser
-  username: root
-  password:
+  adapter: mysql2
+  database: groupBuy
+  username: groupBuy
+  password: blahblah
+  host: mysql-server

@@ -1,5 +1,3 @@
-require 'active_record'
-
 class GrouponDeal < ActiveRecord::Base
   set_table_name "groupon"
 
@@ -10,53 +8,58 @@ class GrouponDeal < ActiveRecord::Base
   scope :yesterday,  lambda { unique.where(:datadate => Date.today - 1.days) }
   scope :today,  lambda { unique.where(:datadate => Date.today) }
   scope :zip_codes, select("DISTINCT(location)")
-  scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, datadate, location, status").order("time").group("deal_id")
+  scope :unique, select("DISTINCT(deal_id), groupon.count, pricetext, datadate, location, status").order(:time).group(:deal_id)
   scope :by_deal, lambda { |id| select("datadate, time, count, location, deal_id").where(:deal_id => id).order("datadate DESC, time DESC") }
   scope :by_day, lambda { |day| where(:datadate => day) }
+  
+  class << self
+    def num_coupons
+      unique.all.sum(&:count)
+    end
 
-  def self.num_coupons(range=:unique)
-    self.send(range).map(&:count).inject(0) { |sum, n| sum += n.to_i }
+    def spent
+      unique.all.sum(&:spent)
+    end
+    
+    def average_revenue
+      spent / count
+    end
+    
+    def closed_count
+      closed.length
+    end
+    
+    def chart_data
+      chart = (10.days.ago.to_date .. Date.today).map_to_hash do |day| 
+        next unless (deals = GrouponDeal.by_day(day)).present?
+        
+        { day => deals.avg_rev }
+      end
+    end
+    
+    def hot_deals
+      unique.limit(30).sort_by{ |deal| -deal.hotness_index }.take(10)
+    end
   end
-
-  def self.spent(range=:unique)
-    self.send(range).inject(0) { |sum, deal| sum +=  deal.pricetext.to_i * deal.count.to_i }
-  end
-
-  def self.average_revenue(range=:unique, args=nil)
-    self.spent(range) / self.send(range).length
-  end
-
+  
   def hotness_index
     @deals ||= GrouponDeal.by_deal(deal_id)
-    present = @deals.first.count.to_f
-    past = @deals.last.count.to_f
-    return 0 if present == 0 or past == 0
-    GrouponDeal.change(past, present)
+    
+    finish_count = @deals.first.count
+    start_count  = @deals.last.count
+    
+    finish_count.percent_change_from(start_count)
   end
 
-  def self.change(past, present)
-    value = ((present.to_f - past.to_f) / past.to_f) * 100
-    GrouponDeal.round(value)
+  def count
+    read_attribute(:count).to_i
   end
-
-  # TODO DRY this up
-  def self.chart_data
-    daily_data = []
-    aggregate = Hash.new(0)
-    10.times do |i|
-      daily_data.unshift GrouponDeal.by_day(Date.today - i.days)
-    end
-    daily_data = daily_data.find_all { |day| !day.empty? }
-
-    daily_data.each do |day|
-      total = day.inject(0){ |sum, deal| sum += deal.pricetext.to_i * deal.count.to_i }
-      aggregate[day.first.datadate] = total / day.length
-    end
-    [aggregate.keys, aggregate.values]
+  
+  def price
+    pricetext.to_i
   end
-
-  # workaround rounding bug in MRI 1.8.7
-  def self.round(num)
-    ("%.2f" % num).to_f
+  
+  def spent
+    price * count
   end
 end

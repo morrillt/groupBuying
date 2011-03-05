@@ -1,0 +1,88 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activemodel (3.0.5)
+      activesupport (= 3.0.5)
+      builder (~> 2.1.2)
+      i18n (~> 0.4)
+    activerecord (3.0.5)
+      activemodel (= 3.0.5)
+      activesupport (= 3.0.5)
+      arel (~> 2.0.2)
+      tzinfo (~> 0.3.23)
+    activesupport (3.0.5)
+    addressable (2.2.4)
+    arel (2.0.9)
+    builder (2.1.2)
+    configuration (1.2.0)
+    diff-lcs (1.1.2)
+    extlib (0.9.15)
+    fastercsv (1.5.4)
+    i18n (0.5.0)
+    json (1.5.1)
+    launchy (0.4.0)
+      configuration (>= 0.0.5)
+      rake (>= 0.8.1)
+    mime-types (1.16)
+    mysql2 (0.2.6)
+    pamela (0.1)
+    rack (1.2.1)
+    rake (0.8.7)
+    rest-client (1.6.1)
+      mime-types (>= 1.16)
+    rspec (2.5.0)
+      rspec-core (~> 2.5.0)
+      rspec-expectations (~> 2.5.0)
+      rspec-mocks (~> 2.5.0)
+    rspec-core (2.5.1)
+    rspec-expectations (2.5.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.5.0)
+    sequel (3.20.0)
+    shotgun (0.9)
+      rack (>= 1.0)
+    sinatra (1.0)
+      rack (>= 1.0)
+    sqlite3 (1.3.3)
+    sqlite3-ruby (1.3.3)
+      sqlite3 (>= 1.3.3)
+    taps (0.3.17)
+      json (~> 1.5.1)
+      rack (>= 1.0.1)
+      rest-client (>= 1.4.0, < 1.7.0)
+      sequel (~> 3.20.0)
+      sinatra (~> 1.0.0)
+      sqlite3-ruby (~> 1.2)
+    tilt (1.2.2)
+    tzinfo (0.3.24)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activemodel
+  activerecord
+  activesupport
+  addressable
+  arel
+  builder
+  configuration
+  diff-lcs
+  extlib
+  fastercsv
+  i18n
+  json
+  launchy
+  mime-types
+  mysql2
+  pamela
+  rack
+  rake
+  rest-client
+  rspec
+  sequel
+  shotgun
+  sinatra
+  taps
+  tilt
+  tzinfo

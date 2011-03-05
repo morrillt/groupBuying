@@ -1,7 +1,3 @@
-$:.unshift File.dirname(__FILE__)
-require 'charts'
-require 'config/environment'
-
+require File.expand_path(File.join(*%w[ config environment ]), File.dirname(__FILE__))
 
 run Sinatra::Application
-
