@@ -69,11 +69,11 @@ class GrouponDeal < ActiveRecord::Base
     end
 
     yesterday_hours.each do |hour|
-      daily_data.push GrouponDeal.by_hour(hour, :yesterday)
+      daily_data << GrouponDeal.by_hour(hour, :yesterday)
     end
 
     hours.times do |i|
-      daily_data.push GrouponDeal.by_hour(i)
+      daily_data << GrouponDeal.by_hour(i)
     end
 
 
