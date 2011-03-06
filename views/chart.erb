@@ -30,7 +30,7 @@
 
       <div class="span-6 last">
         <div class="rounded">
-          <h2><%= @total %></h2>
+          <h2><%= Deal.count %></h2>
           <h5>deals analyzed to date</h5>
         </div>
         <div class="rounded">
@@ -45,13 +45,16 @@
       <div class="span-8 append-16 last">
         <h2>See Detailed Report</h2>
         <p>
-          <a href="/groupon">Groupon</a>
+          <a href="/summary?company=groupon">Groupon</a>
         </p>
         <p>
-          <a href="#">OpenTable</a> (coming soon)
+          <a href="/summary?company=open_table">OpenTable</a>
         </p>
         <p>
-          <a href="#">TravelZoo</a> (coming soon)
+          <a href="/summary?company=travel_zoo">TravelZoo</a>
+        </p>
+        <p>
+          <a href="/summary?company=travel_zoo_uk">TravelZoo UK</a>
         </p>
       </div>
     </div>

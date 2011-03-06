@@ -5,9 +5,10 @@ get "/chart" do
 end
 
 get '/summary' do
-  @sites      = Site.all
+  
+  @site       = Site.find_by_name(params['company']) || Site.first
   @deltas     = [] #Delta.generate(Deal.yesterday, Deal.today)
-  @hot_deals  = Deal.hot.limit(10)
+  @hot_deals  = @site.deals.hot.limit(10)
   
   erb :summary
 end

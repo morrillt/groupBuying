@@ -10,17 +10,15 @@
   <body>
     <div class="container">
       <h1>Group Buying Dynamics</h1>
-      <% @sites.each do |site| %>
-        <h2><%= site.name %></h2>
-        <div class="span-12 last">
-          <% site.deals.buying_dynamics.each do |label, value| %>
-            <p>
-              <label><%= label %></label>
-              <span><%= value %></span>
-            </p>
-          <% end %>
-        </div>
-      <% end %>
+      <h2><%= @site.title %></h2>
+      <div class="span-12 last">
+        <% @site.deals.buying_dynamics.each do |label, value| %>
+          <p>
+            <label><%= label %></label>
+            <span><%= value %></span>
+          </p>
+        <% end %>
+      </div>
       
       <hr/>
       <div class="span-12 last">
@@ -50,7 +48,7 @@
 
       <hr/>
       <div class="span-12 last">
-        <h2>Currently Trending on Groupon</h2>
+        <h2>Currently Trending on <%= @site.title %></h2>
         <table>
           <thead>
             <tr>

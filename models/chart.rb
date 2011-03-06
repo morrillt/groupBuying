@@ -4,7 +4,10 @@ class Chart
   def initialize(opts = {})
     opts.reverse_merge! :from => 16.hours.ago, :to => Time.now, :interval => 1.hour
     @interval = opts[:interval]
+    
+    # round the timespan to match the interval
     @from, @to = opts[:from].to_time.floor(interval), opts[:to].to_time.floor(interval)
+    
     @sites = Site.all
     
     generate_chart_data
@@ -22,8 +25,8 @@ class Chart
       @labels << step.strftime('%H:%M')
       
       @sites.each do |site|
-        @datasets[site.name] ||= []
-        @datasets[site.name] << site.snapshot_diffs.where(:changed_at => last_step .. step).total_spent
+        @datasets[site.title] ||= []
+        @datasets[site.title] << site.snapshot_diffs.where(:changed_at => last_step .. step).total_spent
       end
       
       last_step = step

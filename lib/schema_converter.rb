@@ -71,7 +71,7 @@ class OpenTable   < ActiveRecord::Base; include OldSchema; end
 class TravelZoo   < ActiveRecord::Base; include OldSchema; end
 class TravelZooUk < ActiveRecord::Base; include OldSchema; end
 
-
+# [TravelZooUk, TravelZoo, OpenTable, Groupon].each{ |model| model.convert }; Deal.update_cached_stats; 0
 
 # {"location"=>"95060", 
 #   "title"=>"$11 for Movie Ticket for One and Unlimited Soda and Popcorn for Two People at The Nickelodeon ($27.50 Value)", 
