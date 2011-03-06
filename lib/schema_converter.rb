@@ -8,6 +8,8 @@ module OldSchema
   end
   
   def convert
+    return unless valid?
+    
     site = Site.find_by_name(self.class.model_name.underscore)
     
     deal =   site.deals.find_by_slug_and_zip_code(deal_id, location)
@@ -31,6 +33,10 @@ module OldSchema
         :currency   => currency,
       }
     end
+  end
+  
+  def valid?
+    ! [deal_id, price, location, status, price, location, title].any?(&:nil?)
   end
   
   def snapshot_attrs
