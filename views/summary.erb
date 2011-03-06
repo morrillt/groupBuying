@@ -22,22 +22,25 @@
       
       <hr/>
       <div class="span-12 last">
-        <a href="#">Day</a>
-        <a href="#">Week</a>
-        <a href="#">Month</a>
-        <a href="#">Quarter</a>
+        <a href="">Day</a>
+        <a href="?from=<%= 1.week.ago.strftime '%Y-%m-%d' %>">Week</a>
+        <a href="">Month</a>
+        <a href="">Quarter</a>
 
         <table>
           <thead>
             <tr>
-              <th colspan="2"></th>
+              <th></th>
+              <th>start</th>
+              <th>finish</th>
               <th>% Change</th>
             </tr>
           </thead>
           <tbody>
-            <% @deltas.each do |delta| %>
+            <% @comparison.deltas.each do |delta| %>
               <tr>
                 <td><%= delta.name %></td>
+                <td><%= delta.start %></td>
                 <td><%= delta.finish %></td>
                 <td><%= delta.change %>%</td>
               </tr>

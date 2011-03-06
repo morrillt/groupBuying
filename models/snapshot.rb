@@ -8,7 +8,7 @@ class Snapshot < ActiveRecord::Base
   end
   
   def previous_snapshot
-    @previous_snapshot ||= deal.snapshots.where(:id.lt => id).last
+    @previous_snapshot ||= deal.snapshots.where(:imported_at.lt => imported_at).last
   end
   
   def buyer_change

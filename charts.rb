@@ -4,10 +4,9 @@ get "/chart" do
   erb :chart
 end
 
-get '/summary' do
-  
-  @site       = Site.find_by_name(params['company']) || Site.first
-  @deltas     = [] #Delta.generate(Deal.yesterday, Deal.today)
+get '/summary/:company' do
+  @site       = Site.find_by_name(params[:company]) || Site.first
+  @comparison = Comparison.new(params.slice('from', 'to').symbolize_keys.merge(:site => @site))
   @hot_deals  = @site.deals.hot.limit(10)
   
   erb :summary

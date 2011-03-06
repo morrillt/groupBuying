@@ -45,7 +45,7 @@ module OldSchema
   
   # recombine datadate & time(holding the hour) into a datetime object
   def imported_at
-    datadate.to_time.utc + time.hour.hours
+    datadate.to_time.utc + time.hour.hours + time.min.minutes + time.sec.seconds
   end
   
   def value

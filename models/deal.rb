@@ -45,7 +45,7 @@ class Deal < ActiveRecord::Base
     end
 
     def total_buyers
-      for_calc.to_a.sum(&:buyers_count)
+      for_calc.sum(:buyers_count)
     end
 
     def total_revenue
@@ -56,10 +56,6 @@ class Deal < ActiveRecord::Base
       return 0 if count.zero?
       
       total_revenue / count
-    end
-
-    def closed_count
-      closed.count
     end
   end
 end
