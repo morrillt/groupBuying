@@ -11,16 +11,15 @@
     <div class="container">
       <h1>Group Buying Dynamics</h1>
       <% @sites.each do |site| %>
-        <h2><%= @site.name %></h2>
+        <h2><%= site.name %></h2>
         <div class="span-12 last">
-          <% @site.deals.buying_dynamics.each do |label, value| %>
+          <% site.deals.buying_dynamics.each do |label, value| %>
             <p>
               <label><%= label %></label>
               <span><%= value %></span>
             </p>
           <% end %>
         </div>
-      <% end %>
       <% end %>
       
       <hr/>
@@ -61,9 +60,9 @@
             </tr>
             <% @hot_deals.each do |deal| %>
               <tr>
-                <td><%= deal.deal_id.humanize %></td>
-                <td><%= deal.location %></td>
-                <td><%= deal.hotness_index %></td>
+                <td><%= deal.title %></td>
+                <td><%= deal.zip_code %></td>
+                <td><%= deal.hotness %></td>
               </tr>
             <% end %>
           </thead>

@@ -1,34 +1,35 @@
 class Deal < ActiveRecord::Base
   belongs_to  :site
-  has_many    :snapshots
+  has_many    :snapshots, :order => :imported_at
+  has_many    :snapshot_diffs
   
-  scope :active,      where(:active => true)
-  scope :closed,      where(:active => false)
+  scope :active,        where(:active => true)
+  scope :closed,        where(:active => false)
+  scope :hot,           order(:hotness.desc)
   
-  scope :zip_codes,   select("DISTINCT(zip_code)")
+  scope :zip_codes,     select("DISTINCT(zip_code)")
   
-  scope :by_day,      lambda { |day| where(:data_date => day.to_date) }
-  scope :yesterday,   by_day(1.day.ago)
-  scope :today,       by_day(Date.today)
+  scope :for_calc,      where(:buyers_count.ne => nil)
+  scope :needs_update,  active.where(:updated_at.gt => 2.hours.ago)
+  scope :never_cached,  where(:buyers_count => nil)
   
-  def hotness_index
-    initial_buyer_count = snapshots.first.buyers
-    end_buyer_count  = snapshots.last.buyers
+  def self.update_cached_stats
+    (never_cached + needs_update).each(&:update_cached_stats)
+  end
+  
+  def update_cached_stats
+    update_attributes(:buyers_count => snapshots.last.try(:buyers_count), :hotness => calculate_hotness)
+  end
+  
+  def calculate_hotness
+    initial_buyer_count = snapshots.first.buyers_count
+    end_buyer_count     = snapshots.last.buyers_count
     
     end_buyer_count.percent_change_from(initial_buyer_count)
   end
   
-  def spent
+  def revenue
     price * buyers_count
-  end
-  
-  def buyers_count
-    @buyers_count ||= read_attribute(:buyers_count) || begin
-      current_count = snapshots.current.first.try(:buyers)
-      update_attribute(:buyers_count, current_count) if current_count
-      
-      current_count
-    end
   end
   
   class << self
@@ -37,38 +38,28 @@ class Deal < ActiveRecord::Base
         ["# of active deals being tracked",   active.count],
         ["# of deals tracked to date",        all.count],
         ["# of coupons purachased to date",   total_buyers],
-        ["Total spent on deals to date:",     total_spent],
+        ["Total spent on deals to date:",     total_revenue],
         ["Average revenue per deal",          average_revenue],
         ["# of Zip codes we're following",    zip_codes.count],
       ]
     end
 
     def total_buyers
-      all.sum(&:buyers_count)
+      for_calc.to_a.sum(&:buyers_count)
     end
 
-    def total_spent
-      all.sum(&:spent)
+    def total_revenue
+      for_calc.to_a.sum(&:revenue)
     end
 
     def average_revenue
-      total_spent / count
+      return 0 if count.zero?
+      
+      total_revenue / count
     end
 
     def closed_count
       closed.count
-    end
-
-    def chart_data
-      chart = (10.days.ago.to_date .. Date.today).map_to_hash do |day| 
-        next unless (deals = Deal.by_day(day)).present?
-        
-        { day => deals.avg_rev }
-      end
-    end
-
-    def hot_deals
-      unique.limit(30).sort_by{ |deal| -deal.hotness_index }.take(10)
     end
   end
 end

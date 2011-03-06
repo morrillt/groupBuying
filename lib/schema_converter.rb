@@ -34,7 +34,12 @@ module OldSchema
   end
   
   def snapshot_attrs
-    {:buyers => count.to_i, :data_date => datadate, :data_time => time}
+    {:buyers_count => count.to_i, :imported_at => imported_at, :active => status}
+  end
+  
+  # recombine datadate & time(holding the hour) into a datetime object
+  def imported_at
+    datadate.to_time.utc + time.hour.hours
   end
   
   def value
@@ -61,6 +66,13 @@ module OldSchema
   end
 end
 
+class Groupon     < ActiveRecord::Base; include OldSchema; end
+class OpenTable   < ActiveRecord::Base; include OldSchema; end
+class TravelZoo   < ActiveRecord::Base; include OldSchema; end
+class TravelZooUk < ActiveRecord::Base; include OldSchema; end
+
+
+
 # {"location"=>"95060", 
 #   "title"=>"$11 for Movie Ticket for One and Unlimited Soda and Popcorn for Two People at The Nickelodeon ($27.50 Value)", 
 #   "pricetext"=>"11.00USD", 
@@ -74,25 +86,4 @@ end
 #   "valuetext"=>"27.00USD"
 #   "status"=>"0", 
 #   "datetext"=>Tue, 01 Mar 2011, 
-# } 
-
-class Groupon     < ActiveRecord::Base; include OldSchema; end
-class OpenTable   < ActiveRecord::Base; include OldSchema; end
-class TravelZoo   < ActiveRecord::Base; include OldSchema; end
-class TravelZooUk < ActiveRecord::Base; include OldSchema; end
-
-# class TravelZooUk < ActiveRecord::Base
-#   include OldSchema
-#   
-#   def value
-#     valuetext[/[\d\.]+$/]
-#   end
-#   
-#   def price
-#     pricetext[/[\d\.]+$/]
-#   end
-#   
-#   def currency
-#     "GBP"
-#   end
-# end
+# }

@@ -11,16 +11,29 @@ class UpdateSchema < ActiveRecord::Migration
       t.integer     :value#,         :null => false
       t.string      :currency#,      :null => false
       t.integer     :buyers_count
+      t.integer     :hotness
+      
+      t.datetime    :start_on
+      t.datetime    :end_on
       
       t.timestamps
     end
     
     create_table :snapshots do |t|
       t.belongs_to  :deal,            :null => false
-      t.boolean     :current,         :null => false, :default => false
-      t.integer     :buyers,          :null => false
-      t.date        :data_date,       :null => false
-      t.time        :data_time,       :null => false
+      t.integer     :buyers_count,    :null => false
+      t.boolean     :active,          :null => false
+      t.datetime    :imported_at,     :null => false
+    end
+    
+    create_table :snapshot_diffs do |t|
+      t.belongs_to  :deal,                :null => false
+      t.integer     :start_snapshot_id,   :null => false
+      t.integer     :end_snapshot_id,     :null => false
+      t.integer     :buyer_change,        :null => false
+      t.integer     :revenue_change,      :null => false
+      t.boolean     :closed,              :null => false
+      t.datetime    :changed_at,          :null => false
     end
     
     create_table :sites do |t|
