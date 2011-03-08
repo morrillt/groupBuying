@@ -10,7 +10,7 @@ class Deal < ActiveRecord::Base
   scope :zip_codes,     select("DISTINCT(zip_code)")
   
   scope :for_calc,      where(:buyers_count.ne => nil)
-  scope :needs_update,  active.where(:updated_at.gt => 2.hours.ago)
+  scope :needs_update,  active.where(:updated_at.gt => 30.minutes.ago)
   scope :never_cached,  where(:buyers_count => nil)
   
   def self.update_cached_stats
@@ -18,7 +18,13 @@ class Deal < ActiveRecord::Base
   end
   
   def update_cached_stats
-    update_attributes(:buyers_count => snapshots.last.try(:buyers_count), :hotness => calculate_hotness)
+    update_attributes(:buyers_count => snapshots.last.try(:buyers_count), 
+      :hotness => calculate_hotness,
+      :active  => is_active?)
+  end
+  
+  def is_active?
+    snapshots.last.try(:still_active?)
   end
   
   def calculate_hotness

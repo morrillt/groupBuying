@@ -1,7 +1,11 @@
 class Snapshot < ActiveRecord::Base
   belongs_to :deal
-    
+  
   after_create :generate_diff
+    
+  def still_active?
+    active and imported_at > 1.hour.ago
+  end
   
   def total_revenue
     deal.price * buyers_count
