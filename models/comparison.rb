@@ -1,22 +1,19 @@
 class Comparison
-  def initialize(opts = {})
-    opts.reverse_merge! :from => Date.yesterday, :to => Date.today, :site => Site.first
-    
-    @a_scope = opts[:site].snapshot_diffs.by_day opts[:from]
-    @b_scope = opts[:site].snapshot_diffs.by_day opts[:to]
+  def initialize(a, b)
+    @a, @b = a, b
   end
   
   def deltas
     deltas = [
-      [:deals_closed,         "# of closed deals"],
-      [:coupons_purchased,    "# of coupons purchased"],
-      [:total_spent,          "$ spent on deals"],
-      [:average_revenue,      "Average Revenue per deal"],      
+      [:closed_deals,             "# of closed deals"],
+      [:total_coupons,            "# of coupons purchased"],
+      [:total_revenue,            "$ spent on deals"],
+      [:average_deal_revenue,     "Average Revenue per deal"],      
     ]
     
     deltas.map do |method, name|
-      start  = @a_scope.send(method)
-      finish = @b_scope.send(method)
+      start  = @a.send(method)
+      finish = @b.send(method)
       puts "#{method}: #{start.inspect} / #{finish.inspect}"
       
       OpenStruct.new(

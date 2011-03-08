@@ -48,6 +48,31 @@
           </tbody>
         </table>
       </div>
+      
+      <hr/>
+      <div class="span-12 last">
+        Per-hour breakdown for <%= @activity.from.strftime('%m/%d/%Y') %><%= %>
+        <table>
+          <thead>
+            <tr>
+              <th>time</th>
+              <th># active deals</th>
+              <th>coupons / deal</th>
+              <th>price / coupon</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @activity.hours.each do |hour| %>
+              <tr>
+                <td><%= hour.name.hour %></td>
+                <td><%= hour.active_deals %></td>
+                <td><%= hour.average_deal_coupons %></td>
+                <td><%= hour.average_coupon_price %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
 
       <hr/>
       <div class="span-12 last">
@@ -61,7 +86,7 @@
             </tr>
             <% @hot_deals.each do |deal| %>
               <tr>
-                <td><%= deal.title %></td>
+                <td><a href="<%= deal.url %>"><%= deal.title %></a></td>
                 <td><%= deal.zip_code %></td>
                 <td><%= deal.hotness %></td>
               </tr>

@@ -5,4 +5,8 @@ class Site < ActiveRecord::Base
   def title
     read_attribute(:name).titleize
   end
+  
+  def activity_block(opts = {})
+    ActivityBlock.new(opts.merge(:association_chain => self))
+  end
 end

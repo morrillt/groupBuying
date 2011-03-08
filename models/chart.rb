@@ -1,35 +1,25 @@
 class Chart
-  attr_reader :from, :to, :interval, :labels
+  attr_reader :from, :to, :interval, :labels, :datasets
   
   def initialize(opts = {})
     opts.reverse_merge! :from => 16.hours.ago, :to => Time.now, :interval => 1.hour
-    @interval = opts[:interval]
-    
-    # round the timespan to match the interval
-    @from, @to = opts[:from].to_time.floor(interval), opts[:to].to_time.floor(interval)
-    
+    @from, @to, @interval = opts[:from], opts[:to], opts[:interval]
     @sites = Site.all
     
     generate_chart_data
   end
   
-  def datasets
-    @datasets#.map{ |site_name, values| {'name' => site_name, 'data' => values}}
-  end
-  
   def generate_chart_data
     @labels, @datasets = [], {}
-    last_step = from
     
-    chart = (from + interval .. to).step(interval).each do |step|
-      @labels << step.strftime('%H:%M')
-      
-      @sites.each do |site|
+    @sites.each do |site|
+      site.activity_block(:from => @from, :to => @to).by_interval(@interval).each do |ab|
+        this_label = ab.name.strftime("%H:00")
+        @labels << this_label unless @labels.last == this_label
+        
         @datasets[site.title] ||= []
-        @datasets[site.title] << site.snapshot_diffs.where(:changed_at => last_step .. step).total_spent
+        @datasets[site.title] << ab.total_revenue
       end
-      
-      last_step = step
     end
   end
   
