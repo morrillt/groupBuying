@@ -1,6 +1,7 @@
 require "rubygems"
 require "bundler/setup"
 
+require 'i18n'
 require 'active_support/all'
 require 'active_record'
 require 'logger'

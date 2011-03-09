@@ -54,7 +54,10 @@ class UrlImporter < BaseImporter
   end
   
   def parse
-    @attributes = process_html_selectors if deal_exists?
+    if deal_exists?
+      @attributes = process_html_selectors
+      super
+    end
   end
   
   # just does HEAD request and checks for 200

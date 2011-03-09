@@ -21,7 +21,7 @@ def watched_loop(&block)
     begin
       loop do
         puts "calling block"
-        block.call
+        yield
         
         puts "sleeping"
         sleep @chill.to_i

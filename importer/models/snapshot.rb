@@ -18,7 +18,8 @@ class Snapshot
   
   scope :valid_for_analysis,  excludes(:price => nil, :buyers_count => nil)
   scope :needs_analysis,      excludes(:analyzed => true)
-
+  scope :analyzed,            where(:analyzed => true)
+  
   def self.time_gt_than(time)
     js_time = "new Date(#{time.year}, #{time.month - 1}, #{time.day}, #{time.hour}, #{time.min})"
     "function() {return this.created_at >= #{js_time}}"
@@ -174,6 +175,13 @@ class Snapshot
       deal   = site.deals.find_by_deal_id(deal_id)
       deal ||= site.deals.create(deal_attrs)
     end
+  end
+  
+  # TODO: refactor and move this to deal_importer
+  def fetch_new_snapshot
+    self.cache_available = false
+    deal_importer.save_snapshot
+    self.cache_available = true
   end
   
   def generate_diff

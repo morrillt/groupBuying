@@ -7,6 +7,7 @@ class BaseImporter
   
   def parse
     attributes.each do |field, value|
+      #puts "setting #{field}=#{value}"
       instance_variable_set "@#{field.to_sym}", value
     end
   end
