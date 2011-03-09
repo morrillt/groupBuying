@@ -140,12 +140,10 @@ class Snapshot
   end
   
   def existent_deal_attrs
-    return {} unless deal_exists?
-    
-    @existent_deal_attrs ||=  {
+    @existent_deal_attrs ||= {
       :title          => deal_importer.title,
       :active         => active?,
-      :price          => price,
+      :price          => deal_importer.price,
       :value          => deal_importer.value,
       :currency       => deal_importer.currency,
       :buyers_count   => deal_importer.buyers_count,
@@ -161,7 +159,13 @@ class Snapshot
   end
 
   def valid_for_analysis?
-    !! (price and buyers_count)
+    deal_importer.parse
+    
+    if deal_importer.valid?
+      true
+    else
+      update_attribute(:status, :invalid)
+    end
   end
 
   def self.generate_diffs
@@ -186,8 +190,6 @@ class Snapshot
   
   def generate_diff
     if valid_for_analysis? and changed_from_previous?
-      update_attribute(:converted, true)
-      
       puts "generating diff"
       diff_attrs = {
         :buyer_change       => buyer_change,

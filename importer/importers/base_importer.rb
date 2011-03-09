@@ -3,7 +3,7 @@ class BaseImporter
   
   attr_reader :deal_id, :attributes
   attr_writer :current_snapshot
-  validates_presence_of :deal_id, :url, :title, :buyers_count, :price, :original_price, :currency
+  validates_presence_of :deal_id, :url, :status, :title, :buyers_count, :price, :original_price, :currency
   
   def parse
     attributes.each do |field, value|
