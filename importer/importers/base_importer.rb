@@ -1,8 +1,60 @@
 class BaseImporter
   include ActiveModel::Validations
   
+  attr_reader :deal_id
+  attr_writer :current_snapshot
   validates_presence_of :deal_id, :url, :title, :buyers_count, :price, :value, :currency
-  attr_accessor :deal_id, :url, :title, :active, :price, :value, :discount, :currency, :buyers_count, :location
+  
+  def method_missing(sym, *args, &block)
+    puts "method_missing for #{sym}: #{args.inspect}"
+    if [:url, :title, :buyers_count, :price, :value, :currency, :location].include? sym
+      attributes[sym]
+    end
+  end
+    
+  def initialize(deal_id)
+    @deal_id = deal_id
+  end
+  
+  def site
+    self.class.site
+  end
+  
+  def doc
+    if deal_exists?
+      @doc ||= parse_doc
+    end
+  end
+  
+  def cached?
+    current_snapshot.try(:cache_available)
+  end
+  
+  def current_snapshot
+    @current_snapshot ||= Snapshot.current.where(:url => url).first
+  end
+  
+  def url
+    base_url + deal_id.to_s
+  end
+  
+  def deal_exists?
+    true
+  end
+  
+  def status
+    deal_exists? ?
+      deal_status :
+      :nonexistent
+  end
+  
+  def currency
+    'USD'
+  end
+  
+  def save_snapshot
+    Snapshot.from_importer(self)
+  end
   
   class << self
     def site
@@ -22,26 +74,5 @@ class BaseImporter
         deal.save_snapshot
       end
     end
-  end
-  
-  def initialize(deal_id)
-    @deal_id = deal_id
-  end
-  
-  def site
-    self.class.site
-  end
-  
-  # we assume a deal exists. override this in the sub class to implement checking logic
-  def exists?
-    true
-  end
-  
-  def currency
-    'USD'
-  end
-  
-  def save_snapshot
-    Snapshot.from_importer(self)
   end
 end

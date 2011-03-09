@@ -6,11 +6,19 @@ module TravelZooCommon
     html_selector :buyers_count,    '#ctl00_Main_LabelBought',    :type => :number
     html_selector :price,           '#ctl00_Main_OurPrice',       :type => :number
     html_selector :value,           '#ctl00_Main_PriceValue',     :type => :number
-    html_selector :location,        '.smallMap p',                :type => :address, :node => :last
   end
   
-  def active
-    !! text_from_selector('span[id=ctl00_Main_TimeLeft]').blank?
+  # rip the lat/lon out of the google maps JS
+  def location
+    doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[1, 2]
+  end
+  
+  def deal_status
+    if text_from_selector('#ctl00_Main_TimeLeft').present?
+      :active
+    elsif text_from_selector('#ctl00_Main_PanelExpiredDeal').present?
+      :closed
+    end
   end
 end
 

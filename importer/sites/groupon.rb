@@ -12,26 +12,37 @@ class GrouponImporter < BaseImporter
     end
   end
   
-  def doc
-    @doc ||= begin
-      json = open("http://api.groupon.com/v2/deals/#{deal_id}.json?client_id=#{Groupon.api_key}").read
-      hash = JSON.parse(json)
-      Hashie::Mash.new(hash).deal
-    end
+  def parse_doc
+    hash = JSON.parse(raw_data)
+    Hashie::Mash.new(hash).deal
   end
   
-  def url
-    doc.dealUrl
+  def raw_data
+    @raw_data ||= cached? ? 
+      current_snapshot.raw_data : 
+      open("http://api.groupon.com/v2/deals/#{deal_id}.json?client_id=#{Groupon.api_key}").read
   end
   
-  def attrs
-    {
+  def base_url
+    "http://www.groupon.com/deals/"
+  end
+  
+  def status
+    converter = {:open => :active}
+    name = doc.status.to_sym
+    
+    converter[name] || name
+  end
+  
+  def attributes
+    @attributes ||= {
       :title        => doc.title,
-      :url          => doc.dealUrl,
+      :url          => url,
       :price        => doc.options.first.price.amount,
       :value        => doc.options.first.discount.amount,
-      :buyers_count => doc.deal.soldQuantity,
-      :active       => doc.deal.status,
+      :buyers_count => doc.soldQuantity,
+      :status       => status,
+      :location     => doc.division.values_at('lat', 'lng'),
     }
   end
 end

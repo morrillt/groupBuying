@@ -3,11 +3,13 @@ require "bundler"
 Bundler.setup
 
 require 'active_support/all'
-require 'sinatra'
 require 'active_record'
 require 'logger'
 require 'meta_where'
 require 'geocoder'
+
+require 'sinatra'
+require 'sinatra/logger'
 
 require File.join(File.expand_path(File.dirname(__FILE__)), 'importer')
 
@@ -17,6 +19,7 @@ dbconfig = YAML.load(File.read(File.dirname(__FILE__) + '/database.yml'))
 ActiveRecord::Base.establish_connection dbconfig[environment]
 
 Dir['{lib,models}/*.rb'].each { |filename| require filename }
-set :root, File.join(File.dirname(__FILE__), '..')
+#enable  :logging
+set     :root, File.join(File.dirname(__FILE__), '..')
 
 require 'charts'

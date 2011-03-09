@@ -5,6 +5,10 @@ class Site < ActiveRecord::Base
   
   scope :active,  where(:active => true)
   
+  def importer
+    importer_class.constantize
+  end
+  
   def title
     read_attribute(:name).titleize
   end

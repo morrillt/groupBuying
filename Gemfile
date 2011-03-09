@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'mongoid',    '>= 2.0.0.rc.7'
+gem 'mongoid',    :git => 'git://github.com/mongoid/mongoid.git'
 gem 'bson_ext',   '1.2.4'
 gem 'activerecord'
 gem 'activesupport'
@@ -14,6 +14,6 @@ gem 'groupon'
 gem 'json'
 
 gem 'geocoder'
-
+gem 'sinatra-logger'
 # gem 'pamela'
 # gem 'rspec'

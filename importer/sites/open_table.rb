@@ -5,6 +5,10 @@ class OpenTable < AutoIdImporter
   html_selector :buyers_count,  '.peoplePurchasedValue',        :type => :number
   html_selector :location,      '.formattedAddress',            :type => :address
   
+  def deal_status
+    
+  end
+  
   def base_url
     "http://spotlight.opentable.com/deal/"
   end

@@ -21,5 +21,8 @@ Groupon.divisions.each do |division|
   @groupon.divisions.create(:name => division.name, :division_id => division.id)
 end
 
-Site.create(:name => 'kgb_deals')
-Site.create(:name => 'living_social')
+Site.create(:name => 'kgb_deals',     :importer_class => 'KgbDeals')
+Site.create(:name => 'living_social', :importer_class => 'LivingSocial')
+
+Site.all.each{|s| s.update_attribute(:importer_class, s.name.camelize)}
+Site.find_by_name('groupon').update_attribute(:importer_class, 'GrouponImporter')

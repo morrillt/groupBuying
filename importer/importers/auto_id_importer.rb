@@ -12,7 +12,7 @@ class AutoIdImporter < UrlImporter
     
     # TODO: implement more logic around URLs & closed/failed deals, to eventually stop re-checking
     def autoincrement_filter(relation, prepend = nil, &block)
-      auto_id = relation.deals.order(:deal_id.desc).last.try(:deal_id) || start_id
+      auto_id = (relation.deals.order(:deal_id.desc).last.try(:deal_id) || start_id).to_i
       failures = 0
       
       while failures < max_failures
@@ -30,9 +30,5 @@ class AutoIdImporter < UrlImporter
     def find_new_deals(&block)
       autoincrement_filter(site, &block)
     end
-  end
-  
-  def url
-    base_url + deal_id.to_s
   end
 end

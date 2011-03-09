@@ -21,11 +21,13 @@ module HTMLSelector
     node = doc.search(selector).send(opts[:node] || :first)
     
     if node
+      node = node.attributes[opts[:attr]] if opts[:attr]
       inner_text = node.inner_text.strip
       
       case opts[:type]
         when :number    then inner_text[/[\d\.]+/]
         when :address   then Geocoder.coordinates(inner_text)
+        when :raw       then node
         else            inner_text
       end
     end
@@ -47,19 +49,11 @@ end
 class UrlImporter < BaseImporter
   include HTMLSelector
   
-  def cached?
-    !! current_snapshot
-  end
-  
-  def current_snapshot
-    @current_snapshot ||= Snapshot.current.where(:url => url).first
-  end
-  
-  def exists?
-    if @exists.nil?
-      @exists = cached? ? true : existence_check
+  def deal_exists?
+    if @deal_exists.nil?
+      @exists = cached? ? current_snapshot.deal_exists? : existence_check
     else
-      @exists
+      @deal_exists
     end
   end
   
@@ -72,11 +66,11 @@ class UrlImporter < BaseImporter
     res.code == '200'
   end
   
-  def doc
-    @doc ||= Nokogiri::HTML(html) if exists?
+  def parse_doc
+    Nokogiri::HTML(raw_data)
   end
   
-  def html
+  def raw_data
     cached? ? current_snapshot.raw_data : load_url
   end
   
@@ -85,7 +79,7 @@ class UrlImporter < BaseImporter
   end
   
   def attributes
-    @attrs ||= html_selectors
+    @attributes ||= html_selectors
   end
   
   # FIXME: ugly, it's here so sub-class can just set discount/discount_text and we'll calculate the value
