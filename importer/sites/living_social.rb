@@ -16,6 +16,10 @@ class LivingSocial < AutoIdImporter
     "http://livingsocial.com/deals/"
   end
   
+  def self.start_id
+    28000
+  end
+  
   class << self
     def agent
       @@agent ||= begin

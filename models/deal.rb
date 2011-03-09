@@ -1,7 +1,7 @@
 class Deal < ActiveRecord::Base
   belongs_to  :site
   belongs_to  :division
-  has_many    :snapshots, :order => :imported_at
+  #has_many    :snapshots, :order => :imported_at
   has_many    :snapshot_diffs
   
   scope :active,        where(:active => true)
@@ -11,28 +11,35 @@ class Deal < ActiveRecord::Base
   #scope :zip_codes,     select("DISTINCT(zip_code)")
   
   scope :for_calc,      where(:buyers_count.ne => nil)
-  scope :needs_update,  active.where(:updated_at.gt => 30.minutes.ago)
+  scope :needs_update,  active.where(:updated_at.gt => 1.hour.ago)
   scope :never_cached,  where(:buyers_count => nil)
   
   def self.update_cached_stats
     (never_cached + needs_update).each(&:update_cached_stats)
   end
   
-  def update_cached_stats
-    update_attributes(:buyers_count => snapshots.last.try(:buyers_count), 
-      :hotness => calculate_hotness,
-      :active  => is_active?)
+  def snapshots
+    site.snapshots.where(:deal_id => deal_id)
   end
   
-  def is_active?
-    snapshots.last.try(:still_active?)
+  def update_cached_stats
+    snap = snapshots.current.first
+    
+    update_attributes(:buyers_count => snap.buyers_count,
+      :hotness => calculate_hotness,
+      :active  => snap.active?)
+  end
+  
+  def import
+    site.importer.new(deal_id).save_snapshot
+    update_cached_stats
   end
   
   def calculate_hotness
     initial_buyer_count = snapshots.first.buyers_count
     end_buyer_count     = snapshots.last.buyers_count
     
-    end_buyer_count.percent_change_from(initial_buyer_count)
+    end_buyer_count.percent_change_from(initial_buyer_count) if initial_buyer_count and end_buyer_count
   end
   
   def revenue

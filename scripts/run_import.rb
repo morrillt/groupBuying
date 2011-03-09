@@ -53,6 +53,12 @@ watched_loop do
   Snapshot.generate_diffs
 end
 
+watched_loop do
+  Deal.active.needs_update.each do |deal|
+    deal.import
+  end
+end
+
 (@restart_every/@check_threads_every).times do
   # restart the main loop if any threads have died
   if @threads.any?{ |thread| not thread.alive? }
