@@ -12,6 +12,11 @@ require 'sinatra/logger'
 
 require 'haml'
 
+# reset root
+root_path = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+Dir.chdir      root_path
+set     :root, root_path
+
 require File.join(File.expand_path(File.dirname(__FILE__)), 'importer')
 
 ############
@@ -21,6 +26,5 @@ ActiveRecord::Base.establish_connection dbconfig[environment]
 
 Dir['{lib,models}/*.rb'].each { |filename| require filename }
 #enable  :logging
-set     :root, File.join(File.dirname(__FILE__), '..')
 
 require 'charts'
