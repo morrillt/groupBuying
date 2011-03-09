@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+Thread.abort_on_exception = false
+
 require File.expand_path(File.join(*%w[ .. config environment ]), File.dirname(__FILE__))
 
 # Site.active.each do |site|
@@ -28,12 +30,15 @@ def watched_loop(&block)
       end
     rescue Exception => e
       puts e.inspect
+      puts e.backtrace
       
-      File.open(log_path, 'a') do |f|
-        f << "======================\n"
-        f << "#{Time.now}\n"
-        f << e.inspect + "\n"
-      end
+      # File.open(log_path, 'a') do |f|
+      #   f << "======================\n"
+      #   f << "#{Time.now}\n"
+      #   f << e.inspect + "\n"
+      #   f << e.backtrace.join("\n") + "\n"
+      #   raise e
+      # end
     end
   end
 end
