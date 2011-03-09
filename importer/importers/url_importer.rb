@@ -1,19 +1,15 @@
 module HTMLSelector
   extend ActiveSupport::Concern
   
-  def html_selectors
-    @html_selectors ||= begin
-      hash = {}
-      
-      self.class.html_selectors.each do |field, selector, opts|
-        next unless scraped = text_from_selector(selector, opts)
-        
-        instance_variable_set("@#{field}", scraped)
-        hash[field] = scraped
-      end
-      
-      hash
+  def process_html_selectors
+    hash = {}
+    
+    self.class.html_selectors.each do |field, selector, opts|
+      next unless scraped = text_from_selector(selector, opts)
+      hash[field] = scraped
     end
+    
+    hash
   end
   
   # load the inner text from the first node matching this selector
@@ -57,6 +53,10 @@ class UrlImporter < BaseImporter
     end
   end
   
+  def parse
+    @attributes = process_html_selectors if deal_exists?
+  end
+  
   # just does HEAD request and checks for 200
   def existence_check
     uri = URI.parse(url)
@@ -78,10 +78,6 @@ class UrlImporter < BaseImporter
   
   def load_url
     open(url).read
-  end
-  
-  def attributes
-    @attributes ||= html_selectors
   end
   
   # FIXME: ugly, it's here so sub-class can just set discount/discount_text and we'll calculate the value

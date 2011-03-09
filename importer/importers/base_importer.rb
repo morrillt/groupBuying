@@ -1,12 +1,19 @@
 class BaseImporter
   include ActiveModel::Validations
   
-  attr_reader :deal_id
+  attr_reader :deal_id, :attributes
   attr_writer :current_snapshot
-  validates_presence_of :deal_id, :url, :title, :buyers_count, :price, :value, :currency
+  validates_presence_of :deal_id, :url, :title, :buyers_count, :price, :original_price, :currency
+  
+  def parse
+    attributes.each do |field, value|
+      instance_variable_set "@#{field.to_sym}", value
+    end
+  end
   
   def method_missing(sym, *args, &block)
-    puts "method_missing for #{sym}: #{args.inspect}"
+    #puts "method_missing for #{sym}: #{args.inspect}"
+    return unless deal_exists?
     
     if [:url, :title, :buyers_count, :currency, :location].include? sym
       attributes[sym]
@@ -17,13 +24,13 @@ class BaseImporter
     @price || calculate_price_from_rest
   end
   
-  def value
-    @value || calculate_value_from_rest
+  def original_price
+    @original_price || calculate_value_from_rest
   end
   
   def calculate_price_from_rest
-    return nil unless @value and @discount
-    @value * ((100 - @discount) / 100)
+    return nil unless @original_price and @discount
+    @original_price * ((100 - @discount) / 100)
   end
   
   def calculate_value_from_rest
@@ -77,7 +84,7 @@ class BaseImporter
   
   class << self
     def site
-      Site.find_by_name(site_name) || raise("can't find site!")
+      Site.find_by_name(site_name) || raise("can't find site: #{site_name}!")
     end
     
     def site_name

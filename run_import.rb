@@ -6,6 +6,9 @@ require File.expand_path(File.join(*%w[ config environment ]), File.dirname(__FI
 #   #site.importer.import_new_deals
 # end
 
+# nuke mongo stuff
+Mongoid.master.collections.reject { |c| c.name == 'system.indexes'}.each(&:drop)
+
 threads = []
 [GrouponImporter, KgbDeals, LivingSocial, OpenTable, TravelZoo].each do |importer|
   threads << Thread.new { importer.import_deals }

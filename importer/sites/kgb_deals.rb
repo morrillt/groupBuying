@@ -1,7 +1,7 @@
 class KgbDeals < AutoIdImporter
   html_selector :title,           '.deal_title h2'
   html_selector :price,           '.buy_link a',              :type => :number
-  html_selector :value,           '#deal_basic_left/dl/dd',   :type => :number
+  html_selector :original_price,  '#deal_basic_left/dl/dd',   :type => :number
   html_selector :buyers_count,    '#deal_basic_left/h4',      :type => :number
   html_selector :location,        'a#deal_see_more_back',     :type => :location, :attr => 'deal_map_location'
   

@@ -36,13 +36,13 @@ class GrouponImporter < BaseImporter
   
   def attributes
     @attributes ||= {
-      :title        => doc.title,
-      :url          => url,
-      :price        => doc.options.first.price.amount,
-      :value        => doc.options.first.discount.amount,
-      :buyers_count => doc.soldQuantity,
-      :status       => status,
-      :location     => doc.division.values_at('lat', 'lng'),
+      :title            => doc.title,
+      :url              => url,
+      :price            => doc.options.first.price.amount,
+      :original_price   => doc.options.first.discount.amount,
+      :buyers_count     => doc.soldQuantity,
+      :status           => status,
+      :location         => doc.division.values_at('lat', 'lng'),
     }
   end
 end

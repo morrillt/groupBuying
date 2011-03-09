@@ -1,13 +1,12 @@
 class HomeRun < UrlImporter
-  html_selector :title,         '.content .title'
-  html_selector :value,         '.first td.val .econ',    :type => :number
-  html_selector :discount,      '.middle td.val .econ',   :type => :number
-  html_selector :value,         'td.val',                 :type => :number
+  html_selector :title,           '.content .title'
+  html_selector :original_price,           '.first td.val .econ',    :type => :number
+  html_selector :discount,        '.middle td.val .econ',   :type => :number
   
   # e.g. 73/74 sold
   def buyers_count
     @buyers_count ||= begin
-      txt = doc.search('.rockwell').to_s[/((\d+)\/)?(\d+)\s?(bought|sold)/]
+      txt = doc.search('.rockwell').inner_text[/((\d+)\/)?(\d+)\s?(bought|sold)/]
       txt.try(:to_i)
     end
   end

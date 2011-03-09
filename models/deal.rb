@@ -8,7 +8,7 @@ class Deal < ActiveRecord::Base
   scope :closed,        where(:active => false)
   scope :hot,           order(:hotness.desc)
   
-  scope :zip_codes,     select("DISTINCT(zip_code)")
+  #scope :zip_codes,     select("DISTINCT(zip_code)")
   
   scope :for_calc,      where(:buyers_count.ne => nil)
   scope :needs_update,  active.where(:updated_at.gt => 30.minutes.ago)
