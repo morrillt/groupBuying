@@ -13,6 +13,7 @@ gem 'mechanize'
 gem 'groupon'
 gem 'json'
 
+gem 'daemons'
 gem 'geocoder'
 gem 'sinatra-logger'
 gem 'haml'

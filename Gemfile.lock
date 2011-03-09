@@ -26,6 +26,7 @@ GEM
     bson_ext (1.2.4)
     builder (2.1.2)
     crack (0.1.8)
+    daemons (1.1.0)
     geocoder (0.9.9)
       json (>= 1.0.0)
     groupon (0.0.1)
@@ -62,6 +63,7 @@ DEPENDENCIES
   activerecord
   activesupport
   bson_ext (= 1.2.4)
+  daemons
   geocoder
   groupon
   haml
