@@ -20,7 +20,7 @@ class AutoIdImporter < UrlImporter
         deal = new(prepend.to_s + auto_id.to_s)
         next if deal.cached? # skip this URL if we've already checked this hour
         
-        puts "[#{failures} failures] auto-inc to #{auto_id}... exists?: #{deal.exists?}"
+        puts "[#{failures} failures] auto-inc to #{auto_id}... exists?: #{deal.exists?.to_s}"
         failures = deal.exists? ? 0 : (failures + 1)
       
         yield deal

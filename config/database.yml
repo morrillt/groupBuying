@@ -4,6 +4,7 @@ development:
   username: htmlParser
   password: Adie8Eik
   host: mysql-server
+  pool: 10
 
 test:
   adapter: mysql2
@@ -11,6 +12,7 @@ test:
   username: htmlParser
   password: Adie8Eik
   host: mysql-server
+  pool: 10
 
 production:
   adapter: mysql2
@@ -18,3 +20,4 @@ production:
   username: htmlParser
   password: Adie8Eik
   host: mysql-server
+  pool: 10

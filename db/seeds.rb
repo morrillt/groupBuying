@@ -38,5 +38,3 @@ doc = Nokogiri::HTML(open('http://www.homerun.com'))
 doc.search('.region-picker .vertical-list a').map{|e| e['href'][/\w+/] }.each do |url_part|
   homerun.divisions.create(:name => url_part.capitalize, :url_part => url_part)
 end
-
-Site.create(:name => 'living_social', :importer_class => 'LivingSocial')
