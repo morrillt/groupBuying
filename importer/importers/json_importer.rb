@@ -1,0 +1,2 @@
+class JsonImporter < BaseImporter
+end

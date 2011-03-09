@@ -9,6 +9,8 @@ class Snapshot
   field :status # active/pending/closed/nonexistent
   field :analyzed,  :type => Boolean
   
+  scope :needs_analysis, where(:analyzed => false)
+  
   def self.time_gt_than(time)
     js_time = "new Date(#{time.year}, #{time.month - 1}, #{time.day}, #{time.hour}, #{time.min})"
     "function() {return this.created_at >= #{js_time}}"
@@ -57,7 +59,7 @@ class Snapshot
   end
   
   def deal_exists?
-    state != :nonexistent
+    status != :nonexistent
   end
   
   def buyer_change

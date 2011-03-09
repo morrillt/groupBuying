@@ -15,5 +15,6 @@ gem 'json'
 
 gem 'geocoder'
 gem 'sinatra-logger'
+gem 'haml'
 # gem 'pamela'
 # gem 'rspec'

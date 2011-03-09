@@ -19,9 +19,9 @@ class OpenTable < AutoIdImporter
     
       division.update_attribute(:last_checked_at, Time.now)
     end
-    
-    def self.max_failures
-      30
-    end
+  end
+  
+  def self.max_failures
+    30
   end
 end

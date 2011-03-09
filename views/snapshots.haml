@@ -1,0 +1,13 @@
+- @snapshots.each do |snapshot|
+  %p
+    Price
+    = snapshot.price
+  %p
+    Buyers
+    = snapshot.buyers_count
+  %p
+    Revenue
+    = snapshot.total_revenue
+  %p
+    Recorded at
+    = snapshot.created_at

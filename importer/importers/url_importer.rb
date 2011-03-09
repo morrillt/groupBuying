@@ -25,7 +25,7 @@ module HTMLSelector
       inner_text = node.inner_text.strip
       
       case opts[:type]
-        when :number    then inner_text[/[\d\.]+/]
+        when :number    then inner_text[/[\d\.]+/].to_f
         when :address   then Geocoder.coordinates(inner_text)
         when :raw       then node
         else            inner_text

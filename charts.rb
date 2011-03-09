@@ -15,3 +15,9 @@ get '/summary/:company' do
   
   erb :summary
 end
+
+get '/snapshots' do
+  @snapshots = Snapshot.current.desc(:created_at).limit(50)
+  
+  haml :snapshots
+end

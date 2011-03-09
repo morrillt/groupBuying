@@ -6,7 +6,11 @@ class Site < ActiveRecord::Base
   scope :active,  where(:active => true)
   
   def importer
-    importer_class.constantize
+    @importer ||= importer_class.constantize
+  end
+  
+  def snapshots
+    Snapshot.where(:site_id => id)
   end
   
   def title

@@ -21,5 +21,5 @@ configure do
   end
 end
 
-%w(base url auto_id).each{ |file| require "importer/importers/#{file}_importer.rb" }
+%w(base url auto_id json rss).each{ |file| require "importer/importers/#{file}_importer.rb" }
 Dir['importer/{sites,models}/*.rb'].each { |filename| require filename }

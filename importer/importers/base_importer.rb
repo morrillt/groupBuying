@@ -7,11 +7,30 @@ class BaseImporter
   
   def method_missing(sym, *args, &block)
     puts "method_missing for #{sym}: #{args.inspect}"
-    if [:url, :title, :buyers_count, :price, :value, :currency, :location].include? sym
+    
+    if [:url, :title, :buyers_count, :currency, :location].include? sym
       attributes[sym]
     end
   end
-    
+  
+  def price
+    @price || calculate_price_from_rest
+  end
+  
+  def value
+    @value || calculate_value_from_rest
+  end
+  
+  def calculate_price_from_rest
+    return nil unless @value and @discount
+    @value * ((100 - @discount) / 100)
+  end
+  
+  def calculate_value_from_rest
+    return nil unless @price and @discount
+    @price / ((100 - @discount) / 100)
+  end
+  
   def initialize(deal_id)
     @deal_id = deal_id
   end
