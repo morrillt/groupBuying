@@ -72,10 +72,10 @@ module OldSchema
   end
 end
 
-class Groupon     < ActiveRecord::Base; include OldSchema; end
-class OpenTable   < ActiveRecord::Base; include OldSchema; end
-class TravelZoo   < ActiveRecord::Base; include OldSchema; end
-class TravelZooUk < ActiveRecord::Base; include OldSchema; end
+#class Groupon     < ActiveRecord::Base; include OldSchema; end
+#class OpenTable   < ActiveRecord::Base; include OldSchema; end
+#class TravelZoo   < ActiveRecord::Base; include OldSchema; end
+#class TravelZooUk < ActiveRecord::Base; include OldSchema; end
 
 # [TravelZooUk, TravelZoo, OpenTable, Groupon].each{ |model| model.convert }; Deal.update_cached_stats; 0
 

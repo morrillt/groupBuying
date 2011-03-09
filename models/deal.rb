@@ -1,5 +1,6 @@
 class Deal < ActiveRecord::Base
   belongs_to  :site
+  belongs_to  :division
   has_many    :snapshots, :order => :imported_at
   has_many    :snapshot_diffs
   
