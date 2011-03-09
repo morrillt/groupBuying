@@ -1,0 +1,36 @@
+%b Title:
+#{@deal.title}
+%br
+
+%b URL:
+#{@deal.url}
+%br
+
+%b Status:
+#{@deal.status}
+%br
+
+%b Stats:
+price / buyers_count / revenue / # snapshots
+%br
+#{@deal.buyers_count} / #{@deal.price} / #{@deal.revenue} / #{@deal.snapshots.count}
+%br
+
+%hr
+
+%table
+  %tr
+    %th time
+    %th status
+    %th price
+    %th # sold
+    %th revenue
+  
+  - @deal.snapshots.desc(:created_at).limit(10).each do |snapshot|
+    %tr
+      %td
+        %a{:href => "/snapshots/#{snapshot.id}"}= snapshot.created_at
+      %td= snapshot.status
+      %td= snapshot.price
+      %td= snapshot.buyers_count
+      %td= snapshot.total_revenue

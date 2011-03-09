@@ -1,100 +1,88 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <title>Charts</title>
-    <script type="text/javascript" src="/javascript/jquery.js"></script>
-    <link rel="stylesheet" href="/stylesheets/screen.css" type="text/css" media="screen, projection">
-    <!--[if lt IE 8]><link rel="stylesheet" href="/stylesheets/ie.css" type="text/css" media="screen, projection"><![endif]-->
-  </head>
-  <body>
-    <div class="container">
-      <h1>Group Buying Dynamics</h1>
-      <h2><%= @site.title %></h2>
-      <div class="span-12 last">
-        <% @site.deals.buying_dynamics.each do |label, value| %>
-          <p>
-            <label><%= label %></label>
-            <span><%= value %></span>
-          </p>
-        <% end %>
-      </div>
-      
-      <hr/>
-      <div class="span-12 last">
-        <a href="">Day</a>
-        <a href="?from=<%= 1.week.ago.strftime '%Y-%m-%d' %>">Week</a>
-        <a href="">Month</a>
-        <a href="">Quarter</a>
+<h1>Group Buying Dynamics</h1>
+<h2><%= @site.title %></h2>
+<div class="span-12 last">
+  <% @site.deals.buying_dynamics.each do |label, value| %>
+    <p>
+      <label><%= label %></label>
+      <span><%= value %></span>
+    </p>
+  <% end %>
+</div>
 
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>start</th>
-              <th>finish</th>
-              <th>% Change</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @comparison.deltas.each do |delta| %>
-              <tr>
-                <td><%= delta.name %></td>
-                <td><%= delta.start %></td>
-                <td><%= delta.finish %></td>
-                <td><%= delta.change %>%</td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
-      
-      <hr/>
-      <div class="span-12 last">
-        Per-hour breakdown for <%= @activity.from.strftime('%m/%d/%Y') %><%= %>
-        <table>
-          <thead>
-            <tr>
-              <th>time</th>
-              <th># active deals</th>
-              <th>coupons / deal</th>
-              <th>price / coupon</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @activity.hours.each do |hour| %>
-              <tr>
-                <td><%= hour.name.hour %></td>
-                <td><%= hour.active_deals %></td>
-                <td><%= hour.average_deal_coupons %></td>
-                <td><%= hour.average_coupon_price %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+<hr/>
+<div class="span-12 last">
+  <a href="">Day</a>
+  <a href="?from=<%= 1.week.ago.strftime '%Y-%m-%d' %>">Week</a>
+  <a href="">Month</a>
+  <a href="">Quarter</a>
 
-      <hr/>
-      <div class="span-12 last">
-        <h2>Currently Trending on <%= @site.title %></h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Deal</th>
-              <th>Location</th>
-              <th>Hotness Index</th>
-            </tr>
-            <% @hot_deals.each do |deal| %>
-              <tr>
-                <td><a href="<%= deal.url %>"><%= deal.title %></a></td>
-                <td><%= deal.zip_code %></td>
-                <td><%= deal.hotness %></td>
-              </tr>
-            <% end %>
-          </thead>
-        </table>
-        <a href="/chart">Back</a>
-      </div>
-    </div>
-  </body>
-</html>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>start</th>
+        <th>finish</th>
+        <th>% Change</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @comparison.deltas.each do |delta| %>
+        <tr>
+          <td><%= delta.name %></td>
+          <td><%= delta.start %></td>
+          <td><%= delta.finish %></td>
+          <td><%= delta.change %>%</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<hr/>
+<div class="span-12 last">
+  Per-hour breakdown for <%= @activity.from.strftime('%m/%d/%Y') %><%= %>
+  <table>
+    <thead>
+      <tr>
+        <th>time</th>
+        <th># active deals</th>
+        <th>coupons / deal</th>
+        <th>price / coupon</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @activity.hours.each do |hour| %>
+        <tr>
+          <td><%= hour.name.hour %></td>
+          <td><%= hour.active_deals %></td>
+          <td><%= hour.average_deal_coupons %></td>
+          <td><%= hour.average_coupon_price %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<hr/>
+<div class="span-12 last">
+  <h2>Currently Trending on <%= @site.title %></h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Deal</th>
+        <th>Details</th>
+        <th>Location</th>
+        <th>Hotness Index</th>
+      </tr>
+      <% @hot_deals.each do |deal| %>
+        <tr>
+          <td><a href="<%= deal.url %>"><%= deal.title %></a></td>
+          <td><a href="/deals/<%= deal.id %>"><%= deal.deal_id %></a></td>
+          <td><%= deal.location %></td>
+          <td><%= deal.hotness %></td>
+        </tr>
+      <% end %>
+    </thead>
+  </table>
+  <a href="/chart">Back</a>
+</div>

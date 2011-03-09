@@ -21,3 +21,9 @@ get '/snapshots' do
   
   haml :snapshots
 end
+
+get '/deals/:id' do
+  @deal = Deal.find(params[:id])
+  
+  haml :deal
+end

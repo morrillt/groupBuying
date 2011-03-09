@@ -9,7 +9,7 @@ class SnapshotDiff < ActiveRecord::Base
   class << self
     # the average revenue per deal
     def deal_count
-      count('distinct(deal_id)')
+      count('distinct(snapshot_diffs.deal_id)')
     end
     
     def active_deals
@@ -17,7 +17,7 @@ class SnapshotDiff < ActiveRecord::Base
     end
     
     def closed_deals
-      closed.count('distinct(deal_id)')
+      closed.count('distinct(snapshot_diffs.deal_id)')
     end
     
     def average_deal_coupons

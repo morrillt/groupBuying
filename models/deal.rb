@@ -8,14 +8,18 @@ class Deal < ActiveRecord::Base
   scope :closed,        where(:active => false)
   scope :hot,           order(:hotness.desc)
   
-  #scope :zip_codes,     select("DISTINCT(zip_code)")
+  scope :unique_divisions, select("DISTINCT(division_id)")
   
   scope :for_calc,      where(:buyers_count.ne => nil)
-  scope :needs_update,  active.where(:updated_at.gt => 1.hour.ago)
+  scope :needs_update,  active.where(:updated_at.lt => 1.hour.ago)
   scope :never_cached,  where(:buyers_count => nil)
   
   def self.update_cached_stats
     (never_cached + needs_update).each(&:update_cached_stats)
+  end
+  
+  def location
+    [latitude, longitude]
   end
   
   def snapshots
@@ -27,12 +31,12 @@ class Deal < ActiveRecord::Base
     
     update_attributes(:buyers_count => snap.buyers_count,
       :hotness => calculate_hotness,
-      :active  => snap.active?)
+      :active  => snap.active?) if snap
   end
   
   def import
     site.importer.new(deal_id).save_snapshot
-    update_cached_stats
+    update_cached_stats || touch
   end
   
   def calculate_hotness
@@ -54,7 +58,7 @@ class Deal < ActiveRecord::Base
         ["# of coupons purachased to date",   total_buyers],
         ["Total spent on deals to date:",     total_revenue],
         ["Average revenue per deal",          average_revenue],
-        ["# of Zip codes we're following",    zip_codes.count],
+        ["# of 'divisions' we're following",  unique_divisions.count],
       ]
     end
 
