@@ -11,6 +11,7 @@ class BaseImporter
         #puts "setting #{field}=#{value}"
         instance_variable_set "@#{field.to_sym}", value
       end
+    end
     
     @parsed = true
   end
@@ -105,4 +106,5 @@ class BaseImporter
       end
     end
   end
+  
 end
