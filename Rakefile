@@ -1,7 +1,7 @@
 require 'rubygems'
-require 'pamela'
-
-Pamela.load :spec, :console
+# require 'pamela'
+# 
+# Pamela.load :spec, :console
 
 task :environment do
   require File.expand_path(File.join(*%w[ config environment ]), File.dirname(__FILE__))

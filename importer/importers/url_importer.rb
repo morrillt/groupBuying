@@ -71,11 +71,13 @@ class UrlImporter < BaseImporter
   end
   
   def raw_data
+    return unless deal_exists?
+    
     cached? ? current_snapshot.raw_data : load_url
   end
   
   def load_url
-    open(url)
+    open(url).read
   end
   
   def attributes
