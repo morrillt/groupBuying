@@ -165,6 +165,7 @@ class Snapshot
       true
     else
       update_attribute(:status, :invalid)
+      false
     end
   end
 

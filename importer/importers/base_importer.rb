@@ -6,10 +6,13 @@ class BaseImporter
   validates_presence_of :deal_id, :url, :status, :title, :buyers_count, :price, :original_price, :currency
   
   def parse
-    attributes.each do |field, value|
-      #puts "setting #{field}=#{value}"
-      instance_variable_set "@#{field.to_sym}", value
-    end
+    unless @parsed
+      attributes.each do |field, value|
+        #puts "setting #{field}=#{value}"
+        instance_variable_set "@#{field.to_sym}", value
+      end
+    
+    @parsed = true
   end
   
   def method_missing(sym, *args, &block)
