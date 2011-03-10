@@ -1,5 +1,6 @@
 defaults: &defaults
   host: localhost
+  pool_size: 10
   autocreate_indexes: true
   # FIXME: disable this... mongo isn't creating indexes because of code location, I think
   
