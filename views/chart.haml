@@ -22,14 +22,13 @@
     %input{:type => "submit", :value => "Sign Up"}/
 .span-8.append-16.last
   %h2 See Detailed Report
-  %p
-    %a{:href => "/summary/groupon"} Groupon
-  %p
-    %a{:href => "/summary/open_table"} OpenTable
-  %p
-    %a{:href => "/summary/travel_zoo"} TravelZoo
-  %p
-    %a{:href => "/summary/travel_zoo_uk"} TravelZoo UK
+  - @sites.each do |site|
+    %p
+      %a{:href => "/summary/#{site.name}"}= site.title
+      (
+      %a{:href => "/snapshots/#{site.name}"} snapshots
+      )
+      
 :javascript
   var chart;
   $(document).ready(function() {

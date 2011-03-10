@@ -65,14 +65,20 @@ class Snapshot
   end
 
   def total_revenue
+    return unless valid_for_analysis?
+    
     price * buyers_count
   end
   
   def revenue_change
+    return unless valid_for_analysis?
+    
     buyer_change * price
   end
   
   def buyer_change
+    return unless valid_for_analysis?
+    
     @buyer_change  ||= buyers_count - previous_snapshot.buyers_count
   end
   
@@ -159,13 +165,15 @@ class Snapshot
   end
 
   def valid_for_analysis?
-    deal_importer.parse
-    
-    if deal_importer.valid?
-      true
-    else
-      update_attribute(:status, :invalid)
-      false
+    @valid_for_analysis ||= begin
+      deal_importer.parse
+      
+      if deal_importer.valid?
+        true
+      else
+        update_attribute(:status, :invalid)
+        false
+      end
     end
   end
 
@@ -174,7 +182,7 @@ class Snapshot
   end
   
   def deal
-    return unless deal_exists?
+    return unless valid_for_analysis? and deal_exists?
     
     @deal ||= begin
       deal   = site.deals.find_by_deal_id(deal_id)

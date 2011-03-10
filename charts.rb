@@ -1,11 +1,11 @@
 get "/chart" do
-  @chart = Chart.new(params.slice('from', 'to').symbolize_keys)
-  
+  @chart  = Chart.new(params.slice('from', 'to').symbolize_keys)
+  @sites  = Site.active
   haml :chart
 end
 
-get '/summary/:company' do
-  @site       = Site.find_by_name(params[:company]) || Site.first
+get '/summary/:site_name' do
+  @site       = Site.find_by_name(params[:site_name]) || Site.first
   
   @activity       = @site.activity_block(params.slice('from', 'to').symbolize_keys)
   @past_activity  = @site.activity_block(:from => @activity.from - 1.day, :to => @activity.to - 1.day)
@@ -16,8 +16,9 @@ get '/summary/:company' do
   haml :summary
 end
 
-get '/snapshots' do
-  @snapshots = Snapshot.current.desc(:created_at).limit(50)
+get '/snapshots/:site_name' do
+  @site       = Site.find_by_name(params[:site_name]) || Site.first
+  @snapshots  = @site.snapshots.desc(:created_at).limit(100)
   
   haml :snapshots
 end
