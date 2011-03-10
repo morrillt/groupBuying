@@ -10,8 +10,9 @@ class AutoIdCrawler < BaseCrawler
       30
     end
     
+    # basically the number of pages we'll keep a db cache of not existing
     def max_skips
-      30
+      100
     end
     
     # TODO: implement more logic around URLs & closed/failed deals, to eventually stop re-checking
@@ -19,7 +20,9 @@ class AutoIdCrawler < BaseCrawler
       # FIXME: deal_id is a string in the DB because some are strings, but that means INT sort doesn't work right
       last_existing_id = relation.deals.select('cast(deal_id as SIGNED) as deal_id').order('deal_id desc').limit(1).first.try(:deal_id)
       
-      auto_id = (last_existing_id || start_id).to_i
+      # pick the highest between the start ID and last existing ID
+      # TODO: this all needs to be DB-driven, not hard-coded
+      auto_id = [last_existing_id, start_id].compact.map(&:to_i).sort.last
       failures, skips = 0, 0
       
       # TODO: need code to have a max_skips, so we only check say 50 more than the start id
