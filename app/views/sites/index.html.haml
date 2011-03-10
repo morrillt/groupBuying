@@ -12,6 +12,8 @@
           |
           = link_to("snapshots", site_snapshots_path(site))
           |
+          = link_to("diffs", site_snapshot_diffs_path(site))
+          |
           = link_to("url_checks", site_url_checks_path(site))
       
 = render :partial => 'shared/chart', :object => @chart

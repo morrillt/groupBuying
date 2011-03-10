@@ -48,12 +48,14 @@ end
 Site.active.each do |site|
   watched_loop("#{site.name} importer") do
     site.crawler.crawl_new_deals
-    
-    site.deals.active.needs_update.each(&:import)
   end
 end
 
-watched_loop("analyzer") do
+watched_loop "active deal checker" do
+  Deal.active.needs_update.each(&:import)
+end
+
+watched_loop "analyzer" do
   Analyzer.analyze_snapshots
 end
 

@@ -22,7 +22,7 @@ class Snapshot
   
   scope :current,         lambda { where( mcc(:created_at, :gte, 1.hour.ago) )      }
   scope :recent,          lambda { where( mcc(:created_at, :gte, 4.hours.ago.utc))  }
-  scope :older_than,      lambda { |time| where(mcc(:created_at, :lte, time))       }
+  scope :older_than,      lambda { |time| where(mcc(:created_at, :lt, time))       }
   
   delegate :title, :buyers_count, :price, :original_price, :total_revenue, :currency, :to => :snapshooter
     
@@ -59,7 +59,11 @@ class Snapshot
     end
   end
   
+  def other_valid_snapshots
+    self.class.valid_deal.where(:mysql_deal_id => mysql_deal_id).excludes(:id => id)
+  end
+  
   def previous_snapshot
-    @previous_snapshot ||= self.class.valid_deal.older_than(created_at).where(:url => url).desc(:created_at).limit(1).first
+    @previous_snapshot ||= other_valid_snapshots.older_than(created_at).desc(:created_at).limit(1).first
   end
 end

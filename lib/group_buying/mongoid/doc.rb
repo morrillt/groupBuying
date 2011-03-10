@@ -10,7 +10,7 @@ module GroupBuying
         # this is a hack for now
         # mcc :created_at, :desc, 1.hour.ago == {:created_at.desc => 1.hour.ago}
         def mcc(key, operator, value)
-          mcc_field = ::Mongoid::Criterion::Complex.new(:key => :created_at, :operator => :gte)
+          mcc_field = ::Mongoid::Criterion::Complex.new(:key => key, :operator => operator)
           { mcc_field => value }
         end
       end

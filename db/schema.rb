@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 4) do
+ActiveRecord::Schema.define(:version => 5) do
 
   create_table "chartgroupon", :force => true do |t|
     t.string  "price",      :limit => 200, :null => false
@@ -24,12 +24,12 @@ ActiveRecord::Schema.define(:version => 4) do
   end
 
   create_table "deals", :force => true do |t|
-    t.string   "title",                             :null => false
+    t.string   "title",                                  :null => false
     t.string   "url"
-    t.string   "deal_id",                           :null => false
-    t.integer  "site_id",                           :null => false
-    t.boolean  "active",         :default => false, :null => false
-    t.integer  "price",                             :null => false
+    t.string   "deal_id",                                :null => false
+    t.integer  "site_id",                                :null => false
+    t.boolean  "active",              :default => false, :null => false
+    t.integer  "price",                                  :null => false
     t.integer  "original_price"
     t.string   "currency"
     t.integer  "buyers_count"
@@ -39,10 +39,11 @@ ActiveRecord::Schema.define(:version => 4) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "division_id"
-    t.string   "status",                            :null => false
+    t.string   "status",                                 :null => false
     t.datetime "expires_at"
     t.float    "latitude"
     t.float    "longitude"
+    t.string   "current_snapshot_id"
   end
 
   add_index "deals", ["site_id", "deal_id"], :name => "index_deals_on_site_id_and_slug_and_zip_code"

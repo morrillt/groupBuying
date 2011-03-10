@@ -31,8 +31,8 @@ class GrouponSnapshooter < BaseSnapshooter
     @attributes ||= {
       :title            => doc.title,
       :url              => url,
-      :price            => doc.options.first.price.amount,
-      :original_price   => doc.options.first.discount.amount,
+      :price            => doc.options.first.price.amount / 100.0,
+      :original_price   => doc.options.first.discount.amount / 100.0,
       :buyers_count     => doc.soldQuantity,
       :status           => status,
       :location         => doc.division.values_at('lat', 'lng'),

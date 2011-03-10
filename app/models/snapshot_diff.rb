@@ -1,10 +1,20 @@
 class SnapshotDiff < ActiveRecord::Base
   belongs_to :deal
-  belongs_to :start_snapshot, :class_name => 'Snapshot'
-  belongs_to :end_snapshot,   :class_name => 'Snapshot'
+  belongs_to :old_snapshot,   :class_name => 'Snapshot'
   
   scope :by_day,  lambda{ |day| where(:changed_at => day.to_date .. day.to_date + 1) }
   scope :closed,  where(:closed => true)
+  
+  validates_presence_of     :snapshot_id, :old_snapshot_id
+  validates_uniqueness_of   :snapshot_id, :scope => :old_snapshot_id
+  
+  def snapshot
+    Snapshot.find(snapshot_id)
+  end
+  
+  def old_snapshot
+    Snapshot.find(old_snapshot_id)
+  end
   
   class << self
     # the average revenue per deal

@@ -1,6 +1,6 @@
 class Analyzer
-  def self.analyze_snapshots
-    Snapshot.needs_analysis.asc(:created_at).limit(100).each do |snap|
+  def self.analyze_snapshots(num = 100)
+    Snapshot.needs_analysis.asc(:created_at).limit(num).each do |snap|
       analyzer = new(snap)
       analyzer.process
     end
@@ -30,7 +30,7 @@ class Analyzer
     @deal ||= begin
       puts "creating deal from: #{snap.url}"
       deal   = site.deals.find_by_deal_id(snap.deal_id)
-      deal ||= site.deals.create(snapshooter.deal_attrs)
+      deal ||= site.deals.create!(snapshooter.deal_attrs)
     end
   end
   
@@ -47,26 +47,26 @@ class Analyzer
   end
   
   def changed_from_previous?
-    return unless valid_old_snap?
-    
     buyer_change > 0 || set_closed
   end
   
   def set_closed
-    @closed ||= !!(! snap.active? and old_snap.try(:active?))
+    @closed ||= !!(! snap.active? and old_snap.active?)
   end
   
   def generate_diff
-    if changed_from_previous?
+    if valid_old_snap? and changed_from_previous?
       puts "generating diff from #{snap.url}"
       diff_attrs = {
         :buyer_change       => buyer_change,
         :revenue_change     => revenue_change,
         :closed             => set_closed,
-        :changed_at         => snap.created_at
+        :changed_at         => snap.created_at,
+        :old_snapshot_id    => old_snap.id.to_s,
+        :snapshot_id        => snap.id.to_s
       }
       
-      deal.snapshot_diffs.create(diff_attrs.merge(:old_snapshot_id => old_snap.try(:id), :snapshot_id => snap.id))
+      deal.snapshot_diffs.create!(diff_attrs)
     else
       puts "no diff needed from #{snap.url}"
     end

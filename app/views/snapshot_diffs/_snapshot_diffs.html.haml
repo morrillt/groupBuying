@@ -1,0 +1,19 @@
+%table
+  %tr
+    %th snapshot
+    %th old snapshot
+    %th deal
+    %th # sold change
+    %th revenue change
+    %th status
+    %th imported at
+    
+  - snapshot_diffs.each do |diff|
+    %tr
+      %td= link_to diff.snapshot.id, diff.snapshot
+      %td= link_to diff.old_snapshot.id, diff.old_snapshot
+      %td= link_to diff.deal.name, diff.deal
+      %td= diff.buyer_change
+      %td= diff.revenue_change
+      %td= diff.closed
+      %td= diff.changed_at

@@ -1,7 +1,7 @@
 class Deal < ActiveRecord::Base
   belongs_to  :site
   belongs_to  :division
-  #has_many    :snapshots, :order => :imported_at
+  
   has_many    :snapshot_diffs
   
   scope :active,        where(:active => true)
@@ -14,8 +14,17 @@ class Deal < ActiveRecord::Base
   scope :needs_update,  active.where(:updated_at.lt => 30.minutes.ago)
   scope :never_cached,  where(:buyers_count => nil)
   
+  before_save do
+    self.active = (status == :active)
+    true # return true or the callback will abort the save
+  end
+  
   def self.update_cached_stats
     (never_cached + needs_update).each(&:update_cached_stats)
+  end
+  
+  def name
+    title.truncate(40).strip.gsub("\n", '').gsub(/\s+/, ' ')
   end
   
   def location
@@ -34,10 +43,13 @@ class Deal < ActiveRecord::Base
     
     if snap
       new_attrs = {
-        :buyers_count => snap.buyers_count,
-        :hotness => calculate_hotness,
-        :active  => snap.status == :active,
-        :status  => snap.status
+        :buyers_count         => snap.buyers_count,
+        :hotness              => calculate_hotness,
+        :active               => snap.status == :active,
+        :status               => snap.status,
+        :current_snapshot_id  => snap.id.to_s,
+        :price                => snap.price,
+        :original_price       => snap.original_price,
       }
       update_attributes(new_attrs)
     end
@@ -61,6 +73,10 @@ class Deal < ActiveRecord::Base
   
   def snapshots
     site.snapshots.where(:deal_id => deal_id)
+  end
+  
+  def current_snapshot
+    site.snapshots.find(current_snapshot_id)
   end
   
   def calculate_hotness
