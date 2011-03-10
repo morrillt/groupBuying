@@ -22,21 +22,39 @@ class Deal < ActiveRecord::Base
     [latitude, longitude]
   end
   
-  def snapshots
-    site.snapshots.where(:deal_id => deal_id)
+  def location=(lat_lng)
+    if lat_lng.is_a?(Array)
+      self.latitude   = lat_lng.first
+      self.longitude  = lat_lng.last
+    end
   end
   
-  def update_cached_stats
-    snap = snapshots.current.first
+  def update_cached_stats(snap = nil)
+    snap ||= snapshots.current.first
     
     update_attributes(:buyers_count => snap.buyers_count,
       :hotness => calculate_hotness,
-      :active  => snap.active?) if snap
+      :active  => snap.status == :active) if snap
   end
   
   def import
-    site.importer.new(deal_id).save_snapshot
-    update_cached_stats || touch
+    if snap = create_snapshot
+      update_cached_stats
+    else
+      touch
+    end
+  end
+  
+  def create_snapshot
+    snapshooter.create_snapshot
+  end
+  
+  def snapshooter
+    @deal_importer ||= site.snapshooter(deal_id)
+  end
+  
+  def snapshots
+    site.snapshots.where(:deal_id => deal_id)
   end
   
   def calculate_hotness

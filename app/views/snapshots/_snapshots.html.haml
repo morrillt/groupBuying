@@ -1,0 +1,21 @@
+%table
+  %tr
+    %th DB id
+    %th status
+    %th price
+    %th # sold
+    %th revenue
+    %th imported at
+    
+  - @snapshots.each do |snapshot|
+    %tr
+      %td= snapshot.id
+      %td
+        - if snapshot.deal
+          %a{:href => "/deals/#{snapshot.deal.id}"}= snapshot.status
+        - else
+          = snapshot.status || "n/a?"
+      %td= snapshot.price
+      %td= snapshot.buyers_count
+      %td= snapshot.total_revenue
+      %td= snapshot.created_at

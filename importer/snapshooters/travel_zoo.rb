@@ -20,11 +20,13 @@ module TravelZooCommon
       :active
     elsif text_from_selector('#ctl00_Main_PanelExpiredDeal').present?
       :closed
+    else
+      :invalid
     end
   end
 end
 
-class TravelZoo < AutoIdImporter
+class TravelZooSnapshooter < HTMLSnapshooter
   include TravelZooCommon
   
   def base_url
@@ -32,7 +34,7 @@ class TravelZoo < AutoIdImporter
   end
 end
 
-class TravelZooUk < AutoIdImporter
+class TravelZooUkSnapshooter < HTMLSnapshooter
   include TravelZooCommon
   
   def base_url

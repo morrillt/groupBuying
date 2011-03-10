@@ -1,16 +1,16 @@
-class KgbDeals < AutoIdImporter
+class KgbDealsSnapshooter < HTMLSnapshooter
   html_selector :title,           '.deal_title h2'
   html_selector :price,           '.buy_link a',              :type => :number
   html_selector :original_price,  '#deal_basic_left/dl/dd',   :type => :number
   html_selector :buyers_count,    '#deal_basic_left/h4',      :type => :number
-  html_selector :location,        'a#deal_see_more_back',     :type => :location, :attr => 'deal_map_location'
+  html_selector :location,        'a#deal_see_more_back',     :type => :address, :attr => 'deal_map_location'
+  
+  def deal_status
+    text_from_selector('.expires').present? ? :active : :closed
+  end
   
   def base_url
     "http://www.kgbdeals.com/deals/deals/"
-  end
-  
-  def self.start_id
-    10000
   end
   
   # do a check based on custom header they send

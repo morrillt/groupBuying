@@ -1,3 +1,0 @@
-class RssFeedImporter < BaseImporter
-
-end

@@ -43,20 +43,20 @@ def watched_loop(&block)
   end
 end
 
-[GrouponImporter, KgbDeals, LivingSocial, OpenTable, TravelZoo, TravelZooUk, HomeRun].each do |importer|
+Site.active.each do |site|
   watched_loop do
-    importer.import_deals
+    site.crawler.crawl_new_deals
   end
-end
-
-watched_loop do
-  Snapshot.generate_diffs
 end
 
 watched_loop do
   Deal.active.needs_update.each do |deal|
     deal.import
   end
+end
+
+watched_loop do
+  Analyzer.analyze_snapshots
 end
 
 (@restart_every/@check_threads_every).times do

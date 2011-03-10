@@ -3,14 +3,18 @@ class Site < ActiveRecord::Base
   has_many  :deals
   has_many  :snapshot_diffs, :through => :deals
   
-  scope :active,  where(:active => true)
+  scope :active,            where(:active => true)
   
   def to_param
     name
   end
   
-  def importer
-    @importer ||= importer_class.constantize
+  def crawler
+    @crawler ||= "#{name.camelize}Crawler".constantize
+  end
+  
+  def snapshooter(deal_id)
+    @crawler ||= "#{name.camelize}Snapshooter".constantize.new(deal_id)
   end
   
   def snapshots

@@ -1,0 +1,2 @@
+class TravelZooCrawler < AutoIdCrawler
+end

@@ -1,4 +1,4 @@
-class LivingSocial < AutoIdImporter
+class LivingSocialSnapshooter < HTMLSnapshooter
   html_selector :title,           '.deal-title'
   html_selector :price,           '#deal-buy-box .deal-price',          :type => :number
   html_selector :discount,        '.value',                             :type => :number
@@ -16,10 +16,7 @@ class LivingSocial < AutoIdImporter
     "http://livingsocial.com/deals/"
   end
   
-  def self.start_id
-    28000
-  end
-  
+  # TODO: extract this into a module if we get any other sites using cookies
   class << self
     def agent
       @@agent ||= begin

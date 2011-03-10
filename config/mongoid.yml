@@ -1,5 +1,8 @@
 defaults: &defaults
   host: localhost
+  autocreate_indexes: true
+  # FIXME: disable this... mongo isn't creating indexes because of code location, I think
+  
   # slaves:
   #   - host: slave1.local
   #     port: 27018

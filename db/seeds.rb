@@ -1,3 +1,5 @@
+Mongoid.master.collections.reject { |c| c.name == 'system.indexes'}.each(&:drop)
+
 opentable_divisions = {
     :atlanta                => :atl,
     :boston                 => :bos,
@@ -26,12 +28,6 @@ Site.create(:name => 'living_social', :importer_class => 'LivingSocial')
 
 Site.all.each{|s| s.update_attribute(:importer_class, s.name.camelize)}
 Site.find_by_name('groupon').update_attribute(:importer_class, 'GrouponImporter')
-
-townhog = Site.create(:name => 'town_hog',       :importer_class => 'TownHog')
-doc = Nokogiri::HTML(open('http://townhog.com/rss'))
-doc.search('tr td a').map(&:inner_text).grep(/townhog.com\/rss/).map{|t| t.split("/").last }.each do |url_part|
-  townhog.divisions.create(:name => url_part.capitalize, :url_part => url_part)
-end
 
 homerun = Site.create(:name => 'home_run', :importer_class => 'HomeRun')
 doc = Nokogiri::HTML(open('http://www.homerun.com'))

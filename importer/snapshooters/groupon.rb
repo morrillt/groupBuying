@@ -1,20 +1,9 @@
-class GrouponImporter < BaseImporter
-  def self.find_new_deals
-    divisions_for_import.each do |division|
-      puts "checking #{division.name}"
-      Groupon.deals(:division => division.division_id).each do |deal_hashie|
-        #puts "yielding #{deal_hashie.inspect}"
-        deal = new(deal_hashie.id)
-        yield deal
-      end
-      
-      division.update_attribute(:last_checked_at, Time.now)
+class GrouponSnapshooter < BaseSnapshooter
+  def doc
+    @doc ||= begin
+      hash = JSON.parse(raw_data)
+      Hashie::Mash.new(hash).deal
     end
-  end
-  
-  def parse_doc
-    hash = JSON.parse(raw_data)
-    Hashie::Mash.new(hash).deal
   end
   
   def raw_data
@@ -32,6 +21,10 @@ class GrouponImporter < BaseImporter
     name = doc.status.to_sym
     
     converter[name] || name
+  end
+  
+  def existence_check
+    true
   end
   
   def attributes

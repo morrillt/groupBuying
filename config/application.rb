@@ -11,6 +11,8 @@ module GroupBuying
     require 'meta_where'
     require 'geocoder'
     require 'monkey_patches'
+    require 'group_buying/mongoid/doc'
+    
     require File.join(File.expand_path(File.dirname(__FILE__)), 'importer')
     
     # Settings in config/environments/* take precedence over those specified here.
