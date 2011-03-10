@@ -32,9 +32,15 @@ class Deal < ActiveRecord::Base
   def update_cached_stats(snap = nil)
     snap ||= snapshots.current.first
     
-    update_attributes(:buyers_count => snap.buyers_count,
-      :hotness => calculate_hotness,
-      :active  => snap.status == :active) if snap
+    if snap
+      new_attrs = {
+        :buyers_count => snap.buyers_count,
+        :hotness => calculate_hotness,
+        :active  => snap.status == :active,
+        :status  => snap.status
+      }
+      update_attributes(new_attrs)
+    end
   end
   
   def import

@@ -1,3 +1,6 @@
+- deal_scope = ([@resource, @parent].detect{|f| f.respond_to?(:deals) }.try(:deals) || Deal)
+- active_deals, total_deals = deal_scope.active.count, deal_scope.count
+
 .span-14
   %h1= link_to "Group Buying Dynamics", "/"
 .span-10.last
@@ -14,8 +17,8 @@
   #chart
 .span-6.last
   .rounded
-    %h2= ([@resource, @parent].detect{|f| f.respond_to?(:deals) }.try(:deals) || Deal).count
-    %h5 deals analyzed to date
+    %h5= "#{active_deals} / #{total_deals}"
+    %h5 active/total deals
   .rounded
     %h3 Top Trending Deals
   .rounded

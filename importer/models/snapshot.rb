@@ -20,9 +20,9 @@ class Snapshot
   scope :needs_analysis,      where(:analyzed => false, :valid_deal => true)
   scope :analyzed,            where(:analyzed => true)
   
-  scope :current,         lambda { where( time_gt_than(:created_at => 1.hours.ago.utc)) }
-  scope :recent,          lambda { where( time_gt_than(:created_at => 4.hours.ago.utc)) }
-  scope :older_than,      lambda { |time| where(time_lt_than(:created_at => time)) }
+  scope :current,         lambda { where( mcc(:created_at, :gte, 1.hour.ago) )      }
+  scope :recent,          lambda { where( mcc(:created_at, :gte, 4.hours.ago.utc))  }
+  scope :older_than,      lambda { |time| where(mcc(:created_at, :lte, time))       }
   
   delegate :title, :buyers_count, :price, :original_price, :total_revenue, :currency, :to => :snapshooter
     
@@ -42,6 +42,11 @@ class Snapshot
   
   def deal
     @deal ||= Deal.find_by_id(mysql_deal_id)
+  end
+  
+  def reload_from_raw
+    update_attributes(:valid_deal => snapshooter.valid?, :status => snapshooter.status)
+    deal.try(:update_cached_stats)
   end
   
   def snapshooter

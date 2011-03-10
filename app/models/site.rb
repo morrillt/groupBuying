@@ -18,11 +18,11 @@ class Site < ActiveRecord::Base
   end
   
   def snapshots
-    Snapshot.where(:site_id => id)
+    @snapshots ||= Snapshot.where(:site_id => id)
   end
   
   def url_checks
-    UrlCheck.where(:site_id => id)
+    @url_checks ||= UrlCheck.where(:site_id => id)
   end
   
   def title

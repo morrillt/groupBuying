@@ -1,6 +1,7 @@
 %table
   %tr
     %th DB id
+    %th slug
     %th status
     %th price
     %th # sold
@@ -10,6 +11,7 @@
   - snapshots.each do |snapshot|
     %tr
       %td= snapshot.id
+      %td= snapshot.deal_id
       %td
         - if snapshot.deal
           %a{:href => "/deals/#{snapshot.deal.id}"}= snapshot.status

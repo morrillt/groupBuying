@@ -6,7 +6,15 @@ class OpenTableSnapshooter < HTMLSnapshooter
   html_selector :location,          '.formattedAddress',            :type => :address
   
   def deal_status
-    :invalid
+    if text_from_selector('.buyButton').present?
+      :active
+    elsif text_from_selector('.alertMeBtn').present?
+      :pending
+    elsif text_from_selector('.expiredBtn').present?
+      :closed
+    else
+      :invalid
+    end
   end
   
   def base_url

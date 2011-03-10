@@ -12,7 +12,7 @@ class UrlCheck
     1.hours.ago.localtime
   end
   
-  scope :current,  lambda { where(time_gt_than(:created_at => recheck_interval)) }
+  scope :current,  lambda { where( mcc(:created_at, :gte, recheck_interval)) }
   
   validates_uniqueness_of :url
   validates_presence_of   :url, :site_id

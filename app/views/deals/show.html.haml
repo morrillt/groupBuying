@@ -3,7 +3,7 @@
 %br
 
 %b URL:
-= link_to @deal.url, @deal.url
+= link_to_if @deal.url, @deal.url, @deal.url
 %br
 
 %b Status:
