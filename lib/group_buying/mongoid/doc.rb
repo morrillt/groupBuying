@@ -8,7 +8,8 @@ module GroupBuying
       module ClassMethods
         # TODO: how about move this to time class? is it the same for any JS, or mongo-specific?
         def convert_time_to_json(time)
-          "new Date(#{time.year}, #{time.month - 1}, #{time.day}, #{time.hour}, #{time.min})"
+          utc_time = time.utc
+          "new Date(#{utc_time.year}, #{utc_time.month - 1}, #{utc_time.day}, #{utc_time.hour}, #{utc_time.min})"
         end
         
         def js_time_query(operator, fields)
