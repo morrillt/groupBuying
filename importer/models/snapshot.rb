@@ -77,7 +77,7 @@ class Snapshot
   end
   
   def buyer_change
-    return unless valid_for_analysis?
+    return unless buyers_count and previous_snapshot.buyers_count
     
     @buyer_change  ||= buyers_count - previous_snapshot.buyers_count
   end
@@ -95,7 +95,7 @@ class Snapshot
   end
 
   def changed_from_previous?
-    previous_snapshot and (buyer_change > 0 || set_closed)
+    previous_snapshot and (buyer_change.try(:>, 0) || set_closed)
   end
 
   def cache_available
