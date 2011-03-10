@@ -1,13 +1,13 @@
 %b Title:
-#{@deal.title}
+= @deal.title
 %br
 
 %b URL:
-%a{:href => @deal.url}= @deal.url
+= link_to @deal.url, @deal.url
 %br
 
 %b Status:
-#{@deal.status}
+= @deal.status
 %br
 
 %b Stats:
@@ -17,6 +17,7 @@ price / buyers_count / revenue / # snapshots
 %br
 
 %hr
+= link_to 'import', import_deal_path(@deal), :method => :post
 
 %table
   %tr
@@ -28,8 +29,7 @@ price / buyers_count / revenue / # snapshots
   
   - @deal.snapshots.desc(:created_at).limit(10).each do |snapshot|
     %tr
-      %td
-        %a{:href => "/snapshots/#{snapshot.id}"}= snapshot.created_at
+      %td= link_to snapshot.created_at, snapshot
       %td= snapshot.status
       %td= snapshot.price
       %td= snapshot.buyers_count

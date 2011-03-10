@@ -1,17 +1,7 @@
-require 'rubygems'
-# require 'pamela'
-# 
-# Pamela.load :spec, :console
+# Add your own tasks in files placed in lib/tasks ending in .rake,
+# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
-task :environment do
-  require File.expand_path(File.join(*%w[ config environment ]), File.dirname(__FILE__))
-end
+require File.expand_path('../config/application', __FILE__)
+require 'rake'
 
-namespace :db do
-  desc "Migrate the database"
-  task(:migrate => :environment) do
-    ActiveRecord::Base.logger = Logger.new(STDOUT)
-    ActiveRecord::Migration.verbose = true
-    ActiveRecord::Migrator.migrate("db/migrate")
-  end
-end
+GroupBuying::Application.load_tasks

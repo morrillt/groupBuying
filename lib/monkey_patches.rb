@@ -1,0 +1,1 @@
+Dir[File.join(Rails.root, 'lib/monkey_patches/*')].each { |patch| require patch }

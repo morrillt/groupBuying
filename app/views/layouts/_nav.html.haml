@@ -1,0 +1,23 @@
+.span-14
+  %h1= link_to "Group Buying Dynamics", "/"
+.span-10.last
+  %form
+    %input.text{:name => "", :type => "text", :value => "Username"}/
+    %input.text{:name => "", :type => "text", :value => "Password"}/
+.span-14 &nbsp;
+.span-10.last.nav
+  = link_to 'Login', '#'
+  = link_to 'Signup', '#'
+  = link_to 'Lost Password?', '#'
+  
+.span-18
+  #chart
+.span-6.last
+  .rounded
+    %h2= ([@resource, @parent].detect{|f| f.respond_to?(:deals) }.try(:deals) || Deal).count
+    %h5 deals analyzed to date
+  .rounded
+    %h3 Top Trending Deals
+  .rounded
+    %h5 Sign Up for Email Updates
+    %input{:type => "submit", :value => "Sign Up"}/

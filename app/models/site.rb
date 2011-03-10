@@ -5,6 +5,10 @@ class Site < ActiveRecord::Base
   
   scope :active,  where(:active => true)
   
+  def to_param
+    name
+  end
+  
   def importer
     @importer ||= importer_class.constantize
   end

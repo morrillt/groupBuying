@@ -1,32 +1,10 @@
-.span-14
-  %h1 Group Buying Dynamics
-.span-10.last
-  %form
-    %input.text{:name => "", :type => "text", :value => "Username"}/
-    %input.text{:name => "", :type => "text", :value => "Password"}/
-.span-14 &nbsp;
-.span-10.last.nav
-  %a{:href => "#"} Login
-  %a{:href => "#"} Signup
-  %a{:href => "#"} Lost Password?
-.span-18
-  #chart
-.span-6.last
-  .rounded
-    %h2= Deal.count
-    %h5 deals analyzed to date
-  .rounded
-    %h3 Top Trending Deals
-  .rounded
-    %h5 Sign Up for Email Updates
-    %input{:type => "submit", :value => "Sign Up"}/
 .span-8.append-16.last
   %h2 See Detailed Report
   - @sites.each do |site|
     %p
-      %a{:href => "/summary/#{site.name}"}= site.title
+      = link_to site.title, site
       (
-      %a{:href => "/snapshots/#{site.name}"} snapshots
+      = link_to("snapshots", site_snapshots_path(site))
       )
       
 :javascript
