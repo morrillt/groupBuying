@@ -5,8 +5,9 @@ class SitesController < InheritedResources::Base
   end
   
   def show
-    @site       = Site.find_by_name(params[:id], :include => :snapshot_diffs)
-
+    @site     = Site.find_by_name(params[:id], :include => :snapshot_diffs)
+    @chart    = Chart.new(params.slice(:from, :to).merge(:sites => [@site]))
+    
     @activity       = @site.activity_block(params.slice(:from, :to))
     @past_activity  = @site.activity_block(:from => @activity.from - 1.day, :to => @activity.to - 1.day)
 

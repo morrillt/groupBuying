@@ -29,6 +29,9 @@
             = delta.change
             \%
 %hr/
+
+= render :partial => 'shared/chart', :object => @chart
+
 .span-12.last
   Per-hour breakdown for #{@activity.from.strftime('%m/%d/%Y')}#{}
   %table

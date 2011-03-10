@@ -4,7 +4,7 @@ class Chart
   def initialize(opts = {})
     opts.reverse_merge! :from => 16.hours.ago, :to => Time.now, :interval => 1.hour
     @from, @to, @interval = opts[:from], opts[:to], opts[:interval]
-    @sites = Site.all
+    @sites = opts[:sites] || Site.all
     
     generate_chart_data
   end
