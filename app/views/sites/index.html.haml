@@ -1,14 +1,17 @@
 .span-8.append-16.last
   %h2 See Detailed Report
-  - @sites.each do |site|
-    %p
-      = link_to site.title, site
-      (
-      = link_to("deals", site_deals_path(site))
-      |
-      = link_to("snapshots", site_snapshots_path(site))
-      |
-      = link_to("url_checks", site_url_checks_path(site))
-      )
+  %table
+    %tr
+      %th site
+      %th details
+    - @sites.each do |site|
+      %tr
+        %td= link_to site.title, site
+        %td 
+          = link_to("deals", site_deals_path(site))
+          |
+          = link_to("snapshots", site_snapshots_path(site))
+          |
+          = link_to("url_checks", site_url_checks_path(site))
       
 = render :partial => 'shared/chart', :object => @chart
