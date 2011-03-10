@@ -31,6 +31,11 @@ class HTMLSnapshooter < BaseSnapshooter
   end
   
   def load_url
-    open(url).read
+    begin
+      open(url).read
+    rescue Timeout::Error => e
+      Rails.logger.info "[IMPORT ERROR]: " + e.inspect
+      nil
+    end
   end
 end
