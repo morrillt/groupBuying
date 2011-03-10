@@ -1,6 +1,6 @@
 class HomeRun < UrlImporter
   html_selector :title,           '.content .title'
-  html_selector :original_price,           '.first td.val .econ',    :type => :number
+  html_selector :original_price,  '.first td.val .econ',    :type => :number
   html_selector :discount,        '.middle td.val .econ',   :type => :number
   
   # e.g. 73/74 sold

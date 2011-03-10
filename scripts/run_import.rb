@@ -43,7 +43,7 @@ def watched_loop(&block)
   end
 end
 
-[GrouponImporter, KgbDeals, LivingSocial, OpenTable, TravelZoo].each do |importer|
+[GrouponImporter, KgbDeals, LivingSocial, OpenTable, TravelZoo, TravelZooUk, HomeRun].each do |importer|
   watched_loop do
     importer.import_deals
   end
