@@ -16,3 +16,4 @@ gem 'geocoder'
 gem 'haml'
 
 gem 'inherited_resources'
+gem 'will_paginate'

@@ -64,19 +64,22 @@ class BaseSnapshooter < BaseImporter
   end
   
   def current_url_check
-    @current_url_check ||= UrlCheck.current.where(:url => url).first
+    @current_url_check ||= site.url_checks.where(:url => url).first
   end
   
   def current_snapshot
-    @current_snapshot ||= Snapshot.current.where(:url => url).first
+    @current_snapshot ||= site.snapshots.current.where(:url => url).first
   end
   
-  def create_url_check
-    UrlCheck.create!(:url => url, :deal_exists => existence_check)
+  def update_or_create_url_check
+    url_check = (current_url_check || site.url_checks.new(:url => url, :site_id => site.id))
+    url_check.update_attributes!(:deal_exists => existence_check)
+    
+    url_check
   end
   
   def create_snapshot
-    Snapshot.create(snapshot_attrs)
+    site.snapshots.create(snapshot_attrs)
   end
   
   def snapshot_attrs

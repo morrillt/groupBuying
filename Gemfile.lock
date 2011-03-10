@@ -121,3 +121,4 @@ DEPENDENCIES
   mysql2
   nokogiri
   rails (>= 3.0.5)
+  will_paginate

@@ -21,6 +21,10 @@ class Site < ActiveRecord::Base
     Snapshot.where(:site_id => id)
   end
   
+  def url_checks
+    UrlCheck.where(:site_id => id)
+  end
+  
   def title
     read_attribute(:name).titleize
   end

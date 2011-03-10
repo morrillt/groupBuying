@@ -7,7 +7,7 @@ class BaseCrawler < BaseImporter
       
       result = if snapshooter.existence_cached?
         :cached
-      elsif snapshooter.create_url_check.deal_exists?
+      elsif snapshooter.update_or_create_url_check.deal_exists?
         snap = snapshooter.create_snapshot
         snap.status
       else

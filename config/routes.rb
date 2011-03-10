@@ -4,7 +4,7 @@ GroupBuying::Application.routes.draw do
   end
   
   resources :sites do
-    resources :deals, :snapshots
+    resources :deals, :snapshots, :url_checks
   end
   
   root :to => "sites#index"
