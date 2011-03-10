@@ -60,7 +60,7 @@ class Snapshot
   end
   
   def other_valid_snapshots
-    self.class.valid_deal.where(:mysql_deal_id => mysql_deal_id).excludes(:id => id)
+    self.class.valid_deal.where(:mysql_deal_id => mysql_deal_id).excludes(:id => id.to_s)
   end
   
   def previous_snapshot

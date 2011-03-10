@@ -28,9 +28,12 @@ class Analyzer
   
   def find_or_create_deal
     @deal ||= begin
-      puts "creating deal from: #{snap.url}"
       deal   = site.deals.find_by_deal_id(snap.deal_id)
-      deal ||= site.deals.create!(snapshooter.deal_attrs)
+      
+      unless deal.present?
+        puts "creating deal from: #{snap.url}"
+        deal = site.deals.create!(snapshooter.deal_attrs)
+      end
     end
   end
   
@@ -43,10 +46,12 @@ class Analyzer
   end
   
   def valid_old_snap?
-    old_snap.try(:valid?)
+    !!old_snap.try(:valid?)
   end
   
   def changed_from_previous?
+    return unless valid_old_snap?
+    
     buyer_change > 0 || set_closed
   end
   
@@ -55,7 +60,7 @@ class Analyzer
   end
   
   def generate_diff
-    if valid_old_snap? and changed_from_previous?
+    if valid_old_snap? && changed_from_previous?
       puts "generating diff from #{snap.url}"
       diff_attrs = {
         :buyer_change       => buyer_change,
@@ -68,7 +73,7 @@ class Analyzer
       
       deal.snapshot_diffs.create!(diff_attrs)
     else
-      puts "no diff needed from #{snap.url}"
+      puts "no diff needed from #{snap.url} | #{valid_old_snap?.to_s} / #{changed_from_previous?.to_s} "
     end
   end
 end

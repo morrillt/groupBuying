@@ -35,5 +35,8 @@ end
 
 # reset:
 Mongoid.master.collections.reject { |c| c.name == 'system.indexes'}.each(&:drop)
-SnapshotDiff.delete_all
 Deal.delete_all
+
+# soft reset
+SnapshotDiff.delete_all
+Snapshot.all.each{ |s| s.update_attriubte(:analyzed, false) } # TODO: can we do this w/o instantiating objects?
