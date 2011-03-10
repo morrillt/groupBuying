@@ -35,4 +35,4 @@ end
 
 # reset:
 Mongoid.master.collections.reject { |c| c.name == 'system.indexes'}.each(&:drop)
-SnapshotDiff.destroy_all
+SnapshotDiff.delete_all
