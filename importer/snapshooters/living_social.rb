@@ -29,14 +29,14 @@ class LivingSocialSnapshooter < HTMLSnapshooter
   end
   
   def load_url
-    @load_url ||= self.class.agent.get(url).body
+    @load_url ||= self.class.agent.get(url).body rescue nil
   end
   
   def existence_check
     begin
       load_url
-    rescue Mechanize::ResponseCodeError => e
-      if e.message == "404 => Net::HTTPNotFound"
+    rescue Net::HTTPBadResponse, Mechanize::ResponseCodeError => e
+      if e.message == "404 => Net::HTTPNotFound" || e.message =~ /wrong status line/
         return false
       else
         raise e

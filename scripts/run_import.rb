@@ -18,7 +18,9 @@ log_path = File.join(File.expand_path(File.dirname(__FILE__)), 'log/import.log')
 @check_threads_every  = 5.seconds
 @chill                = 30.seconds
 
-def watched_loop(&block)
+def watched_loop(name, &block)
+  puts "adding thread #{name}, #{@threads.size}"
+  
   @threads << Thread.new do
     begin
       loop do
@@ -44,18 +46,14 @@ def watched_loop(&block)
 end
 
 Site.active.each do |site|
-  watched_loop do
+  watched_loop("#{site.name} importer") do
     site.crawler.crawl_new_deals
+    
+    site.deals.active.needs_update.each(&:import)
   end
 end
 
-watched_loop do
-  Deal.active.needs_update.each do |deal|
-    deal.import
-  end
-end
-
-watched_loop do
+watched_loop("analyzer") do
   Analyzer.analyze_snapshots
 end
 
