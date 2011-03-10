@@ -1,0 +1,31 @@
+= will_paginate @deals
+
+%table
+  %tr
+    %th deal_id
+    %th active
+    %th price
+    %th original_price
+    %th buyers_count
+    %th hotness
+    %th division_id
+    %th status
+    %th latitude
+    %th longitude
+    %th created_at
+    %th updated_at
+                    
+  - @deals.each do |deal|
+    %tr
+      %td= link_to deal.deal_id, deal
+      %td= deal.active
+      %td= number_to_currency(deal.price, :unit => deal.currency.to_s)
+      %td= deal.original_price
+      %td= deal.buyers_count
+      %td= deal.hotness
+      %td= deal.division_id
+      %td= deal.status
+      %td= deal.latitude
+      %td= deal.longitude
+      %td= deal.created_at
+      %td= deal.updated_at

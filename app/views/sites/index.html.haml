@@ -4,9 +4,10 @@
     %p
       = link_to site.title, site
       (
+      = link_to("deals", site_deals_path(site))
+      |
       = link_to("snapshots", site_snapshots_path(site))
-      ) 
-      (
+      |
       = link_to("url_checks", site_url_checks_path(site))
       )
       
