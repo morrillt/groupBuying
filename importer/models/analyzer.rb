@@ -35,9 +35,7 @@ class Analyzer
   end
   
   def buyer_change
-    @buyer_change ||= valid_old_snap? ?
-      snap.buyers_count - old_snap.buyers_count :
-      snap.buyers_count
+    @buyer_change ||= snap.buyers_count - old_snap.buyers_count
   end
   
   def revenue_change
@@ -49,6 +47,8 @@ class Analyzer
   end
   
   def changed_from_previous?
+    return unless valid_old_snap?
+    
     buyer_change > 0 || set_closed
   end
   
@@ -72,108 +72,3 @@ class Analyzer
     end
   end
 end
-
-# def total_revenue
-#   return unless valid_for_analysis?
-#   
-#   price * buyers_count
-# end
-# 
-# def revenue_change
-#   return unless valid_for_analysis?
-#   
-#   buyer_change * price
-# end
-# 
-# def buyer_change
-#   return unless buyers_count and previous_snapshot.buyers_count
-#   
-#   @buyer_change  ||= buyers_count - previous_snapshot.buyers_count
-# end
-# 
-# def active?
-#   status == :active
-# end
-# 
-# def closed?
-#   status == :closed
-# end
-# 
-
-# 
-# 
-# def reload_url
-#   self.cache_available = false
-#   deal_importer.parse
-#   
-#   self.status         = deal_importer.status
-#   self.deal_exists    = deal_importer.deal_exists?
-#   self.raw_data       = deal_importer.raw_data
-#   self.save
-# 
-#   self.cache_available = true
-# end
-# 
-# # TODO: DRY all this attribute/parsing/caching nonsense
-# def load_attrs_from_deal_importer
-#   # FIXME: need this to populate the instance variables
-#   deal_importer.parse
-#   
-#   self.attributes = {
-#     :url          => deal_importer.url, 
-#     :deal_id      => deal_importer.deal_id, 
-#     :site_id      => deal_importer.site.id, 
-#     :status       => deal_importer.status,
-#     :raw_data     => deal_importer.raw_data,
-#     :deal_exists  => deal_importer.deal_exists?,
-#   }
-#   
-#   # load up attrs for an existing deal
-#   if deal_exists?
-#     self.attributes = {
-#       :price        => deal_importer.price,
-#       :buyers_count => deal_importer.buyers_count,
-#     }
-#   end
-# end
-# 
-# def deal_attrs
-#   @deal_attrs ||= {
-#     :deal_id        => deal_id,
-#     :status         => status,
-#     :url            => url,
-#   }.merge(existent_deal_attrs)
-# end
-# 
-# def existent_deal_attrs
-#   @existent_deal_attrs ||= {
-#     :title          => deal_importer.title,
-#     :active         => active?,
-#     :price          => deal_importer.price,
-#     :value          => deal_importer.value,
-#     :currency       => deal_importer.currency,
-#     :buyers_count   => deal_importer.buyers_count,
-#     :latitude       => deal_importer.location.try(:first),
-#     :longitude      => deal_importer.location.try(:last),  
-#   }
-# end
-# 
-# def reload_attributes
-#   load_attrs_from_deal_importer
-#   
-#   self.save
-# end
-# 
-
-# 
-
-# 
-
-# 
-# # TODO: refactor and move this to deal_importer
-# def fetch_new_snapshot
-#   self.cache_available = false
-#   deal_importer.save_snapshot
-#   self.cache_available = true
-# end
-# 

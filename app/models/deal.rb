@@ -11,7 +11,7 @@ class Deal < ActiveRecord::Base
   scope :unique_divisions, select("DISTINCT(division_id)")
   
   scope :for_calc,      where(:buyers_count.ne => nil)
-  scope :needs_update,  active.where(:updated_at.lt => 1.hour.ago)
+  scope :needs_update,  active.where(:updated_at.lt => 30.minutes.ago)
   scope :never_cached,  where(:buyers_count => nil)
   
   def self.update_cached_stats

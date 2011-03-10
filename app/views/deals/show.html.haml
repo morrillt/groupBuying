@@ -19,19 +19,4 @@ price / buyers_count / revenue / # snapshots
 %hr
 = link_to 'import', import_deal_path(@deal), :method => :post
 
-= render :partial => 'snapshots/snapshots', :object => %table
-  %tr
-    %th time
-    %th status
-    %th price
-    %th # sold
-    %th revenue
-  
-  - @deal.snapshots.desc(:created_at).limit(10).each do |snapshot|
-    %tr
-      %td= snapshot.id
-      %td= snapshot.created_at
-      %td= snapshot.status
-      %td= snapshot.price
-      %td= snapshot.buyers_count
-      %td= snapshot.total_revenue
+= render :partial => 'snapshots/snapshots', :object => @deal.snapshots.desc(:created_at).limit(20)
