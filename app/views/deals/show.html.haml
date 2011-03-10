@@ -17,6 +17,6 @@ price / buyers_count / revenue / # snapshots
 %br
 
 %hr
-= link_to 'import', import_deal_path(@deal), :method => :post
+= button_to 'snapshot now!', import_deal_path(@deal)
 
 = render :partial => 'snapshots/snapshots', :object => @deal.snapshots.desc(:created_at).limit(20)

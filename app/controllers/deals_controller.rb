@@ -1,7 +1,7 @@
 class DealsController < InheritedResources::Base
   def import
-    @deal.import
+    resource.import
     
-    redirect_to @deal
+    redirect_to resource, :notice => "Took new snapshot"
   end
 end
