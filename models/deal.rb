@@ -43,7 +43,7 @@ class Deal < ActiveRecord::Base
     initial_buyer_count = snapshots.first.buyers_count
     end_buyer_count     = snapshots.last.buyers_count
     
-    end_buyer_count.percent_change_from(initial_buyer_count) if initial_buyer_count and end_buyer_count
+    end_buyer_count.to_i.percent_change_from(initial_buyer_count) if initial_buyer_count and end_buyer_count
   end
   
   def revenue

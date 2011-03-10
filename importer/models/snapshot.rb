@@ -7,7 +7,7 @@ class Snapshot
   field :deal_id
   field :status # active/pending/closed/nonexistent
   field :price
-  field :buyers_count
+  field :buyers_count,    :type => Integer
   field :raw_data      # TODO: bzip
   field :deal_exists,   :type => Boolean, :default => false
   field :analyzed,      :type => Boolean, :default => false

@@ -12,17 +12,21 @@ class AutoIdImporter < UrlImporter
     
     # TODO: implement more logic around URLs & closed/failed deals, to eventually stop re-checking
     def autoincrement_filter(relation, prepend = nil, &block)
-      auto_id = (relation.deals.order(:deal_id.desc).last.try(:deal_id) || start_id).to_i
+      # FIXME: deal_id is a string in the DB because some are strings, but that means INT sort doesn't work right
+      last_existing_id = relation.deals.select('cast(deal_id as SIGNED) as deal_id').order('deal_id desc').limit(1).first.try(:deal_id)
+      
+      auto_id = (last_existing_id || start_id).to_i
       failures = 0
       
+      # TODO: need code to have a max_skips, so we only check say 50 more than the start id
       while failures < max_failures
         auto_id += 1
         deal = new(prepend.to_s + auto_id.to_s)
         next if deal.cached? # skip this URL if we've already checked this hour
         
-        puts "[#{failures} failures] auto-inc to #{auto_id}... exists?: #{deal.exists?.to_s}"
-        failures = deal.exists? ? 0 : (failures + 1)
-      
+        puts "[#{failures} failures] auto-inc to #{auto_id}... exists?: #{deal.deal_exists?.to_s}"
+        failures = deal.deal_exists? ? 0 : (failures + 1)
+        
         yield deal
       end
     end

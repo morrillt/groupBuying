@@ -1,0 +1,67 @@
+%h1 Group Buying Dynamics
+%h2= @site.title
+.span-12.last
+  - @site.deals.buying_dynamics.each do |label, value|
+    %p
+      %label= label
+      %span= value
+%hr/
+.span-12.last
+  %a{:href => ""} Day
+  %a{:href => "?from=#{1.week.ago.strftime '%Y-%m-%d'}"} Week
+  %a{:href => ""} Month
+  %a{:href => ""} Quarter
+  %table
+    %thead
+      %tr
+        %th
+        %th start
+        %th finish
+        = succeed "a" do
+          %th % Change
+    %tbody
+      - @comparison.deltas.each do |delta|
+        %tr
+          %td= delta.name
+          %td= delta.start
+          %td= delta.finish
+          %td
+            = delta.change
+            \%
+%hr/
+.span-12.last
+  Per-hour breakdown for #{@activity.from.strftime('%m/%d/%Y')}#{}
+  %table
+    %thead
+      %tr
+        %th time
+        %th # active deals
+        %th coupons / deal
+        %th price / coupon
+    %tbody
+      - @activity.hours.each do |hour|
+        %tr
+          %td= hour.name.hour
+          %td= hour.active_deals
+          %td= hour.average_deal_coupons
+          %td= hour.average_coupon_price
+%hr/
+.span-12.last
+  %h2
+    Currently Trending on #{@site.title}
+  %table
+    %thead
+      %tr
+        %th Deal
+        %th Details
+        %th Location
+        %th Hotness Index
+      - @hot_deals.each do |deal|
+        %tr
+          %td
+            %a{:href => deal.url}= deal.title
+          %td
+            %a{:href => "/deals/#{deal.id}"}= deal.deal_id
+          %td= deal.location
+          %td= deal.hotness
+  %a{:href => "/chart"} Back

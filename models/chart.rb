@@ -15,7 +15,7 @@ class Chart
     @sites.each do |site|
       site.activity_block(:from => @from, :to => @to).by_interval(@interval).each do |ab|
         this_label = ab.name.strftime("%H:00")
-        @labels << this_label unless @labels.last == this_label
+        @labels << this_label unless @labels.last == this_label || ab.name.hour.odd?
         
         @datasets[site.title] ||= []
         @datasets[site.title] << ab.total_revenue

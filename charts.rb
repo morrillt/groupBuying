@@ -1,7 +1,7 @@
 get "/chart" do
   @chart = Chart.new(params.slice('from', 'to').symbolize_keys)
   
-  erb :chart
+  haml :chart
 end
 
 get '/summary/:company' do
@@ -13,7 +13,7 @@ get '/summary/:company' do
   @comparison = Comparison.new(@activity, @past_activity)
   @hot_deals  = @site.deals.hot.limit(10)
   
-  erb :summary
+  haml :summary
 end
 
 get '/snapshots' do
