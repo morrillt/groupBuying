@@ -19,5 +19,5 @@
       %td= link_to diff.deal.name, diff.deal
       %td= diff.buyer_change
       %td= diff.revenue_change
-      %td= diff.closed
+      %td= diff.closed ? "closed" : "unchanged"
       %td= diff.changed_at
