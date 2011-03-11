@@ -51,7 +51,7 @@ class Snapshot
   
   def snapshooter
     @snapshooter ||= begin
-      puts "loading cached snapshooter for #{url}"
+      puts "loading cached snapshooter for #{url} (#{id})"
       snapshooter = site.snapshooter(deal_id)
       snapshooter.current_snapshot = self
       snapshooter.parse! # TODO? should we auto-parse?

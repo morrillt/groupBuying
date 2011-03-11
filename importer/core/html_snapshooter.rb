@@ -30,6 +30,10 @@ class HTMLSnapshooter < BaseSnapshooter
     cached? ? current_snapshot.raw_data : load_url
   end
   
+  def location
+    @location.try(:call)
+  end
+  
   def load_url
     begin
       open(url).read

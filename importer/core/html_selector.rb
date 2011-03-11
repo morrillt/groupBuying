@@ -23,7 +23,7 @@ module HTMLSelector
       
       case opts[:type]
         when :number    then inner_text[/[\d\.]+/].to_f
-        when :address   then Geocoder.coordinates(inner_text) rescue nil # FIXME: never do this
+        when :address   then Proc.new { Geocoder.coordinates(inner_text) rescue nil } # FIXME: never do this
         when :raw       then node
         else            inner_text
       end

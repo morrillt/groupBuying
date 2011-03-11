@@ -34,6 +34,8 @@ class Analyzer
         puts "creating deal from: #{snap.url}"
         deal = site.deals.create!(snapshooter.deal_attrs)
       end
+      
+      deal
     end
   end
   

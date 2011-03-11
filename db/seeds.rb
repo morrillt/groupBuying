@@ -39,4 +39,4 @@ Deal.delete_all
 
 # soft reset
 SnapshotDiff.delete_all
-Snapshot.all.each{ |s| s.update_attriubte(:analyzed, false) } # TODO: can we do this w/o instantiating objects?
+Snapshot.all.each{ |s| s.update_attribute(:analyzed, false) };0 # TODO: can we do this w/o instantiating objects?

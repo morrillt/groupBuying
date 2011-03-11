@@ -39,20 +39,18 @@ class Deal < ActiveRecord::Base
   end
   
   def update_cached_stats(snap = nil)
-    snap ||= snapshots.current.first
+    return unless current_snapshot
     
-    if snap
-      new_attrs = {
-        :buyers_count         => snap.buyers_count,
-        :hotness              => calculate_hotness,
-        :active               => snap.status == :active,
-        :status               => snap.status,
-        :current_snapshot_id  => snap.id.to_s,
-        :price                => snap.price,
-        :original_price       => snap.original_price,
-      }
-      update_attributes(new_attrs)
-    end
+    new_attrs = {
+      :buyers_count         => current_snapshot.buyers_count,
+      :hotness              => calculate_hotness,
+      :active               => current_snapshot.status == :active,
+      :status               => current_snapshot.status,
+      :current_snapshot_id  => current_snapshot.id.to_s,
+      :price                => current_snapshot.price,
+      :original_price       => current_snapshot.original_price,
+    }
+    update_attributes(new_attrs)
   end
   
   def import
@@ -72,18 +70,23 @@ class Deal < ActiveRecord::Base
   end
   
   def snapshots
-    site.snapshots.where(:deal_id => deal_id)
+    site.snapshots.where(:mysql_deal_id => id)
   end
   
   def current_snapshot
-    site.snapshots.find(current_snapshot_id)
+    @current_snapshot ||= site.snapshots.find(current_snapshot_id)
+  end
+  
+  def first_snapshot
+    @first_snapshot ||= snapshots.first
   end
   
   def calculate_hotness
-    initial_buyer_count = snapshots.first.buyers_count
-    end_buyer_count     = snapshots.last.buyers_count
-    
-    end_buyer_count.to_i.percent_change_from(initial_buyer_count) if initial_buyer_count and end_buyer_count
+    if first_snapshot != current_snapshot
+      initial_buyer_count = first_snapshot.buyers_count
+      end_buyer_count     = current_snapshot.buyers_count
+      end_buyer_count.to_i.percent_change_from(initial_buyer_count) if initial_buyer_count and end_buyer_count
+    end
   end
   
   def revenue
