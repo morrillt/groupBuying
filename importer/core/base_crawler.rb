@@ -47,6 +47,10 @@ class BaseCrawler < BaseImporter
         result
       end
     end
-    
+  end
+  
+  attr_reader :division
+  def initialize(division)
+    @division = division
   end
 end

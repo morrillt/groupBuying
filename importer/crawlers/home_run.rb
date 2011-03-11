@@ -8,7 +8,8 @@ class HomeRunCrawler < ScrapingCrawler
       base_url
     end
     
-    def areas
+    # TODO: paging needs extraction but only HomeRun is using it so far
+    def pages
       %w(daily-steal city-sampler private-reserve hot-minute)
     end
     
@@ -22,8 +23,8 @@ class HomeRunCrawler < ScrapingCrawler
     
     def potential_deal_ids
       divisions_for_import.each do |division|
-        areas.each do |area|
-          new(division, area).deal_ids.each do |deal_id|
+        pages.each do |page|
+          new(division, page).deal_ids.each do |deal_id|
             yield deal_id, :division_id => division.id
           end
         end
@@ -33,8 +34,9 @@ class HomeRunCrawler < ScrapingCrawler
     end
   end
   
-  def initialize(division, area)
-    @division, @area = division, area
+  attr_reader :page
+  def initialize(division, page = nil)
+    @division, @page = division, page || self.class.pages.first
   end
   
   def possible_deal_links
@@ -46,6 +48,6 @@ class HomeRunCrawler < ScrapingCrawler
   end
   
   def url
-    [base_url, division.url_part, @area].join("/")
+    [base_url, division.url_part, page].join("/")
   end
 end

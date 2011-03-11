@@ -10,4 +10,8 @@ class GrouponCrawler < BaseCrawler
       division.update_attribute(:last_checked_at, Time.now)
     end
   end
+  
+  def url
+    "http://www.groupon.com/deals/#{division.name}"
+  end
 end

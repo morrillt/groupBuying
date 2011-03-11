@@ -16,11 +16,6 @@ class ScrapingCrawler < BaseCrawler
     end
   end
   
-  attr_reader :url, :division
-  def initialize(division)
-    @division = division
-  end
-  
   def base_url
     self.class.base_url
   end

@@ -18,7 +18,7 @@ class KgbDealsCrawler < ScrapingCrawler
   end
   
   def url
-    @url ||= base_url + "/sitemap/#{division.url_part}"
+    base_url + "/sitemap/#{division.url_part}"
   end
   
   def possible_deal_links
