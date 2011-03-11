@@ -24,31 +24,29 @@ class BaseCrawler < BaseImporter
     
     # TODO: DRY up url-loading across classes
     def divisions_doc
-      @@divisions_doc ||= begin
-        puts "loading divisions doc: #{division_list_url}"
-        Nokogiri::HTML(open(division_list_url))
+      @divisions_doc ||= parse_url(division_list_url)
+    end
+    
+    def crawl_new_deals
+      potential_deal_ids do |*deal_id_with_optional_args|
+        deal_id, args = *deal_id_with_optional_args
+        args ||= {}
+
+        snapshooter = site.snapshooter(deal_id)
+
+        result = if snapshooter.existence_cached?
+          :cached
+        elsif snapshooter.update_or_create_url_check.deal_exists?
+          snap = snapshooter.create_snapshot(args)
+          snap.status
+        else
+          :nonexistent
+        end
+
+        puts "checking #{snapshooter.url} - #{result}"
+        result
       end
     end
-  end
-  
-  def crawl_new_deals
-    potential_deal_ids do |*deal_id_with_optional_args|
-      deal_id, args = *deal_id_with_optional_args
-      args ||= {}
     
-      snapshooter = site.snapshooter(deal_id)
-    
-      result = if snapshooter.existence_cached?
-        :cached
-      elsif snapshooter.update_or_create_url_check.deal_exists?
-        snap = snapshooter.create_snapshot(args)
-        snap.status
-      else
-        :nonexistent
-      end
-    
-      puts "checking #{snapshooter.url} - #{result}"
-      result
-    end
   end
 end

@@ -7,4 +7,8 @@ class Division < ActiveRecord::Base
   def snapshots
     @snapshots ||= Snapshot.where(:division_id => id)
   end
+  
+  def crawler
+    @crawler ||= site.crawler.new(self)
+  end
 end

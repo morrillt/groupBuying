@@ -33,13 +33,4 @@ class HTMLSnapshooter < BaseSnapshooter
   def location
     @location.try(:call)
   end
-  
-  def load_url
-    begin
-      open(url).read
-    rescue Timeout::Error => e
-      Rails.logger.info "[IMPORT ERROR]: " + e.inspect
-      nil
-    end
-  end
 end

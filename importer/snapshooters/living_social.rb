@@ -1,4 +1,9 @@
 class LivingSocialSnapshooter < HTMLSnapshooter
+  include CookieTools
+  def self.cookie_url
+    "http://livingsocial.com/?msc_id=1"
+  end
+  
   html_selector :title,           '.deal-title'
   html_selector :price,           '#deal-buy-box .deal-price',          :type => :number
   html_selector :discount,        '.value',                             :type => :number
@@ -14,22 +19,6 @@ class LivingSocialSnapshooter < HTMLSnapshooter
   
   def base_url
     "http://livingsocial.com/deals/"
-  end
-  
-  # TODO: extract this into a module if we get any other sites using cookies
-  class << self
-    def agent
-      @@agent ||= begin
-        puts "loading LivingSocial cookie"
-        agent = Mechanize.new
-        agent.get("http://livingsocial.com/?msc_id=1")
-        agent
-      end
-    end
-  end
-  
-  def load_url
-    @load_url ||= self.class.agent.get(url).body rescue nil
   end
   
   def existence_check

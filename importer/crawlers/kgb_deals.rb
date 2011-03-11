@@ -16,4 +16,16 @@ class KgbDealsCrawler < ScrapingCrawler
       divisions_doc.search('.city a')
     end
   end
+  
+  def url
+    @url ||= base_url + "/sitemap/#{division.url_part}"
+  end
+  
+  def possible_deal_links
+    doc.search('a.deal')
+  end
+  
+  def deal_link_regex
+    %r[http://www.kgbdeals.com/[\w-]+/deals/(\d+)/]
+  end
 end

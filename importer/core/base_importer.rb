@@ -1,4 +1,6 @@
 class BaseImporter
+  include UrlTools
+  
   def site
     self.class.site
   end

@@ -3,11 +3,13 @@
   %table{:width => '800px'}
     %tr
       %th site
+      %th # active
       %th details
       %th debug
     - @sites.each do |site|
       %tr
         %td= link_to site.title, site
+        %td= site.deals.count
         %td
           = link_to("deals",      site_deals_path(site))
           |
