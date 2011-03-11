@@ -4,7 +4,7 @@ class GrouponCrawler < BaseCrawler
       puts "checking #{division.name}"
       Groupon.deals(:division => division.division_id).each do |deal_hashie|
         
-        yield deal_hashie.id
+        yield deal_hashie.id, :division_id => division.division_id
       end
       
       division.update_attribute(:last_checked_at, Time.now)
