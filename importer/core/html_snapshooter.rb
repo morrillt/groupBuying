@@ -26,8 +26,7 @@ class HTMLSnapshooter < BaseSnapshooter
   
   def raw_data
     return unless deal_exists?
-    
-    cached? ? current_snapshot.raw_data : load_url
+    @raw_data ||= cached? ? current_snapshot.raw_data : load_url
   end
   
   def location

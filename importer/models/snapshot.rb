@@ -27,14 +27,10 @@ class Snapshot
   
   delegate :title, :buyers_count, :price, :original_price, :total_revenue, :currency, :to => :snapshooter
     
-  attr_writer :snapshooter, :cache_available
+  attr_writer :snapshooter
   
   def active?
     status != :active
-  end
-  
-  def cache_available
-    @cache_available != false
   end
   
   def site

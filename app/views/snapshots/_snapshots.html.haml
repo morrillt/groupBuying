@@ -12,7 +12,7 @@
     
   - snapshots.each do |snapshot|
     %tr
-      %td= snapshot.id
+      %td= link_to snapshot.id, snapshot
       %td= snapshot.deal_id
       %td
         - if snapshot.deal

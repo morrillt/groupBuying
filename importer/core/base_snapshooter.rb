@@ -21,7 +21,7 @@ class BaseSnapshooter < BaseImporter
     required_deal_fields + optional_deal_fields
   end
   
-  attr_writer :current_snapshot
+  attr_writer :current_snapshot, :use_caching
   attr_accessor *(all_deal_fields + [:discount])
   validates_presence_of required_deal_fields
   
@@ -59,8 +59,12 @@ class BaseSnapshooter < BaseImporter
     !!(current_url_check || current_snapshot)
   end
   
+  def use_caching?
+    @use_caching != false
+  end
+  
   def cached?
-    current_snapshot.try(:cache_available)
+    !! use_caching? and current_snapshot
   end
   
   def current_url_check
@@ -79,7 +83,10 @@ class BaseSnapshooter < BaseImporter
   end
   
   def create_snapshot(opts = {})
+    # never create a new snapshot with cached (i.e. old snapshot) data
+    self.use_caching = false
     site.snapshots.create(snapshot_attrs.merge(opts))
+    self.use_caching = true
   end
   
   def snapshot_attrs
@@ -132,26 +139,4 @@ class BaseSnapshooter < BaseImporter
     return nil unless @price and @discount
     @price / ((100 - @discount) / 100)
   end
-
-  
-  # so, subclass makes sure #attributes returns the right stuff, we take care of putting it in instance variables
-  # def parse
-  #   unless @parsed
-  #     attributes.each do |field, value|
-  #       #puts "setting #{field}=#{value}"
-  #       instance_variable_set "@#{field.to_sym}", value
-  #     end
-  #   end
-  #   
-  #   @parsed = true
-  # end
-  
-  # def method_missing(sym, *args, &block)
-  #   #puts "method_missing for #{sym}: #{args.inspect}"
-  #   return unless deal_exists?
-  #   
-  #   if [:url, :title, :buyers_count, :currency, :location].include? sym
-  #     attributes[sym]
-  #   end
-  # end
 end
