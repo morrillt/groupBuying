@@ -1,18 +1,21 @@
-.span-8.append-16.last
+.span-12.append-12.last
   %h2 See Detailed Report
-  %table
+  %table{:width => '800px'}
     %tr
       %th site
       %th details
+      %th debug
     - @sites.each do |site|
       %tr
         %td= link_to site.title, site
-        %td 
-          = link_to("deals", site_deals_path(site))
+        %td
+          = link_to("deals",      site_deals_path(site))
           |
-          = link_to("snapshots", site_snapshots_path(site))
+          = link_to("divisions",  site_divisions_path(site))
+        %td
+          = link_to("snapshots",  site_snapshots_path(site))
           |
-          = link_to("diffs", site_snapshot_diffs_path(site))
+          = link_to("diffs",      site_snapshot_diffs_path(site))
           |
           = link_to("url_checks", site_url_checks_path(site))
       

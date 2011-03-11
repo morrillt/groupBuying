@@ -1,0 +1,9 @@
+%table
+  %tr
+    %th name
+    %th last checked
+    
+  - @divisions.each do |division|
+    %tr
+      %td= link_to division.name, site_division_path(parent, division)
+      %td= division.last_checked_at

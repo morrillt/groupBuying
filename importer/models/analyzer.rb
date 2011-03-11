@@ -32,7 +32,7 @@ class Analyzer
       
       unless deal.present?
         puts "creating deal from: #{snap.url}"
-        deal = site.deals.create!(snapshooter.deal_attrs)
+        deal = site.deals.create!(snapshooter.deal_attrs.merge(:division_id => snap.division_id))
       end
       
       deal

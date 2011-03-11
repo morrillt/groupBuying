@@ -3,6 +3,7 @@ class Snapshot
   
   field :url
   field :site_id,         :type => Integer
+  field :division_id,     :type => Integer
   field :deal_id
   field :mysql_deal_id,   :type => Integer
   field :raw_data      # TODO: bzip

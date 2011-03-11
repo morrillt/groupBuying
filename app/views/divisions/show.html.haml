@@ -1,0 +1,15 @@
+= debug @division
+%h1= @division.name
+
+%b Active Deals
+= @division.deals.active.count
+%br
+
+%b Total Deals
+= @division.deals.count
+
+= render :partial => 'deals/deals', :object => @division.deals
+
+%hr
+
+= render :partial => 'snapshots/snapshots', :object => @division.snapshots

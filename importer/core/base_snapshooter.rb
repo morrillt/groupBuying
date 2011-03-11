@@ -78,8 +78,8 @@ class BaseSnapshooter < BaseImporter
     url_check
   end
   
-  def create_snapshot
-    site.snapshots.create(snapshot_attrs)
+  def create_snapshot(opts = {})
+    site.snapshots.create(snapshot_attrs.merge(opts))
   end
   
   def snapshot_attrs

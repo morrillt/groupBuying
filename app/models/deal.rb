@@ -74,6 +74,8 @@ class Deal < ActiveRecord::Base
   end
   
   def current_snapshot
+    return unless current_snapshot_id
+    
     @current_snapshot ||= site.snapshots.find(current_snapshot_id)
   end
   
