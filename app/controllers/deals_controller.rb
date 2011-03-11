@@ -9,6 +9,6 @@ class DealsController < InheritedResources::Base
   end
   
   def collection
-    @deals ||= end_of_association_chain.paginate(:page => params[:page])
+    @deals ||= end_of_association_chain.active.order(:revenue.desc).paginate(:page => params[:page])
   end
 end

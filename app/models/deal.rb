@@ -16,8 +16,11 @@ class Deal < ActiveRecord::Base
   scope :needs_update,  active.where(:updated_at.lt => 30.minutes.ago)
   scope :never_cached,  where(:buyers_count => nil)
   
+  # cache some stuff
   before_save do
-    self.active = (status == :active)
+    puts "caching status and revenue"
+    self.active = (status.to_sym == :active)
+    self.revenue = buyers_count * price
     true # return true or the callback will abort the save
   end
   
@@ -97,10 +100,6 @@ class Deal < ActiveRecord::Base
       end_buyer_count     = current_snapshot.buyers_count
       end_buyer_count.to_i.percent_change_from(initial_buyer_count) if initial_buyer_count and end_buyer_count
     end
-  end
-  
-  def revenue
-    price * buyers_count
   end
   
   class << self

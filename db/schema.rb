@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 5) do
+ActiveRecord::Schema.define(:version => 7) do
 
   create_table "chartgroupon", :force => true do |t|
     t.string  "price",      :limit => 200, :null => false
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(:version => 5) do
     t.float    "latitude"
     t.float    "longitude"
     t.string   "current_snapshot_id"
+    t.integer  "revenue"
   end
 
   add_index "deals", ["site_id", "deal_id"], :name => "index_deals_on_site_id_and_slug_and_zip_code"
