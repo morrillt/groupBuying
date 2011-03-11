@@ -14,7 +14,10 @@ module CookieTools
     def load_url(url)
       begin
         puts "[#{to_s}] loading with cookie: #{url}"
-        agent.get(url).body# rescue nil
+        agent.get(url).body
+      rescue Timeout::Error => e
+        Rails.logger.info "[#{to_s}] ERROR loading #{url} - " + e.inspect
+        puts "[#{to_s}] ERROR loading #{url} - " + e.inspect
       end
     end
   end
