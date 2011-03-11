@@ -22,7 +22,7 @@ class ActivityBlock
   end
   
   def by_interval(interval)
-    rounded_from, rounded_to = from.to_time.floor(interval), to.to_time.floor(interval) + interval
+    rounded_from, rounded_to = from.to_time.floor(interval), to.to_time.floor(interval)
     last_step = rounded_from
     
     intervals = {}
