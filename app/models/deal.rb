@@ -62,11 +62,11 @@ class Deal < ActiveRecord::Base
   end
   
   def create_snapshot
-    snapshooter.create_snapshot
+    snapshooter.create_snapshot(:mysql_deal_id => id)
   end
   
   def snapshooter
-    @deal_importer ||= site.snapshooter(deal_id)
+    @snapshooter ||= site.snapshooter(deal_id)
   end
   
   def snapshots
