@@ -1,5 +1,4 @@
-= debug @division
-%h1= @division.name
+%h1= link_to @division.name, @division.url
 
 %b Active Deals
 = @division.deals.active.count
@@ -8,8 +7,5 @@
 %b Total Deals
 = @division.deals.count
 
-= render :partial => 'deals/deals', :object => @division.deals
-
-%hr
-
+= render :partial => 'deals/deals',         :object => @division.deals
 = render :partial => 'snapshots/snapshots', :object => @division.snapshots
