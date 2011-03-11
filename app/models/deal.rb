@@ -1,4 +1,6 @@
 class Deal < ActiveRecord::Base
+  include Chartable
+  
   belongs_to  :site
   belongs_to  :division
   
@@ -21,6 +23,10 @@ class Deal < ActiveRecord::Base
   
   def self.update_cached_stats
     (never_cached + needs_update).each(&:update_cached_stats)
+  end
+  
+  def chart_name
+    deal_id
   end
   
   def name

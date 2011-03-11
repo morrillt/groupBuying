@@ -1,4 +1,6 @@
 class Site < ActiveRecord::Base
+  include Chartable
+  
   has_many  :divisions
   has_many  :deals
   has_many  :snapshot_diffs, :through => :deals
@@ -25,11 +27,11 @@ class Site < ActiveRecord::Base
     @url_checks ||= UrlCheck.where(:site_id => id)
   end
   
-  def title
-    read_attribute(:name).titleize
+  def chart_name
+    title
   end
   
-  def activity_block(opts = {})
-    ActivityBlock.new(opts.merge(:association_chain => self))
+  def title
+    read_attribute(:name).titleize
   end
 end

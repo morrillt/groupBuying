@@ -1,5 +1,6 @@
 class DealsController < InheritedResources::Base
   belongs_to :site, :optional => true, :finder => :find_by_name
+  include ChartableController
   
   def import
     resource.import
