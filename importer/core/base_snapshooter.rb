@@ -14,7 +14,7 @@ class BaseSnapshooter < BaseImporter
   end
   
   def self.optional_deal_fields
-    [:location]
+    [:location, :division_id]
   end
   
   def self.all_deal_fields
@@ -72,7 +72,7 @@ class BaseSnapshooter < BaseImporter
   end
   
   def current_snapshot
-    @current_snapshot ||= site.snapshots.current.where(:url => url).first
+    @current_snapshot ||= site.snapshots.most_recent
   end
   
   def update_or_create_url_check

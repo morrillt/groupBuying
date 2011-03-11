@@ -50,6 +50,10 @@ class Deal < ActiveRecord::Base
       :price                => current_snapshot.price,
       :original_price       => current_snapshot.original_price,
     }
+    
+    # TODO: assess whether this is a wise thing to be doing
+    self.division_id = current_snapshot.division_id if current_snapshot.division_id.present?
+    
     update_attributes(new_attrs)
   end
   
@@ -74,9 +78,7 @@ class Deal < ActiveRecord::Base
   end
   
   def current_snapshot
-    return unless current_snapshot_id
-    
-    @current_snapshot ||= site.snapshots.find(current_snapshot_id)
+    @current_snapshot ||= snapshots.most_recent
   end
   
   def first_snapshot

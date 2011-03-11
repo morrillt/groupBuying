@@ -36,6 +36,7 @@ class GrouponSnapshooter < BaseSnapshooter
       :buyers_count     => doc.soldQuantity,
       :status           => status,
       :location         => doc.division.values_at('lat', 'lng'),
+      :division_id      => site.divisions.find_by_name(doc.division.name).try(:id) # FIXME: this isn't a great idea
     }
   end
 end
