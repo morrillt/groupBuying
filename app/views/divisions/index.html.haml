@@ -12,4 +12,4 @@
       %td= link_to division.name, site_division_path(parent, division)
       %td= division.deals.active.count
       %td= link_to division.url, division.url
-      %td= division.last_checked_at
+      %td #{time_ago_in_words division.last_checked_at} ago

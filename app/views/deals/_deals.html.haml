@@ -5,29 +5,25 @@
 %table
   %tr
     %th deal_id
-    %th active
+    %th status
     %th price
     %th original_price
     %th buyers_count
     %th hotness
-    %th division_id
-    %th status
+    %th division
     %th latitude
     %th longitude
-    %th created_at
-    %th updated_at
-                    
+    %th last checked / first seen
+    
   - deals.each do |deal|
     %tr
       %td= link_to deal.deal_id, deal
-      %td= deal.active
-      %td= number_to_currency(deal.price, :unit => deal.currency.to_s)
+      %td= deal.status
+      %td #{deal.price}#{deal.currency}
       %td= deal.original_price
       %td= deal.buyers_count
       %td= deal.hotness
-      %td= deal.division_id
-      %td= deal.status
+      %td= link_to deal.division.name, site_division_path(deal.site, deal.division)
       %td= deal.latitude
       %td= deal.longitude
-      %td= deal.created_at
-      %td= deal.updated_at
+      %td #{time_ago_in_words deal.updated_at} / #{time_ago_in_words deal.created_at}

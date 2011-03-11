@@ -20,4 +20,4 @@
       %td= diff.buyer_change
       %td= diff.revenue_change
       %td= diff.closed ? "closed" : "unchanged"
-      %td= diff.changed_at
+      %td #{time_ago_in_words diff.changed_at} ago
