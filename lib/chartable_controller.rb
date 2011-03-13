@@ -6,8 +6,8 @@ module ChartableController
   end
   
   def load_chart
-    chartable = action_name == 'index' ? collection.first(6) : [resource]
+    chartables = action_name == 'index' ? collection.first(6) : [resource]
     
-    #@chart    = Chart.new(params.slice(:from, :to).merge(:relations => chartable))
+    @chart    = Chart.new(chartables, params.slice(:from, :to))
   end
 end

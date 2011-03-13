@@ -3,7 +3,7 @@ class Division < ActiveRecord::Base
   
   belongs_to :site
   has_many :deals
-  has_many :snapshot_diffs, :through => :deals
+  has_many :snapshot_diffs
   
   scope :needs_import, lambda { where(:last_checked_at.lt => 20.minutes.ago) }
   delegate :url, :to => :crawler

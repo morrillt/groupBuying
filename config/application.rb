@@ -47,5 +47,7 @@ module GroupBuying
     config.filter_parameters += [:password]
     
     config.autoload_paths << File.join(config.root, "lib")
+    
+    require 'bleak_house' if ENV['BLEAK_HOUSE']
   end
 end

@@ -8,7 +8,7 @@ class Comparison
       [:closed_deals,             "# of closed deals"],
       [:total_coupons,            "# of coupons purchased"],
       [:total_revenue,            "$ spent on deals"],
-      [:average_deal_revenue,     "Average Revenue per deal"],      
+#      [:average_deal_revenue,     "Average Revenue per deal"],      
     ]
     
     deltas.map do |method, name|

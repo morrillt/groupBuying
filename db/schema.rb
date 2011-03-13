@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 7) do
+ActiveRecord::Schema.define(:version => 8) do
 
   create_table "chartgroupon", :force => true do |t|
     t.string  "price",      :limit => 200, :null => false
@@ -105,7 +105,11 @@ ActiveRecord::Schema.define(:version => 7) do
     t.datetime "changed_at",      :null => false
     t.string   "snapshot_id",     :null => false
     t.string   "old_snapshot_id"
+    t.integer  "site_id"
+    t.integer  "division_id"
   end
+
+  add_index "snapshot_diffs", ["changed_at", "deal_id"], :name => "created_and_deal_index"
 
   create_table "snapshots", :force => true do |t|
     t.integer  "deal_id",      :null => false

@@ -56,7 +56,7 @@ class BaseSnapshooter < BaseImporter
   end
   
   def existence_cached?
-    !!(current_url_check || current_snapshot)
+    !!(url_check.current? || current_snapshot)
   end
   
   def use_caching?
@@ -67,16 +67,23 @@ class BaseSnapshooter < BaseImporter
     !! use_caching? and current_snapshot
   end
   
+  def url_check
+    @url_check ||= site.url_checks.where(:url => url).first || site.url_checks.new(:url => url, :site_id => site.id)
+  end
+  
   def current_url_check
-    @current_url_check ||= site.url_checks.where(:url => url).first
+    url_check.current?
   end
   
   def current_snapshot
-    @current_snapshot ||= site.snapshots.most_recent
+    @current_snapshot       ||= site.snapshots.where(:url => url).current
+  end
+  
+  def most_recent_snapshot
+    @most_recent_snapshot   ||= site.snapshots.where(:url => url).most_recent
   end
   
   def update_or_create_url_check
-    url_check = (current_url_check || site.url_checks.new(:url => url, :site_id => site.id))
     url_check.update_attributes!(:deal_exists => existence_check)
     
     url_check

@@ -21,16 +21,20 @@ class Snapshot
   scope :needs_analysis,      where(:analyzed => false, :valid_deal => true)
   scope :analyzed,            where(:analyzed => true)
   
-  scope :current,         lambda { where( mcc(:created_at, :gte, 1.hour.ago) )      }
-  scope :recent,          lambda { where( mcc(:created_at, :gte, 4.hours.ago.utc))  }
+  scope :current_scope,         lambda { where( mcc(:created_at, :gte, 1.hour.ago) )      }
+  scope :recent_scope,          lambda { where( mcc(:created_at, :gte, 4.hours.ago.utc))  }
   scope :older_than,      lambda { |time| where(mcc(:created_at, :lt, time))       }
   
   delegate :title, :buyers_count, :price, :original_price, :total_revenue, :currency, :division_id, :to => :snapshooter
-    
+  
   attr_writer :snapshooter
   
   def self.most_recent
     desc(:created_at).first
+  end
+  
+  def self.current
+    current_scope.most_recent
   end
   
   def active?

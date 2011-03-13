@@ -1,5 +1,8 @@
 class SnapshotDiff < ActiveRecord::Base
   belongs_to :deal
+  belongs_to :division
+  belongs_to :site
+  
   belongs_to :old_snapshot,   :class_name => 'Snapshot'
   
   scope :by_day,  lambda{ |day| where(:changed_at => day.to_date .. day.to_date + 1) }
@@ -8,12 +11,18 @@ class SnapshotDiff < ActiveRecord::Base
   validates_presence_of     :snapshot_id, :old_snapshot_id
   validates_uniqueness_of   :snapshot_id, :scope => :old_snapshot_id
   
+  before_create :inherit_fks_from_deal
+  
   def snapshot
     Snapshot.find(snapshot_id)
   end
   
   def old_snapshot
     Snapshot.find(old_snapshot_id)
+  end
+  
+  def inherit_fks_from_deal
+    update_attributes(:site_id => deal.site_id, :division_id => deal.division_id)
   end
   
   class << self

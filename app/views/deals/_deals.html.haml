@@ -23,7 +23,7 @@
       %td= deal.original_price
       %td= deal.buyers_count
       %td= deal.hotness
-      %td= link_to deal.division.name, site_division_path(deal.site, deal.division)
+      %td= link_to(deal.division.name, site_division_path(deal.site, deal.division)) if deal.division
       %td= deal.latitude
       %td= deal.longitude
       %td #{time_ago_in_words deal.updated_at} / #{time_ago_in_words deal.created_at}

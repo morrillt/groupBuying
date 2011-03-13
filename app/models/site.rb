@@ -3,7 +3,7 @@ class Site < ActiveRecord::Base
   
   has_many  :divisions
   has_many  :deals
-  has_many  :snapshot_diffs, :through => :deals
+  has_many  :snapshot_diffs
   
   scope :active,            where(:active => true)
   
