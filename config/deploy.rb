@@ -19,11 +19,13 @@ ssh_options[:username] = 'root'
 task :staging do
   server "50.56.83.165", :app, :web, :db, :primary => true
   set :bundle, "bundle"
+  set :deploy_to, "/srv/gbd"
 end
-task :after_update_code do
+
+after "deploy:update_code" do
   # trust rvmrc
   run "rvm rvmrc trust #{release_path}"
-  
+
   # run the importer
   run "cd #{deploy_to} && rvm ruby scripts/importer.rb"
 end
