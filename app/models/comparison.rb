@@ -12,8 +12,8 @@ class Comparison
     ]
     
     deltas.map do |method, name|
-      start  = @a.send(method)
-      finish = @b.send(method)
+      start  = @a.run_calculation(method)
+      finish = @b.run_calculation(method)
       puts "#{method}: #{start.inspect} / #{finish.inspect}"
       
       OpenStruct.new(

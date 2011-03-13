@@ -41,12 +41,12 @@
         %th coupons / deal
         %th price / coupon
     %tbody
-      - @activity.hours(:active_deals, :average_deal_coupons, :average_coupon_price).each do |time_frame, calculations|
+      - @activity.hours.each do |time_frame|
         %tr
-          %td= time_frame.hour
-          %td= calculations.active_deals
-          %td= calculations.average_deal_coupons
-          %td= calculations.average_coupon_price
+          %td= time_frame.time
+          %td= time_frame.run_calculation(:active_deals)
+          %td= time_frame.run_calculation(:average_deal_coupons)
+          %td= time_frame.run_calculation(:average_coupon_price)
 %hr/
 .span-12.last
   %h2

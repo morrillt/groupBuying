@@ -71,7 +71,9 @@ class Analyzer
         :closed             => set_closed,
         :changed_at         => snap.created_at,
         :old_snapshot_id    => old_snap.id.to_s,
-        :snapshot_id        => snap.id.to_s
+        :snapshot_id        => snap.id.to_s,
+        :site_id            => snap.site_id,
+        :division_id        => snap.division_id,
       }
       diff = deal.snapshot_diffs.where(diff_attrs.slice(:snapshot_id, :old_snapshot_id)).first || deal.snapshot_diffs.build
       diff.update_attributes!(diff_attrs)

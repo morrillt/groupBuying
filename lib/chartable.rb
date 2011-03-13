@@ -1,5 +1,5 @@
 module Chartable
   def activity_tracker(opts = {})
-    ActivityTracker.new(self, opts)
+    ActivityBlock.new(self, opts)
   end
 end

@@ -3,7 +3,7 @@ class ActivityBlock
   delegate  :deal_count, :active_deals, :closed_deals, :average_coupon_price, 
             :average_deal_coupons, :average_deal_revenue,
             :total_coupons, :total_revenue, 
-            :to => :my_scope  
+            :to => :totals  
   
   attr_reader :from, :to, :diffables, :calculations
   alias :time :from
@@ -18,10 +18,6 @@ class ActivityBlock
     @ids  ||= @diffables.map(&:id)
   end
   
-  def calculation_scope
-    SnapshotDiff.where(field.in => ids).where(:changed_at => from .. to).group(field)
-  end
-  
   def field
     @field ||= "#{diffables.first.class.to_s.underscore}_id".to_sym
   end
@@ -31,8 +27,26 @@ class ActivityBlock
     ids.map_to_hash{ |id| {id => 0} }
   end
   
+  def calculation_scope
+    SnapshotDiff.where(field.in => ids).where(:changed_at => from .. to)
+  end
+  
   def run_calculation(calculation)
-    calculation_scope.send(calculation).reverse_merge(default_values)
+    calculation_scope.send(calculation)
+  end
+  
+  def run_grouped_calculation(calculation)
+    calculation_scope.group(field).send(calculation).reverse_merge(default_values)
+  end
+  
+  def totals
+    @totals ||= begin
+      totals = calculations.map_to_hash do |calculation|
+        {calculation => run_calculation(calculation)}
+      end
+      
+      Hashie::Mash.new(totals)
+    end
   end
   
   def resource_calculations
@@ -41,7 +55,7 @@ class ActivityBlock
       
       calculations.each do |calculation|
         Rails.logger.info "[CHART]: calculating #{calculation.to_s} for #{to}, from #{calculation_scope.to_sql}"
-        run_calculation(calculation).each do |resource_id, value|
+        run_grouped_calculation(calculation).each do |resource_id, value|
           resource_id_calculations[resource_id][calculation] = value
         end
       end
