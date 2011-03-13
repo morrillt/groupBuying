@@ -12,7 +12,6 @@ set :git_enable_submodules, 1
 
 set :use_sudo, false
 
-ssh_options[:forward_agent] = true
 ssh_options[:username] = 'root'
 
 task :staging do
