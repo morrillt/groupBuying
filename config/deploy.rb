@@ -10,7 +10,6 @@ set :scm_username, "git"
 set :deploy_via, "remote_cache"
 set :git_enable_submodules, 1
 
-set :deploy_to, "/var/www/vhosts/#{domain}"
 set :use_sudo, false
 
 ssh_options[:forward_agent] = true
