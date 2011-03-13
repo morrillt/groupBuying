@@ -22,7 +22,9 @@ class SnapshotDiff < ActiveRecord::Base
   end
   
   def inherit_fks_from_deal
-    update_attributes(:site_id => deal.site_id, :division_id => deal.division_id)
+    self.site_id      = deal.site_id
+    self.division_id  = deal.division_id
+    true
   end
   
   class << self

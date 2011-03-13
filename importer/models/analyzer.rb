@@ -1,6 +1,7 @@
 class Analyzer
-  def self.analyze_snapshots(num = 100)
+  def self.analyze_snapshots(num = 10)
     Snapshot.needs_analysis.asc(:created_at).limit(num).each do |snap|
+      puts "analyzing #{snap.id}"
       analyzer = new(snap)
       analyzer.process
     end
@@ -72,8 +73,8 @@ class Analyzer
         :old_snapshot_id    => old_snap.id.to_s,
         :snapshot_id        => snap.id.to_s
       }
-      
-      deal.snapshot_diffs.create!(diff_attrs)
+      diff = deal.snapshot_diffs.where(diff_attrs.slice(:snapshot_id, :old_snapshot_id)).first || deal.snapshot_diffs.build
+      diff.update_attributes!(diff_attrs)
     else
       puts "no diff needed from #{snap.url} | #{valid_old_snap?.to_s} / #{changed_from_previous?.to_s} "
     end

@@ -92,7 +92,7 @@ class BaseSnapshooter < BaseImporter
   def create_snapshot(opts = {})
     # never create a new snapshot with cached (i.e. old snapshot) data
     self.use_caching = false
-    snapshot = site.snapshots.create(snapshot_attrs.merge(opts))
+    snapshot = Snapshot.create(snapshot_attrs.merge(opts))
     self.use_caching = true
     snapshot
   end

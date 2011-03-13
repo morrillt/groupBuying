@@ -45,7 +45,7 @@ Site.active.each do |site|
 end
 
 watched_loop "active deal checker" do
-  Deal.active.needs_update.each(&:import)
+  Deal.active.needs_update.limit(10).each(&:import)
 end
 
 watched_loop "analyzer" do
@@ -53,6 +53,7 @@ watched_loop "analyzer" do
 end
 
 (@restart_every/@check_threads_every).times do
+  puts "checking threads"
   # restart the main loop if any threads have died
   if @threads.any?{ |thread| not thread.alive? }
     puts "exiting - #{@threads.inspect}"
