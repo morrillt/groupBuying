@@ -1,4 +1,7 @@
+require 'rvm/capistrano'
 require 'bundler/capistrano'
+set :rvm_type, :user
+set :rvm_ruby_string, 'ree@charts'
 
 set :domain, 'group-buying.pogodan.com'
 set :application, domain
