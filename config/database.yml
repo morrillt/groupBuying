@@ -1,28 +1,24 @@
-development:
+defaults: &defaults
   adapter: mysql2
-  database: htmlParser
-  username: htmlParser
-  password: Adie8Eik
-  host: mysql-server
+  host: localhost
   pool: 10
   encoding: utf8
+
+development:
+  <<: *defaults
+  database: html_parser_development
+  username: root
+  password: root
 
 test:
-  adapter: mysql2
-  database: htmlParser
+  <<: *defaults
+  database: html_parser_test
   username: htmlParser
   password: Adie8Eik
-  host: mysql-server
-  pool: 10
-  encoding: utf8
 
 production:
-  adapter: mysql2
-  database: htmlParser
+  <<: *defaults
+  database: html_parser_production
   username: htmlParser
   password: Adie8Eik
-  host: mysql-server
-  pool: 10
-  encoding: utf8
-  username: root
 
