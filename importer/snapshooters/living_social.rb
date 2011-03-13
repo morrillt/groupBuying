@@ -32,6 +32,6 @@ class LivingSocialSnapshooter < HTMLSnapshooter
       end
     end
     
-    return true
+    !! load_url
   end
 end

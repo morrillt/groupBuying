@@ -6,7 +6,7 @@ module UrlTools
   end
   
   def load_url
-    self.class.load_url(url)
+    @load_url ||= self.class.load_url(url)
   end
   
   module ClassMethods
