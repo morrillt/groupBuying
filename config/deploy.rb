@@ -28,10 +28,8 @@ after "deploy:update_code" do
   # trust rvmrc
   run "rvm rvmrc trust #{release_path}"
 
-  %w{documents portraits}.each do |share|
-    run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-  end
+  run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
 
   # run the importer
-  run "cd #{deploy_to} && rvm ruby scripts/importer.rb"
+  run "rvm ruby #{release_path}/scripts/importer.rb"
 end
