@@ -45,11 +45,11 @@ Site.active.each do |site|
 end
 
 watched_loop "active deal checker" do
-  Deal.active.needs_update.limit(10).each(&:import)
+  Deal.active.needs_update.limit(100).each(&:import)
 end
 
 watched_loop "analyzer" do
-  Analyzer.analyze_snapshots
+  Analyzer.analyze_snapshots(100)
 end
 
 (@restart_every/@check_threads_every).times do

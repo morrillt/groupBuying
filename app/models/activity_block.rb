@@ -28,7 +28,7 @@ class ActivityBlock
   
   # ensures we have a record for every time slot for every relation
   def default_values
-    ids.map_to_hash{ |id| {id => nil} }
+    ids.map_to_hash{ |id| {id => 0} }
   end
   
   def run_calculation(calculation)
