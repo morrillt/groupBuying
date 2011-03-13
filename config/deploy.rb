@@ -20,6 +20,7 @@ task :staging do
   server "50.56.83.165", :app, :web, :db, :primary => true
   set :bundle, "bundle"
   set :deploy_to, "/srv/gbd"
+  ssh_options[:username] = 'gbd'
 end
 
 after "deploy:update_code" do
