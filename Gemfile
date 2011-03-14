@@ -6,7 +6,6 @@ gem 'mongoid',    :git => 'git://github.com/mongoid/mongoid.git'
 gem 'bson_ext',   '1.2.4'
 gem 'mysql2'
 gem 'meta_where'
-gem 'rack'
 gem 'daemons'
 
 # importer
