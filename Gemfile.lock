@@ -120,5 +120,6 @@ DEPENDENCIES
   mongoid!
   mysql2
   nokogiri
+  rack
   rails (>= 3.0.5)
   will_paginate
