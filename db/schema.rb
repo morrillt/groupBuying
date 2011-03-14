@@ -12,17 +12,6 @@
 
 ActiveRecord::Schema.define(:version => 4) do
 
-  create_table "chartgroupon", :force => true do |t|
-    t.string  "price",      :limit => 200, :null => false
-    t.string  "opendeals",  :limit => 200, :null => false
-    t.integer "totaldeals", :limit => 8,   :null => false
-    t.date    "datadate",                  :null => false
-    t.time    "time",                      :null => false
-    t.binary  "status",     :limit => 1,   :null => false
-    t.string  "delta",      :limit => 200, :null => false
-    t.integer "revenue",    :limit => 8,   :null => false
-  end
-
   create_table "deals", :force => true do |t|
     t.string   "title",                             :null => false
     t.string   "url"
@@ -58,33 +47,37 @@ ActiveRecord::Schema.define(:version => 4) do
   end
 
   create_table "groupon", :force => true do |t|
-    t.string  "deal_id",   :limit => 200,                    :null => false
-    t.text    "title",                                       :null => false
-    t.string  "pricetext", :limit => 200,                    :null => false
-    t.string  "valuetext", :limit => 200,                    :null => false
-    t.string  "count",     :limit => 200,                    :null => false
-    t.date    "datetext",                                    :null => false
-    t.string  "location",  :limit => 200,                    :null => false
-    t.date    "datadate",                                    :null => false
-    t.text    "urltext",                                     :null => false
-    t.binary  "status",    :limit => 1,                      :null => false
-    t.time    "time",                                        :null => false
-    t.integer "hotindex",  :limit => 8,                      :null => false
-    t.boolean "converted",                :default => false, :null => false
+    t.string   "deal_id",                       :null => false
+    t.text     "title",                         :null => false
+    t.string   "pricetext",                     :null => false
+    t.string   "valuetext",                     :null => false
+    t.string   "count"
+    t.string   "datetext"
+    t.string   "location"
+    t.date     "datadate"
+    t.text     "urltext"
+    t.binary   "status"
+    t.time     "time"
+    t.integer  "hotindex"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "converted",  :default => false, :null => false
   end
 
   create_table "opentable", :force => true do |t|
-    t.string  "deal_id",   :limit => 200,                    :null => false
-    t.text    "title",                                       :null => false
-    t.string  "pricetext", :limit => 200,                    :null => false
-    t.string  "valuetext", :limit => 200,                    :null => false
-    t.string  "count",     :limit => 200,                    :null => false
-    t.date    "datetext",                                    :null => false
-    t.string  "location",  :limit => 200,                    :null => false
-    t.date    "datadate",                                    :null => false
-    t.binary  "status",    :limit => 1,                      :null => false
-    t.time    "time",                                        :null => false
-    t.boolean "converted",                :default => false, :null => false
+    t.string   "deal_id",    :limit => 200,                    :null => false
+    t.text     "title",                                        :null => false
+    t.string   "pricetext",  :limit => 200,                    :null => false
+    t.string   "valuetext",  :limit => 200,                    :null => false
+    t.string   "count",      :limit => 200,                    :null => false
+    t.date     "datetext",                                     :null => false
+    t.string   "location",   :limit => 200,                    :null => false
+    t.date     "datadate",                                     :null => false
+    t.binary   "status",     :limit => 255,                    :null => false
+    t.time     "time",                                         :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "converted",                 :default => false, :null => false
   end
 
   create_table "sites", :force => true do |t|
@@ -113,31 +106,35 @@ ActiveRecord::Schema.define(:version => 4) do
   end
 
   create_table "travelzoo", :force => true do |t|
-    t.string  "deal_id",   :limit => 200,                    :null => false
-    t.text    "title",                                       :null => false
-    t.string  "pricetext", :limit => 200,                    :null => false
-    t.string  "valuetext", :limit => 200,                    :null => false
-    t.string  "count",     :limit => 200,                    :null => false
-    t.date    "datetext",                                    :null => false
-    t.string  "location",  :limit => 200,                    :null => false
-    t.date    "datadate",                                    :null => false
-    t.binary  "status",    :limit => 1,                      :null => false
-    t.time    "time",                                        :null => false
-    t.boolean "converted",                :default => false, :null => false
+    t.string   "deal_id",    :limit => 200,                    :null => false
+    t.text     "title",                                        :null => false
+    t.string   "pricetext",  :limit => 200,                    :null => false
+    t.string   "valuetext",  :limit => 200,                    :null => false
+    t.string   "count",      :limit => 200,                    :null => false
+    t.date     "datetext",                                     :null => false
+    t.string   "location",   :limit => 200,                    :null => false
+    t.date     "datadate",                                     :null => false
+    t.binary   "status",     :limit => 255,                    :null => false
+    t.time     "time",                                         :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "converted",                 :default => false, :null => false
   end
 
   create_table "travelzoouk", :force => true do |t|
-    t.string  "deal_id",   :limit => 200,                    :null => false
-    t.text    "title",                                       :null => false
-    t.string  "pricetext", :limit => 200,                    :null => false
-    t.string  "valuetext", :limit => 200,                    :null => false
-    t.string  "count",     :limit => 200,                    :null => false
-    t.date    "datetext",                                    :null => false
-    t.string  "location",  :limit => 200,                    :null => false
-    t.date    "datadate",                                    :null => false
-    t.binary  "status",    :limit => 1,                      :null => false
-    t.time    "time",                                        :null => false
-    t.boolean "converted",                :default => false, :null => false
+    t.string   "deal_id",    :limit => 200,                    :null => false
+    t.text     "title",                                        :null => false
+    t.string   "pricetext",  :limit => 200,                    :null => false
+    t.string   "valuetext",  :limit => 200,                    :null => false
+    t.string   "count",      :limit => 200,                    :null => false
+    t.date     "datetext",                                     :null => false
+    t.string   "location",   :limit => 200,                    :null => false
+    t.date     "datadate",                                     :null => false
+    t.binary   "status",     :limit => 255,                    :null => false
+    t.time     "time",                                         :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "converted",                 :default => false, :null => false
   end
 
 end

@@ -38,7 +38,75 @@ class UpdateSchema < ActiveRecord::Migration
     
     create_table :sites do |t|
       t.string :name, :null => false
-      
+      t.datetime :created_at
+      t.datetime :updated_at
+
+
+      t.timestamps
+    end
+
+    create_table :opentable do |t|
+      t.string  :deal_id,   :limit => 200,                    :null => false
+      t.text    :title,                                      :null => false
+      t.string  :pricetext, :limit => 200,                    :null => false
+      t.string  :valuetext, :limit => 200,                    :null => false
+      t.string  :count,     :limit => 200,                    :null => false
+      t.date    :datetext,                                    :null => false
+      t.string  :location,  :limit => 200,                    :null => false
+      t.date    :datadate,                                    :null => false
+      t.binary  :status,    :limit => 1,                      :null => false
+      t.time    :time,                                        :null => false
+      t.string :deal_id, :limit => 200, :null=>false
+      t.text :title, :null=> false
+
+      t.timestamps
+
+    end
+
+    create_table :travelzoo, :force => true do |t|
+      t.string  :deal_id,   :limit => 200,                    :null => false
+      t.text    :title,                                       :null => false
+      t.string  :pricetext, :limit => 200,                    :null => false
+      t.string  :valuetext, :limit => 200,                    :null => false
+      t.string  :count,     :limit => 200,                    :null => false
+      t.date    :datetext,                                    :null => false
+      t.string  :location,  :limit => 200,                    :null => false
+      t.date    :datadate,                                    :null => false
+      t.binary  :status,    :limit => 1,                      :null => false
+      t.time    :time,                                        :null => false
+
+      t.timestamps
+    end
+
+    create_table :travelzoouk, :force => true do |t|
+      t.string  :deal_id,   :limit => 200,                    :null => false
+      t.text    :title,                                       :null => false
+      t.string  :pricetext, :limit => 200,                    :null => false
+      t.string  :valuetext, :limit => 200,                    :null => false
+      t.string  :count,     :limit => 200,                    :null => false
+      t.date    :datetext,                                    :null => false
+      t.string  :location,  :limit => 200,                    :null => false
+      t.date    :datadate,                                    :null => false
+      t.binary  :status,    :limit => 1,                      :null => false
+      t.time    :time,                                        :null => false
+
+      t.timestamps
+    end
+
+    create_table :groupon do |t|
+      t.string :deal_id, :null => false
+      t.text   :title, :null => false
+      t.string :pricetext, :null => false
+      t.string :valuetext, :null => false
+      t.string :count
+      t.string :datetext
+      t.string :location
+      t.date :datadate
+      t.text :urltext
+      t.binary :status
+      t.time :time
+      t.integer :hotindex
+
       t.timestamps
     end
     
@@ -51,6 +119,6 @@ class UpdateSchema < ActiveRecord::Migration
   end
   
   def self.down
-    [:deals, :snapshots, :sites].each{ |tbl| drop_table tbl }
+    [:deals, :snapshots, :sites, :groupon].each{ |tbl| drop_table tbl }
   end
 end
