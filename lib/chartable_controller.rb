@@ -6,7 +6,7 @@ module ChartableController
   end
   
   def load_chart
-    chartables = action_name == 'index' ? collection.first(6) : [resource]
+    chartables = action_name == 'index' ? collection.first(6) : resource.deals.order(:revenue.desc).limit(6)
     
     @chart    = Chart.new(chartables, params.slice(:from, :to))
   end
