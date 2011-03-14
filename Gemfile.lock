@@ -1,8 +1,12 @@
 GIT
-  remote: git://github.com/rails/exception_notification.git
-  revision: 192a49a02d63d28b23ed41cebadfedd490929cf1
+  remote: git://github.com/mongoid/mongoid.git
+  revision: 43613090487141d2ccc516cf53a46d273ebde2e7
   specs:
-    exception_notification (1.0.0)
+    mongoid (2.0.0.rc.7)
+      activemodel (~> 3.0)
+      mongo (~> 1.2)
+      tzinfo (~> 0.3.22)
+      will_paginate (~> 3.0.pre)
 
 GEM
   remote: http://rubygems.org/
@@ -70,11 +74,6 @@ GEM
     mime-types (1.16)
     mongo (1.2.4)
       bson (>= 1.2.4)
-    mongoid (2.0.0.rc.7)
-      activemodel (~> 3.0)
-      mongo (~> 1.2)
-      tzinfo (~> 0.3.22)
-      will_paginate (~> 3.0.pre)
     mysql2 (0.2.6)
     nokogiri (1.4.4)
     polyglot (0.3.1)
@@ -110,7 +109,6 @@ PLATFORMS
 DEPENDENCIES
   bson_ext (= 1.2.4)
   daemons
-  exception_notification!
   geocoder
   groupon
   haml
@@ -118,7 +116,7 @@ DEPENDENCIES
   json
   mechanize
   meta_where
-  mongoid (= 2.0.0.rc7)
+  mongoid!
   mysql2
   nokogiri
   rails (>= 3.0.5)
