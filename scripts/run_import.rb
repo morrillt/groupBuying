@@ -3,15 +3,6 @@ Thread.abort_on_exception = false
 
 require File.expand_path(File.join(*%w[ .. config environment ]), File.dirname(__FILE__))
 
-# Site.active.each do |site|
-#   site.deals.active.each(&:check_live_status)
-#   
-#   #site.importer.import_new_deals
-# end
-
-# nuke mongo stuff
-# Mongoid.master.collections.reject { |c| c.name == 'system.indexes'}.each(&:drop)
-
 log_path = File.join(File.expand_path(File.dirname(__FILE__)), 'log/import.log')
 @threads = []
 @restart_every        = 240.minutes
@@ -46,18 +37,23 @@ def watched_loop(name, &block)
 end
 
 Site.active.each do |site|
+  # next if site.name == 'groupon'
+  
   watched_loop("#{site.name} importer") do
     site.crawler.crawl_new_deals
-    
-    site.deals.active.needs_update.each(&:import)
   end
 end
 
-watched_loop("analyzer") do
-  Analyzer.analyze_snapshots
+watched_loop "active deal checker" do
+  Deal.active.needs_update.limit(100).each(&:import)
+end
+
+watched_loop "analyzer" do
+  Analyzer.analyze_snapshots(100)
 end
 
 (@restart_every/@check_threads_every).times do
+  puts "checking threads"
   # restart the main loop if any threads have died
   if @threads.any?{ |thread| not thread.alive? }
     puts "exiting - #{@threads.inspect}"

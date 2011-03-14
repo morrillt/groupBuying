@@ -16,7 +16,7 @@
     %link{:rel=>"stylesheet", :href => "/stylesheets/ie.css", :type => "text/css", :media => "screen, projection"}
     <![endif]-->
     
-%body
+%body{:style => ('background-color: #C8FAD2' if Rails.env.dev?)}
   .container
     = render :partial => 'layouts/nav'
     

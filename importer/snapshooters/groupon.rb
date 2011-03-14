@@ -31,11 +31,12 @@ class GrouponSnapshooter < BaseSnapshooter
     @attributes ||= {
       :title            => doc.title,
       :url              => url,
-      :price            => doc.options.first.price.amount,
-      :original_price   => doc.options.first.discount.amount,
+      :price            => doc.options.first.price.amount / 100.0,
+      :original_price   => doc.options.first.discount.amount / 100.0,
       :buyers_count     => doc.soldQuantity,
       :status           => status,
       :location         => doc.division.values_at('lat', 'lng'),
+      :division_id      => site.divisions.find_by_name(doc.division.name).try(:id) # FIXME: this isn't a great idea
     }
   end
 end

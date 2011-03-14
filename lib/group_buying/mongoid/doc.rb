@@ -6,23 +6,12 @@ module GroupBuying
       include ::Mongoid::Timestamps
       
       module ClassMethods
-        # TODO: how about move this to time class? is it the same for any JS, or mongo-specific?
-        def convert_time_to_json(time)
-          ltime = time.localtime # for some mongo reason we need to convert to local
-          "new Date(#{ltime.year}, #{ltime.month - 1}, #{ltime.day}, #{ltime.hour}, #{ltime.min})"
-        end
-        
-        def js_time_query(operator, fields)
-          query = fields.map{|field, value| "this.#{field} #{operator} #{convert_time_to_json(value)}" }.join(" && ")
-          "function() {return #{query}}"
-        end
-        
-        def time_gt_than(fields = {})
-          js_time_query '>=', fields
-        end
-
-        def time_lt_than(fields = {})
-          js_time_query '<=', fields
+        # need this because MetaWhere and Mongoid conflict on :created_at.desc
+        # this is a hack for now
+        # mcc :created_at, :desc, 1.hour.ago == {:created_at.desc => 1.hour.ago}
+        def mcc(key, operator, value)
+          mcc_field = ::Mongoid::Criterion::Complex.new(:key => key, :operator => operator)
+          { mcc_field => value }
         end
       end
     end

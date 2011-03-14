@@ -6,7 +6,7 @@ class KgbDealsSnapshooter < HTMLSnapshooter
   html_selector :location,        'a#deal_see_more_back',     :type => :address, :attr => 'deal_map_location'
   
   def deal_status
-    text_from_selector('.expires').present? ? :active : :closed
+    text_from_selector('.expired').present? ? :closed : :active
   end
   
   def base_url

@@ -26,16 +26,10 @@ class HTMLSnapshooter < BaseSnapshooter
   
   def raw_data
     return unless deal_exists?
-    
-    cached? ? current_snapshot.raw_data : load_url
+    @raw_data ||= cached? ? current_snapshot.raw_data : load_url
   end
   
-  def load_url
-    begin
-      open(url).read
-    rescue Timeout::Error => e
-      Rails.logger.info "[IMPORT ERROR]: " + e.inspect
-      nil
-    end
+  def location
+    @location.try(:call)
   end
 end

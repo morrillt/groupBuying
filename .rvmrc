@@ -1,2 +1,7 @@
-rvm --create use "ree@charts"
 
+if [[ -d "${rvm_path:-$HOME/.rvm}/environments" \
+  && -s "${rvm_path:-$HOME/.rvm}/environments/ree@charts" ]] ; then
+  \. "${rvm_path:-$HOME/.rvm}/environments/ree@charts"
+else
+  rvm --create use  "ree@charts"
+fi

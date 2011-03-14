@@ -1,6 +1,7 @@
 class Analyzer
-  def self.analyze_snapshots
-    Snapshot.needs_analysis.asc(:created_at).limit(100).each do |snap|
+  def self.analyze_snapshots(num = 10)
+    Snapshot.needs_analysis.asc(:created_at).limit(num).each do |snap|
+      puts "analyzing #{snap.id}"
       analyzer = new(snap)
       analyzer.process
     end
@@ -28,9 +29,14 @@ class Analyzer
   
   def find_or_create_deal
     @deal ||= begin
-      puts "creating deal from: #{snap.url}"
       deal   = site.deals.find_by_deal_id(snap.deal_id)
-      deal ||= site.deals.create(snapshooter.deal_attrs)
+      
+      unless deal.present?
+        puts "creating deal from: #{snap.url}"
+        deal = site.deals.create!(snapshooter.deal_attrs.merge(:division_id => snap.division_id))
+      end
+      
+      deal
     end
   end
   
@@ -43,7 +49,7 @@ class Analyzer
   end
   
   def valid_old_snap?
-    old_snap.try(:valid?)
+    !!old_snap.try(:valid?)
   end
   
   def changed_from_previous?
@@ -53,22 +59,26 @@ class Analyzer
   end
   
   def set_closed
-    @closed ||= !!(! snap.active? and old_snap.try(:active?))
+    @closed ||= !!(! snap.active? and old_snap.active?)
   end
   
   def generate_diff
-    if changed_from_previous?
+    if valid_old_snap? && changed_from_previous?
       puts "generating diff from #{snap.url}"
       diff_attrs = {
         :buyer_change       => buyer_change,
         :revenue_change     => revenue_change,
         :closed             => set_closed,
-        :changed_at         => snap.created_at
+        :changed_at         => snap.created_at,
+        :old_snapshot_id    => old_snap.id.to_s,
+        :snapshot_id        => snap.id.to_s,
+        :site_id            => snap.site_id,
+        :division_id        => snap.division_id,
       }
-      
-      deal.snapshot_diffs.create(diff_attrs.merge(:old_snapshot_id => old_snap.try(:id), :snapshot_id => snap.id))
+      diff = deal.snapshot_diffs.where(diff_attrs.slice(:snapshot_id, :old_snapshot_id)).first || deal.snapshot_diffs.build
+      diff.update_attributes!(diff_attrs)
     else
-      puts "no diff needed from #{snap.url}"
+      puts "no diff needed from #{snap.url} | #{valid_old_snap?.to_s} / #{changed_from_previous?.to_s} "
     end
   end
 end

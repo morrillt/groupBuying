@@ -1,7 +1,9 @@
 class Deal < ActiveRecord::Base
+  include Chartable
+  
   belongs_to  :site
   belongs_to  :division
-  #has_many    :snapshots, :order => :imported_at
+  
   has_many    :snapshot_diffs
   
   scope :active,        where(:active => true)
@@ -14,8 +16,24 @@ class Deal < ActiveRecord::Base
   scope :needs_update,  active.where(:updated_at.lt => 30.minutes.ago)
   scope :never_cached,  where(:buyers_count => nil)
   
+  # cache some stuff
+  before_save do
+    puts "caching status and revenue"
+    self.active = (status.to_sym == :active)
+    self.revenue = buyers_count * price
+    true # return true or the callback will abort the save
+  end
+  
   def self.update_cached_stats
     (never_cached + needs_update).each(&:update_cached_stats)
+  end
+  
+  def chart_name
+    deal_id
+  end
+  
+  def name
+    title.truncate(40).strip.gsub("\n", '').gsub(/\s+/, ' ')
   end
   
   def location
@@ -30,11 +48,22 @@ class Deal < ActiveRecord::Base
   end
   
   def update_cached_stats(snap = nil)
-    snap ||= snapshots.current.first
+    return unless current_snapshot
     
-    update_attributes(:buyers_count => snap.buyers_count,
-      :hotness => calculate_hotness,
-      :active  => snap.status == :active) if snap
+    new_attrs = {
+      :buyers_count         => current_snapshot.buyers_count,
+      :hotness              => calculate_hotness,
+      :active               => current_snapshot.status == :active,
+      :status               => current_snapshot.status,
+      :current_snapshot_id  => current_snapshot.id.to_s,
+      :price                => current_snapshot.price,
+      :original_price       => current_snapshot.original_price,
+    }
+    
+    # TODO: assess whether this is a wise thing to be doing
+    self.division_id = current_snapshot.division_id if current_snapshot.division_id.present?
+    
+    update_attributes(new_attrs)
   end
   
   def import
@@ -46,26 +75,31 @@ class Deal < ActiveRecord::Base
   end
   
   def create_snapshot
-    snapshooter.create_snapshot
+    snapshooter.create_snapshot(:mysql_deal_id => id)
   end
   
   def snapshooter
-    @deal_importer ||= site.snapshooter(deal_id)
+    @snapshooter ||= site.snapshooter(deal_id)
   end
   
   def snapshots
-    site.snapshots.where(:deal_id => deal_id)
+    site.snapshots.where(:mysql_deal_id => id)
+  end
+  
+  def current_snapshot
+    @current_snapshot ||= snapshots.most_recent
+  end
+  
+  def first_snapshot
+    @first_snapshot ||= snapshots.first
   end
   
   def calculate_hotness
-    initial_buyer_count = snapshots.first.buyers_count
-    end_buyer_count     = snapshots.last.buyers_count
-    
-    end_buyer_count.to_i.percent_change_from(initial_buyer_count) if initial_buyer_count and end_buyer_count
-  end
-  
-  def revenue
-    price * buyers_count
+    if first_snapshot != current_snapshot
+      initial_buyer_count = first_snapshot.buyers_count
+      end_buyer_count     = current_snapshot.buyers_count
+      end_buyer_count.to_i.percent_change_from(initial_buyer_count) if initial_buyer_count and end_buyer_count
+    end
   end
   
   class << self

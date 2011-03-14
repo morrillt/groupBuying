@@ -6,4 +6,8 @@ class OpenTableCrawler < AutoIdCrawler
       division.update_attribute(:last_checked_at, Time.now)
     end
   end
+  
+  def url
+    "http://www.opentable.com/#{division.url_part}"
+  end
 end

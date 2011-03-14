@@ -1,7 +1,9 @@
 class Site < ActiveRecord::Base
+  include Chartable
+  
   has_many  :divisions
   has_many  :deals
-  has_many  :snapshot_diffs, :through => :deals
+  has_many  :snapshot_diffs
   
   scope :active,            where(:active => true)
   
@@ -18,18 +20,18 @@ class Site < ActiveRecord::Base
   end
   
   def snapshots
-    Snapshot.where(:site_id => id)
+    @snapshots ||= Snapshot.where(:site_id => id)
   end
   
   def url_checks
-    UrlCheck.where(:site_id => id)
+    @url_checks ||= UrlCheck.where(:site_id => id)
+  end
+  
+  def chart_name
+    title
   end
   
   def title
     read_attribute(:name).titleize
-  end
-  
-  def activity_block(opts = {})
-    ActivityBlock.new(opts.merge(:association_chain => self))
   end
 end

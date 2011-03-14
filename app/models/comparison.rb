@@ -8,12 +8,12 @@ class Comparison
       [:closed_deals,             "# of closed deals"],
       [:total_coupons,            "# of coupons purchased"],
       [:total_revenue,            "$ spent on deals"],
-      [:average_deal_revenue,     "Average Revenue per deal"],      
+#      [:average_deal_revenue,     "Average Revenue per deal"],      
     ]
     
     deltas.map do |method, name|
-      start  = @a.send(method)
-      finish = @b.send(method)
+      start  = @a.run_calculation(method)
+      finish = @b.run_calculation(method)
       puts "#{method}: #{start.inspect} / #{finish.inspect}"
       
       OpenStruct.new(

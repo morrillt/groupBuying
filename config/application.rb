@@ -12,8 +12,13 @@ module GroupBuying
     require 'geocoder'
     require 'monkey_patches'
     require 'group_buying/mongoid/doc'
-    
     require File.join(File.expand_path(File.dirname(__FILE__)), 'importer')
+    
+    require 'exception_notifier'
+    config.middleware.use 'ExceptionNotifier',
+        :email_prefix         => "[Group Buying] ",
+        :sender_address       => %{"Exception Mailer" <exceptions@pogodan.com>},
+        :exception_recipients => %w{dev@pogodan.com}
     
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -47,5 +52,7 @@ module GroupBuying
     config.filter_parameters += [:password]
     
     config.autoload_paths << File.join(config.root, "lib")
+    
+    require 'bleak_house' if ENV['BLEAK_HOUSE']
   end
 end
