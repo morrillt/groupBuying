@@ -72,7 +72,9 @@ class ActivityBlock
     
     # maximum # of queries should be <= # of intervals * # of calculations
     time_frames = (rounded_from + interval .. rounded_to).step(interval).map do |step|
-      ActivityBlock.new(diffables, :from => last_step, :to => step, :calculations => calculations)
+      ab = ActivityBlock.new(diffables, :from => last_step, :to => step, :calculations => calculations)
+      last_step = step
+      ab
     end
   end
   
