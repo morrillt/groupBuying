@@ -1,0 +1,23 @@
+!!!5
+%html
+  %head
+    %meta{:charset => 'utf-8'}
+    %title
+      Group Buying - 
+      = controller.controller_name.humanize
+    
+    %script{:src => '/javascript/jquery.js'}
+    %script{:src => '/javascript/highcharts.js'}
+    
+    %link{:rel => "stylesheet", :href => "/stylesheets/application.css", :type => "text/css"}
+    %link{:rel => "stylesheet", :href => "/stylesheets/screen.css", :type => "text/css"}
+    
+    <!--[if lt IE 8]>
+    %link{:rel=>"stylesheet", :href => "/stylesheets/ie.css", :type => "text/css", :media => "screen, projection"}
+    <![endif]-->
+    
+%body{:style => ('background-color: #C8FAD2' if Rails.env.dev?)}
+  .container
+    = render :partial => 'layouts/nav'
+    
+    = yield

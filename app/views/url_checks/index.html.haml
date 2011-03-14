@@ -1,0 +1,13 @@
+= will_paginate @url_checks
+
+%table
+  %tr
+    %th URL
+    %th status
+    %th checked
+    
+  - @url_checks.each do |url_check|
+    %tr
+      %td= link_to url_check.url, url_check.url
+      %td= url_check.deal_exists ? "deal exists" : "-"
+      %td #{time_ago_in_words url_check.created_at} ago

@@ -1,7 +1,4 @@
-$:.unshift File.dirname(__FILE__)
-require 'charts'
-require 'config/environment'
+# This file is used by Rack-based servers to start the application.
 
-
-run Sinatra::Application
-
+require ::File.expand_path('../config/environment',  __FILE__)
+run GroupBuying::Application
