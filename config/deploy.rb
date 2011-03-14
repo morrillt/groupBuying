@@ -33,7 +33,15 @@ after "deploy:update_code" do
   # link the default database.yml
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
 
-  run "cd #{deploy_to}/current && bundle install"
+#  run "cd #{deploy_to}/current && bundle install"
+end
 
-  run "touch #{deploy_to}/current/tmp/restart.txt"
+namespace :deploy do
+  task :start do
+    run "touch #{deploy_to}/current/tmp/restart.txt"
+  end
+
+  task :restart do
+    run "touch #{deploy_to}/current/tmp/restart.txt"
+  end
 end
