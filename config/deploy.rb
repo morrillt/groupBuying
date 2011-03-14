@@ -21,7 +21,7 @@ ssh_options[:username] = 'root'
 
 task :staging do
   server "50.56.83.165", :app, :web, :db, :primary => true
-#  set :bundle, "bundle"
+  set :bundle, "bundle"
   set :deploy_to, "/srv/gbd"
   ssh_options[:username] = 'gbd'
 end
@@ -33,19 +33,7 @@ after "deploy:update_code" do
   # link the default database.yml
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
 
-  # run the importer
-#  run "rvm ruby -rubygems #{release_path}/scripts/importer.rb"
-end
+  run "cd #{deploy_to}/current && bundle install"
 
-
-namespace :deploy do
-  desc "Start Application"
-  task :start do
-    run "touch #{current_path}/tmp/restart.txt"
-  end
-
-  desc "Restart Application"
-  task :restart do
-    run "touch #{current_path}/tmp/restart.txt"
-  end
+  run "touch #{deploy_to}/current/tmp/restart.txt"
 end
