@@ -29,7 +29,4 @@ after "deploy:update_code" do
   run "rvm rvmrc trust #{release_path}"
 
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-
-  # run the importer
-  run "rvm ruby #{release_path}/scripts/importer.rb"
 end
