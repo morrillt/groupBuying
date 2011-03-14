@@ -29,4 +29,8 @@ after "deploy:update_code" do
   run "rvm rvmrc trust #{release_path}"
 
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+  
+  run "cd #{deploy_to} && bundle install"
+  
+  run "touch #{deploy_to}/current/tmp/restart.txt"
 end
