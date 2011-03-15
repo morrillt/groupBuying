@@ -1,4 +1,2 @@
---colour
---format documentation
---loadby mtime
---reverse
+--color
+--format progress

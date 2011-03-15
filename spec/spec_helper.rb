@@ -1,24 +1,13 @@
-require 'sinatra'
-require 'rspec'
-# set test environment
-set :environment, :test
-set :run, false
-set :raise_errors, true
-set :logging, false
+ENV["RAILS_ENV"] ||= 'test'
 
-RSpec.configure do |config|
+require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
+Bundler.require 'rspec/rails'
+
+require 'factory_girl'
+
+# Include any factories that might be in the spec dir.
+Dir[File.expand_path(File.join(File.dirname(__FILE__),'**','*.rb'))].each {|f| require f}
+
+Rspec.configure do |config|
   config.mock_with :rspec
-end
-
-require File.join(File.dirname(__FILE__), '..', 'charts.rb')
-
-# stubbing this way since rspec-mocks don't seem to be working.
-class Date
-  def self.today
-    Date.new(2011, 3, 1)
-  end
-
-  def self.yesterday
-    Date.new(2011, 2, 28)
-  end
 end
