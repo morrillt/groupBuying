@@ -13,7 +13,7 @@ def watched_loop(name, &block)
   puts "adding thread #{name}, #{@threads.size}"
   
   @threads << Thread.new do
-#    begin
+    begin
       loop do
         puts "calling block"
         yield
@@ -21,9 +21,9 @@ def watched_loop(name, &block)
         puts "sleeping"
         sleep @chill.to_i
       end
-#    rescue Exception => e
-#      puts e.inspect
-#      puts e.backtrace
+    rescue Exception => e
+      puts e.inspect
+      puts e.backtrace
       
       # File.open(log_path, 'a') do |f|
       #   f << "======================\n"
@@ -32,7 +32,7 @@ def watched_loop(name, &block)
       #   f << e.backtrace.join("\n") + "\n"
       #   raise e
       # end
-#    end
+    end
   end
 end
 

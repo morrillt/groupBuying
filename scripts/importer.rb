@@ -14,4 +14,4 @@ options = {
   :monitor => false
 }
 
-Daemons.run("RAILS_ENV=#{RAILS_ENV} " + root + '/run_import.rb', options)
+Daemons.run(root + '/run_import.rb', options)
