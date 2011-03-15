@@ -34,7 +34,7 @@ after "deploy:update_code" do
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
     
   # start the importer
-  run "cd #{release_path} && god -c #{release_path}/config/importer.pid"
+  run "#{shared_path}/bundle/ruby/1.8/bin/god -c #{release_path}/config/importer.god -D"
 end
 
 namespace :deploy do
