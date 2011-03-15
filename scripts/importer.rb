@@ -1,4 +1,3 @@
-RAILS_ENV='production' unless defined?(RAILS_ENV)
 require 'rubygems'
 require 'daemons'
 

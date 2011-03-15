@@ -1,4 +1,3 @@
-RAILS_ENV='production' unless defined?(RAILS_ENV)
 RAILS_ROOT = File.dirname(File.dirname(__FILE__))
 
 God.watch do |w|
