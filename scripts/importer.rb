@@ -1,9 +1,6 @@
 require 'rubygems'
 require 'daemons'
 
-puts "importer.rb"
-puts "Rails env is #{RAILS_ENV}"
-
 root = File.dirname(__FILE__)
 
 options = {
@@ -17,4 +14,4 @@ options = {
   :monitor => false
 }
 
-Daemons.run(root + '/run_import.rb', options)
+Daemons.run("RAILS_ENV=#{RAILS_ENV} " + root + '/run_import.rb', options)
