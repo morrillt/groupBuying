@@ -54,7 +54,6 @@ class ActivityBlock
       resource_id_calculations = ids.map_to_hash{ |id| {id => {}}}
       
       calculations.each do |calculation|
-        Rails.logger.info "[CHART]: calculating #{calculation.to_s} for #{to}, from #{calculation_scope.to_sql}"
         run_grouped_calculation(calculation).each do |resource_id, value|
           resource_id_calculations[resource_id][calculation] = value
         end
