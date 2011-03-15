@@ -20,6 +20,7 @@ set :use_sudo, false
 ssh_options[:username] = 'root'
 
 task :staging do
+  set :rails_env, "production" # for now
   server "50.56.83.165", :app, :web, :db, :primary => true
   set :bundle, "bundle"
   set :deploy_to, "/srv/gbd"
@@ -34,7 +35,7 @@ after "deploy:update_code" do
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
     
   # start the importer
-  run "/srv/gbd/shared/bundle/ruby/1.8/gems/god-0.11.0/bin/god -c #{release_path}/config/importer.god RAILS_ENV=production"
+  run "/srv/gbd/shared/bundle/ruby/1.8/gems/god-0.11.0/bin/god -c #{release_path}/config/importer.god RAILS_ENV=#{rails_env}"
 end
 
 namespace :deploy do

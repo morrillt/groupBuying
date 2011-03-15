@@ -1,3 +1,4 @@
+RAILS_ENV='production' unless defined?(RAILS_ENV)
 require 'rubygems'
 require 'daemons'
 
@@ -14,4 +15,4 @@ options = {
   :monitor => false
 }
 
-Daemons.run(root + "/run_import.rb RAILS_ENV=#{RAILS_ENV}", options)
+Daemons.run(root + '/run_import.rb', options)
