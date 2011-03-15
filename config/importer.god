@@ -1,7 +1,8 @@
 RAILS_ROOT = File.dirname(File.dirname(__FILE__))
 
 God.watch do |w|
-  script = "rvm ruby #{RAILS_ROOT}/scripts/importer.rb"
+  path_to_script = Rails.env.development? ? RAILS_ROOT : '/srv/gbd/current'
+  script = "rvm ruby #{path_to_script}/scripts/importer.rb"
   w.env = { "RAILS_ENV" => 'production'}
   w.name = "deal-importer"
   w.group = "importers"
