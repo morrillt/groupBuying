@@ -11,6 +11,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    ZenTest (4.5.0)
     abstract (1.0.0)
     actionmailer (3.0.5)
       actionpack (= 3.0.5)
@@ -39,13 +40,19 @@ GEM
       activesupport (= 3.0.5)
     activesupport (3.0.5)
     arel (2.0.9)
+    autotest (4.4.6)
+      ZenTest (>= 4.4.1)
+    autotest-rails (4.1.0)
+      ZenTest
     bson (1.2.4)
     bson_ext (1.2.4)
     builder (2.1.2)
     crack (0.1.8)
     daemons (1.1.0)
+    diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    factory_girl (1.3.3)
     geocoder (0.9.10)
     god (0.11.0)
     groupon (0.0.1)
@@ -77,6 +84,7 @@ GEM
       bson (>= 1.2.4)
     mysql2 (0.2.6)
     nokogiri (1.4.4)
+    notifier (0.1.2)
     polyglot (0.3.1)
     rack (1.2.2)
     rack-mount (0.6.13)
@@ -98,6 +106,12 @@ GEM
       thor (~> 0.14.4)
     rake (0.8.7)
     responders (0.6.2)
+    rspec-core (2.5.1)
+    rspec-expectations (2.5.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.5.0)
+    test_notifier (0.3.6)
+      notifier
     thor (0.14.6)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
@@ -108,8 +122,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ZenTest
+  autotest
+  autotest-rails
   bson_ext (= 1.2.4)
   daemons
+  factory_girl
   geocoder
   god
   groupon
@@ -122,4 +140,8 @@ DEPENDENCIES
   mysql2
   nokogiri
   rails (>= 3.0.5)
+  rspec-core
+  rspec-expectations
+  rspec-mocks
+  test_notifier
   will_paginate
