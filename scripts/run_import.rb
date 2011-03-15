@@ -21,9 +21,10 @@ def watched_loop(name, &block)
         puts "sleeping"
         sleep @chill.to_i
       end
-    rescue Exception => e
+    rescue => e
       puts e.inspect
       puts e.backtrace
+      puts "#{yield.inspect}"
       
       # File.open(log_path, 'a') do |f|
       #   f << "======================\n"
