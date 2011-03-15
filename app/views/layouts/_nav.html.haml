@@ -1,3 +1,17 @@
+= stylesheet_link_tag "jquery.fancybox-1.3.4.css", :cache => true
+= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js", :cache => true
+= javascript_include_tag "third-party/fancybox/jquery.fancybox-1.3.4.pack.js"
+:javascript
+  jQuery(document).ready(function(){
+    jQuery("a#lnk-new-user").fancybox({
+      'transitionIn': 'elastic',
+      'transitionOut': 'elastic',
+      'padding': '0',
+      'overlayColor': '#270e1f',
+      'overlayOpacity': '0.7'
+    });
+  });
+
 - deal_scope = ([@resource, @parent].detect{|f| f.respond_to?(:deals) }.try(:deals) || Deal)
 - active_deals, total_deals = deal_scope.active.count, deal_scope.count
 
@@ -20,7 +34,8 @@
     %h5= "#{active_deals} / #{total_deals}"
     %h5 active/total deals
   .rounded
-    %h3 Top Trending Deals
-  .rounded
     %h5 Sign Up for Email Updates
-    %input{:type => "submit", :value => "Sign Up"}/
+    .button
+      %a{:href => "users/new", :id=> "lnk-new-user", :class=> "lightbox"}
+        = button_to "Sign Up", "#", :method=>:get
+    

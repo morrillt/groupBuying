@@ -1,4 +1,6 @@
-GroupBuying::Application.routes.draw do
+GroupBuying::Application.routes.draw do |map|
+  resources :users
+
   resources :snapshots, :url_checks, :snapshot_diffs
   
   resources :deals do
@@ -8,6 +10,6 @@ GroupBuying::Application.routes.draw do
   resources :sites do
     resources :deals, :snapshots, :url_checks, :snapshot_diffs, :divisions
   end
-  
+
   root :to => "sites#index"
 end

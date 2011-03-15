@@ -1,6 +1,6 @@
 input[type=text] { width: 150px; display: inline;}
 
-div.nav { margin-top: -15px; margin-bottom: 15px;}
+div.nav { margin-top: -5px; margin-bottom: 15px;}
 div.nav a { padding-right: 15px; }
 
 div.sidebar {
@@ -22,3 +22,4 @@ div.rounded {
 div.rounded h2 { margin: 0 auto; width: 80px;  text-align: center;}
 h5 { margin: 0 auto; width: 130px;  text-align: center; }
 div.rounded input { margin: 0 auto; width: 60px; margin-left: 35px; margin-top: 15px; }
+div.button{ margin-top: -15px; }
