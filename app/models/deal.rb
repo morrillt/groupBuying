@@ -19,8 +19,8 @@ class Deal < ActiveRecord::Base
   # cache some stuff
   before_save do
     puts "caching status and revenue"
-    self.active = (status && status.to_sym == :active)
-    self.revenue = buyers_count.nil? ? 0.0 : (buyers_count.to_f * price.to_f)
+    #self.active = (status && status.to_sym == :active)
+    #self.revenue = buyers_count.to_f * price.to_f
     true # return true or the callback will abort the save
   end
   
@@ -67,16 +67,10 @@ class Deal < ActiveRecord::Base
   end
   
   def import
-    begin
-      if snap = create_snapshot
-        update_cached_stats
-      else
-        touch
-      end
-    rescue => e
-      puts "Import Failure: #{e.message}"
-      puts ""
-      puts self.inspect
+    if snap = create_snapshot
+      update_cached_stats
+    else
+      touch
     end
   end
   
