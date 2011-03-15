@@ -36,7 +36,7 @@ after "deploy:update_code" do
   # link the default database.yml
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
   
-  run "god -c #{release_path}/config/importer.god"
+  run "/srv/gbd/shared/bundle/ruby/1.8/gems/god-0.11.0/bin/god -c #{release_path}/config/importer.god"
 end
 
 namespace :deploy do
