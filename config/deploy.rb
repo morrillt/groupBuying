@@ -40,7 +40,7 @@ after "deploy:update_code" do
   run "[ -f #{release_path}/log/importer.pid ] && rm -f #{release_path}/log/importer.pid"
   
   # start the importer
-  run "rvm ruby #{release_path}/scripts/importer.rb start"
+  run "god -c #{release_path}/config/importer.god"
 end
 
 namespace :deploy do
