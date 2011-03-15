@@ -1,0 +1,13 @@
+Importers
+==============================
+  The importers run every hour and fetch data from various sources.
+  This whole process is monitored by god using the config/importer.god file.
+
+Deployment
+==============================
+  cap `RAILS_ENV` deploy
+
+Testing
+==============================
+  bundle exec autotest
+
