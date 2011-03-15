@@ -1,7 +1,7 @@
 RAILS_ROOT = File.dirname(File.dirname(__FILE__))
 
 God.watch do |w|
-  path_to_script = Rails.env.development? ? RAILS_ROOT : '/srv/gbd/current'
+  app_path = Rails.env.development? ? RAILS_ROOT : '/srv/gbd/current'
   script = "rvm ruby #{path_to_script}/scripts/importer.rb"
   w.env = { "RAILS_ENV" => 'production'}
   w.name = "deal-importer"
@@ -11,7 +11,7 @@ God.watch do |w|
   w.stop = "#{script} stop"
   w.start_grace = 20.seconds
   w.restart_grace = 20.seconds
-  w.pid_file = "#{RAILS_ROOT}/log/deal-importer.pid"
+  w.pid_file = "#{app_path}/log/deal-importer.pid"
   
   w.behavior(:clean_pid_file)
   
