@@ -17,12 +17,12 @@ class Deal < ActiveRecord::Base
   scope :never_cached,  where(:buyers_count => nil)
   
   # cache some stuff
-  before_save do
-    puts "caching status and revenue"
-    #self.active = (status && status.to_sym == :active)
-    #self.revenue = buyers_count.to_f * price.to_f
-    true # return true or the callback will abort the save
-  end
+  #before_save do
+  #  puts "caching status and revenue"
+  #  self.active = (status && status.to_sym == :active)
+  #  self.revenue = buyers_count.to_f * price.to_f
+  #  true # return true or the callback will abort the save
+  #end
   
   def self.update_cached_stats
     (never_cached + needs_update).each(&:update_cached_stats)
