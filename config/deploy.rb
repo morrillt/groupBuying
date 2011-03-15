@@ -32,15 +32,9 @@ after "deploy:update_code" do
 
   # link the default database.yml
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-  
-  # stop the importer
-  run "rvm ruby #{release_path}/scripts/importer.rb stop"
-  
-  # remove stale importer pid if it exists
-  run "[ -f #{release_path}/log/importer.pid ] && rm -f #{release_path}/log/importer.pid"
-  
+    
   # start the importer
-  run "god -c #{release_path}/config/importer.god"
+  run "cd #{release_path} && god -c #{release_path}/config/importer.pid"
 end
 
 namespace :deploy do
