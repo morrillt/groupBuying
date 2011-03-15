@@ -4,6 +4,7 @@ require 'rvm/capistrano'
 
 set :rvm_type, :user
 set :rvm_ruby_string, 'ree@charts'
+set :shared_bundler_gems_path, "/srv/gbd/shared/bundle/ruby/1.8/gems"
 
 set :domain, 'group-buying.pogodan.com'
 set :application, domain
@@ -34,8 +35,11 @@ after "deploy:update_code" do
   # link the default database.yml
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
     
-  # start the importer
-  run "/srv/gbd/shared/bundle/ruby/1.8/gems/god-0.11.0/bin/god -c #{release_path}/config/importer.god RAILS_ENV=#{rails_env}"
+  # stop all god processes
+  run "#{shared_bundler_gem_path}/god-0.11.0/bin/god terminate"
+    
+  # start the importer god monitor process
+  run "#{shared_bundler_gem_path}/god-0.11.0/bin/god -c #{release_path}/config/importer.god RAILS_ENV=#{rails_env}"
 end
 
 namespace :deploy do
