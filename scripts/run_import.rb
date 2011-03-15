@@ -1,4 +1,8 @@
 #!/usr/bin/env ruby
+
+puts "run_import.rb"
+puts "Rails env is #{RAILS_ENV}"
+
 Thread.abort_on_exception = false
 
 require File.expand_path(File.join(*%w[ .. config environment ]), File.dirname(__FILE__))

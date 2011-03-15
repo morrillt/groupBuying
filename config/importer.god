@@ -1,5 +1,8 @@
 RAILS_ROOT = File.dirname(File.dirname(__FILE__))
 
+puts "Entering god config file #{__FILE__}"
+puts "Rails env is #{RAILS_ENV}"
+
 God.watch do |w|
   script = "rvm ruby #{RAILS_ROOT}/scripts/importer.rb"
   w.env = { "RAILS_ENV" => 'production'}

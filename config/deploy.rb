@@ -28,15 +28,14 @@ task :staging do
   ssh_options[:username] = 'gbd'
 end
 
+after "deploy:setup", "deploy:god:restart"
+
 after "deploy:update_code" do
   # trust rvmrc
   run "rvm rvmrc trust #{release_path}"
 
   # link the default database.yml
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-  
-  # start the importer god monitor process
-  run "#{shared_bundler_gems_path}/god-0.11.0/bin/god -c #{release_path}/config/importer.god"
 end
 
 namespace :deploy do
@@ -46,5 +45,15 @@ namespace :deploy do
 
   task :restart do
     run "touch #{deploy_to}/current/tmp/restart.txt"
+  end
+  
+  namespace :god do
+    task :start, :rolls => :app do
+      sudo "#{shared_bundler_gems_path}/god-0.11.0/bin/god -c #{release_path}/config/importer.god"
+    end
+    
+    task :restart, :rolls => :app do
+      sudo "#{shared_bundler_gems_path}/god-0.11.0/bin/god restart"
+    end
   end
 end
