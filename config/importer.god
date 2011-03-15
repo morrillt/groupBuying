@@ -1,7 +1,7 @@
 RAILS_ROOT = File.dirname(File.dirname(__FILE__))
 
 God.watch do |w|
-  script = "rvm RAILS_ENV=production ruby #{RAILS_ROOT}/scripts/importer.rb"
+  script = "export RAILS_ENV=production && rvm ruby #{RAILS_ROOT}/scripts/importer.rb"
   w.name = "deal-importer"
   w.group = "importers"
   w.interval = 60.seconds
