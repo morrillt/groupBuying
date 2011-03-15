@@ -33,7 +33,7 @@ class OldSnapshot < ActiveRecord::Base
       :start_snapshot     => previous_snapshot, 
       :end_snapshot       => self,
       :buyer_change       => buyer_change,
-      :revenue_change     => buyer_change * deal.price,
+      :revenue_change     => (buyer_change.to_f * deal.price.to_f),
       :closed             => closed,
       :changed_at         => imported_at
     )

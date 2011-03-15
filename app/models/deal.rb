@@ -19,8 +19,8 @@ class Deal < ActiveRecord::Base
   # cache some stuff
   before_save do
     puts "caching status and revenue"
-    self.active = (status.to_sym == :active)
-    self.revenue = buyers_count * price
+    self.active = (status && status.to_sym == :active)
+    self.revenue = buyers_count.to_f * price.to_f
     true # return true or the callback will abort the save
   end
   
