@@ -9,6 +9,7 @@ gem 'mysql2'
 gem 'meta_where'
 gem 'daemons'
 gem 'god'
+gem 'rack-mount', '>= 0.6.13'
 # gem 'exception_notification', :git => 'git://github.com/rails/exception_notification.git'
 
 
