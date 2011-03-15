@@ -34,12 +34,9 @@ after "deploy:update_code" do
 
   # link the default database.yml
   run "ln -s #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-    
-  # stop all god processes
-  run "#{shared_bundler_gem_path}/god-0.11.0/bin/god terminate"
-    
+  
   # start the importer god monitor process
-  run "#{shared_bundler_gem_path}/god-0.11.0/bin/god -c #{release_path}/config/importer.god RAILS_ENV=#{rails_env}"
+  run "#{shared_bundler_gems_path}/god-0.11.0/bin/god -c #{release_path}/config/importer.god RAILS_ENV=#{rails_env}"
 end
 
 namespace :deploy do
