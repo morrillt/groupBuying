@@ -26,3 +26,14 @@ gem 'geocoder'
 gem 'haml'
 gem 'inherited_resources'
 gem 'will_paginate'
+
+group :test do
+  gem 'autotest'
+  gem 'autotest-rails'
+  gem 'ZenTest'
+  gem 'factory_girl'
+  gem 'rspec-core'
+  gem 'rspec-mocks'
+  gem 'rspec-expectations'
+  gem 'test_notifier'
+end
