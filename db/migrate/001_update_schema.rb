@@ -43,8 +43,12 @@ class UpdateSchema < ActiveRecord::Migration
     end
     
     %w(Groupon OpenTable TravelZoo TravelZooUk).each do |old_table|
-      Site.create(:name => old_table.underscore)
-      add_column old_table.downcase, :converted, :boolean, :null => false, :default => false
+      begin
+        Site.create(:name => old_table.underscore)
+        add_column old_table.downcase, :converted, :boolean, :null => false, :default => false
+      rescue
+        next
+      end
     end
     
     add_index :deals, [:site_id, :slug, :zip_code]
