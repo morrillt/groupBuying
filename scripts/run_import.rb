@@ -15,7 +15,7 @@ def watched_loop(name, &block)
   @threads << Thread.new do
     begin
       loop do
-        puts "calling block"
+        puts "calling block #{name}"
         yield
         
         puts "sleeping"
@@ -52,13 +52,13 @@ watched_loop "analyzer" do
   Analyzer.analyze_snapshots(100)
 end
 
-(@restart_every/@check_threads_every).times do
-  puts "checking threads"
-  # restart the main loop if any threads have died
-  if @threads.any?{ |thread| not thread.alive? }
-    puts "exiting - #{@threads.inspect}"
-    exit
-  end
-  
-  sleep @check_threads_every.to_i
-end
+#(@restart_every/@check_threads_every).times do
+#  puts "checking threads"
+#  # restart the main loop if any threads have died
+#  if @threads.any?{ |thread| not thread.alive? }
+#    puts "exiting - #{@threads.inspect}"
+#    exit
+#  end
+#  
+#  sleep @check_threads_every.to_i
+#end

@@ -21,6 +21,9 @@ class HTMLSnapshooter < BaseSnapshooter
   end
   
   def parse_doc
+    puts "-"*80
+    puts raw_data
+    puts "-"*80
     Nokogiri::HTML(raw_data)
   end
   

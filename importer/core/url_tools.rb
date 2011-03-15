@@ -13,6 +13,9 @@ module UrlTools
     def parse_url(url)
       data = load_url(url)
       puts "[#{to_s}] parsing: #{url}"
+      puts "-"*80
+      puts data
+      puts "-"*80
       Nokogiri::HTML(data)
     end
 
