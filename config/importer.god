@@ -5,8 +5,8 @@ God.watch do |w|
   w.name = "deal-importer"
   w.group = "importers"
   w.interval = 60.seconds
-  w.start = "#{script} start RAILS_ENV=#{RAILS_ENV}"
-  w.stop = "#{script} stop RAILS_ENV=#{RAILS_ENV}"
+  w.start = "#{script} start"
+  w.stop = "#{script} stop"
   w.start_grace = 20.seconds
   w.restart_grace = 20.seconds
   w.pid_file = "#{RAILS_ROOT}/log/deal-importer.pid"
