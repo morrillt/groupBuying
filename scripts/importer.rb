@@ -14,4 +14,4 @@ options = {
   :monitor => false
 }
 
-Daemons.run(root + '/run_import', options)
+Daemons.run(root + '/run_import.rb', options)

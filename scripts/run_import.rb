@@ -22,6 +22,7 @@ def watched_loop(name, &block)
         sleep @chill.to_i
       end
     rescue Exception => e
+      puts "Exception: "
       puts e.inspect
       puts e.backtrace
       
