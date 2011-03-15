@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 Thread.abort_on_exception = false
 
-require File.expand_path(File.join(*%w[ .. config environment ]), File.dirname(__FILE__))
+require File.expand_path(File.join('..', 'config', 'environment'), File.dirname(__FILE__))
 
 log_path = File.join(File.expand_path(File.dirname(__FILE__)), 'log/import.log')
 @threads = []

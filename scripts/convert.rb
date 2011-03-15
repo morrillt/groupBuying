@@ -1,4 +1,4 @@
-require File.expand_path(File.join(*%w[ config environment ]), File.dirname(__FILE__))
+require File.expand_path(File.join('config','environment'), File.dirname(__FILE__))
 
 [TravelZooUk, TravelZoo, OpenTable, Groupon].each do |site|
   puts "converting #{site.needs_conversion.count} records from #{site.model_name}"
