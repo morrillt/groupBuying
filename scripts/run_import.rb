@@ -1,18 +1,18 @@
 #!/usr/bin/env ruby
-Thread.abort_on_exception = false
+#Thread.abort_on_exception = false
 
 require File.expand_path(File.join('..', 'config', 'environment'), File.dirname(__FILE__))
 
 log_path = File.join(File.expand_path(File.dirname(__FILE__)), 'log/import.log')
-@threads = []
-@restart_every        = 240.minutes
-@check_threads_every  = 5.seconds
+#@threads = []
+#@restart_every        = 240.minutes
+#@check_threads_every  = 5.seconds
 @chill                = 30.seconds
 
 def watched_loop(name, &block)
-  puts "adding thread #{name}, #{@threads.size}"
+  #puts "adding thread #{name}, #{@threads.size}"
   
-  @threads << Thread.new do
+  #@threads << Thread.new do
     begin
       loop do
         puts "calling block"
@@ -33,7 +33,7 @@ def watched_loop(name, &block)
       #   raise e
       # end
     end
-  end
+  #end
 end
 
 Site.active.each do |site|
@@ -52,13 +52,13 @@ watched_loop "analyzer" do
   Analyzer.analyze_snapshots(100)
 end
 
-(@restart_every/@check_threads_every).times do
-  puts "checking threads"
-  # restart the main loop if any threads have died
-  if @threads.any?{ |thread| not thread.alive? }
-    puts "exiting - #{@threads.inspect}"
-    exit
-  end
-  
-  sleep @check_threads_every.to_i
-end
+#(@restart_every/@check_threads_every).times do
+#  puts "checking threads"
+#  # restart the main loop if any threads have died
+#  if @threads.any?{ |thread| not thread.alive? }
+#    puts "exiting - #{@threads.inspect}"
+#    exit
+#  end
+#  
+#  sleep @check_threads_every.to_i
+#end
