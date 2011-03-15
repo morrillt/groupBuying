@@ -15,7 +15,7 @@ def watched_loop(name, &block)
   @threads << Thread.new do
     begin
       loop do
-        puts "calling block"
+        puts "calling block #{name}"
         yield
         
         puts "sleeping"
