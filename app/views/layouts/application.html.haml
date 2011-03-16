@@ -1,0 +1,28 @@
+!!!5
+%html
+  %head
+    %meta{:charset => 'utf-8'}
+    %title
+      Group Buying - 
+      = controller.controller_name.humanize
+    
+    %script{:src => '/javascripts/jquery.js'}
+    %script{:src => '/javascripts/highcharts.js'}
+    
+    = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"
+    
+    = javascript_include_tag "third-party/fancybox/jquery.fancybox-1.3.4.pack.js"
+    
+    %link{:rel => "stylesheet", :href => "/stylesheets/application.css", :type => "text/css"}
+    %link{:rel => "stylesheet", :href => "/stylesheets/screen.css", :type => "text/css"}
+    = stylesheet_link_tag "jquery.fancybox-1.3.4.css", :cache => true
+    
+    <!--[if lt IE 8]>
+    %link{:rel=>"stylesheet", :href => "/stylesheets/ie.css", :type => "text/css", :media => "screen, projection"}
+    <![endif]-->
+    
+%body{:style => ('background-color: #C8FAD2' if Rails.env.dev?)}
+  .container
+    = render :partial => 'layouts/nav'
+    
+    = yield

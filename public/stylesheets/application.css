@@ -1,0 +1,25 @@
+input[type=text] { width: 150px; display: inline;}
+
+div.nav { margin-top: -5px; margin-bottom: 15px;}
+div.nav a { padding-right: 15px; }
+
+div.sidebar {
+   width: 140px;
+   float: right;
+   margin-right: 90px;
+}
+div.rounded {
+  border: 1px solid #999;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+  width: 135px;
+  height: 70px;
+  padding:15px;
+  margin: 10px 0px;
+}
+
+div.rounded h2 { margin: 0 auto; width: 80px;  text-align: center;}
+h5 { margin: 0 auto; width: 130px;  text-align: center; }
+div.rounded input { margin: 0 auto; width: 60px; margin-left: 35px; margin-top: 15px; }
+div.button{ margin-top: -15px; }
