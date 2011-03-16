@@ -10,74 +10,40 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 9) do
+ActiveRecord::Schema.define(:version => 20110316060833) do
 
   create_table "deals", :force => true do |t|
-    t.string   "title",                                  :null => false
-    t.string   "url"
-    t.string   "deal_id",                                :null => false
-    t.integer  "site_id",                                :null => false
-    t.boolean  "active",              :default => false, :null => false
-    t.integer  "price",                                  :null => false
-    t.integer  "original_price"
-    t.string   "currency"
-    t.integer  "buyers_count"
-    t.integer  "hotness"
-    t.datetime "start_on"
-    t.datetime "end_on"
+    t.string   "name"
+    t.string   "permalink"
+    t.string   "token"
+    t.decimal  "price"
+    t.integer  "division_id"
+    t.integer  "site_id"
+    t.boolean  "active",      :default => true
+    t.boolean  "sold",        :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "division_id"
-    t.string   "status",                                 :null => false
-    t.datetime "expires_at"
-    t.float    "latitude"
-    t.float    "longitude"
-    t.string   "current_snapshot_id"
-    t.integer  "revenue"
   end
 
-  add_index "deals", ["site_id", "deal_id"], :name => "index_deals_on_site_id_and_slug_and_zip_code"
-
   create_table "divisions", :force => true do |t|
-    t.integer  "site_id",                                            :null => false
-    t.string   "name",                                               :null => false
-    t.string   "url_part"
-    t.string   "division_id"
-    t.datetime "last_checked_at", :default => '2000-01-01 00:00:00'
+    t.string   "name"
+    t.string   "source"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "sites", :force => true do |t|
-    t.string   "name",                             :null => false
+    t.string   "name"
+    t.string   "base_url"
+    t.string   "source_name"
+    t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",         :default => true, :null => false
-    t.string   "importer_class"
-  end
-
-  create_table "snapshot_diffs", :force => true do |t|
-    t.integer  "deal_id",         :null => false
-    t.integer  "buyer_change",    :null => false
-    t.integer  "revenue_change",  :null => false
-    t.boolean  "closed",          :null => false
-    t.datetime "changed_at",      :null => false
-    t.string   "snapshot_id",     :null => false
-    t.string   "old_snapshot_id"
-    t.integer  "site_id"
-    t.integer  "division_id"
   end
 
   create_table "snapshots", :force => true do |t|
-    t.integer  "deal_id",      :null => false
-    t.integer  "buyers_count", :null => false
-    t.boolean  "active",       :null => false
-    t.datetime "imported_at",  :null => false
-  end
-
-  create_table "users", :force => true do |t|
-    t.string   "name"
-    t.string   "email"
+    t.string   "deal_id"
+    t.integer  "sold_count"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

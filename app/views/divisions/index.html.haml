@@ -1,15 +1,18 @@
-= render :partial => 'shared/chart', :object => @chart
+%h1= t('.title')
+%p= link_to t('.new_division'), new_division_path
 
 %table
-  %tr
-    %th name
-    %th active deals
-    %th url
-    %th last checked
-    
-  - @divisions.sort_by{|d| -d.deals.active.count}.each do |division|
+  %thead
     %tr
-      %td= link_to division.name, site_division_path(parent, division)
-      %td= division.deals.active.count
-      %td= link_to division.url, division.url
-      %td #{time_ago_in_words division.last_checked_at} ago
+      %th= Division.human_attribute_name :name
+      %th= Division.human_attribute_name :source
+      %th{:colspan => 3}= t 'actions'
+  
+  %tbody
+    - for division in @divisions
+      %tr{ :class => cycle(:odd, :even) }
+        %td= division.name
+        %td= division.source
+        %td.action= link_to t('show'), division
+        %td.action= link_to t('edit'), edit_division_path(division)
+        %td.action= link_to t('destroy'), division, :confirm => t('are_you_sure'), :method => :delete

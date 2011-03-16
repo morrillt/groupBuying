@@ -1,40 +1,36 @@
-source :rubygems
+source 'http://rubygems.org'
 
-# core
-gem 'rails',      '>= 3.0.5'
-gem 'mongoid',    :git => 'git://github.com/mongoid/mongoid.git'
-#gem 'mongoid',    '2.0.0.rc7'
-gem 'bson_ext',   '1.2.4'
-gem 'mysql2'
-gem 'meta_where'
-gem 'daemons'
-gem 'god'
-gem 'rack-mount', '>= 0.6.13'
-# gem 'exception_notification', :git => 'git://github.com/rails/exception_notification.git'
+gem 'rails', '3.0.5'
 
+# Bundle edge Rails instead:
+# gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-# importer
-gem 'nokogiri'
-gem 'mechanize'
-gem 'groupon'
-gem 'json'
-gem 'daemons'
-
-# geocoding
-gem 'geocoder'
-
-# front-end
+gem 'sqlite3'
 gem 'haml'
-gem 'inherited_resources'
-gem 'will_paginate'
+gem 'mechanize'
+gem 'nokogiri'
+gem 'hpricot'
+gem 'whenever'
 
-group :test do
-  gem 'autotest'
-  gem 'autotest-rails'
-  gem 'ZenTest'
-  gem 'factory_girl'
-  gem 'rspec-core'
-  gem 'rspec-mocks'
-  gem 'rspec-expectations'
-  gem 'test_notifier'
-end
+# Use unicorn as the web server
+# gem 'unicorn'
+
+# Deploy with Capistrano
+# gem 'capistrano'
+
+# To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
+# gem 'ruby-debug'
+# gem 'ruby-debug19', :require => 'ruby-debug'
+
+# Bundle the extra gems:
+# gem 'bj'
+# gem 'nokogiri'
+# gem 'sqlite3-ruby', :require => 'sqlite3'
+# gem 'aws-s3', :require => 'aws/s3'
+
+# Bundle gems for the local environment. Make sure to
+# put test-only gems in this group so their generators
+# and rake tasks are available in development mode:
+# group :development, :test do
+#   gem 'webrat'
+# end

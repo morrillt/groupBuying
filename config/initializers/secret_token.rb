@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-GroupBuying::Application.config.secret_token = '37ff88a524f9c91666efd8b7435135c7d3e05eada24f0cc955a7bdc649795237da33cdacb518d6073cce0c97463c1ce2f51ba44b1c31bd575518deca23b24568'
+Groupster::Application.config.secret_token = '513951a91d7066646aeb081dbe3ccbc01bf11fc43397ca96ae252d2237ca709988ca758ed0703958fd723e4cbc7403ceeaa7af20fc94f65c2cc825bfde7ff6e1'

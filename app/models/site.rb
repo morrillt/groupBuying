@@ -1,37 +1,28 @@
 class Site < ActiveRecord::Base
-  include Chartable
+  has_many :deals
+
+  scope :active, where(:active => true)
   
-  has_many  :divisions
-  has_many  :deals
-  has_many  :snapshot_diffs
-  
-  scope :active,            where(:active => true)
-  
-  def to_param
-    name
+  # Updates all the sites active deals buy createing
+  # snapshots of the deal
+  def update_snapshots!
+    deals.active.each do |deal|
+      deal.take_snapshot!
+    end
   end
   
-  def crawler
-    @crawler ||= "#{name.camelize}Crawler".constantize
+  # Captures new deals in the database
+  def crawl_new_deals
+    snapshooter.crawl_new_deals
   end
   
-  def snapshooter(deal_id)
-    @crawler ||= "#{name.camelize}Snapshooter".constantize.new(deal_id)
-  end
-  
-  def snapshots
-    @snapshots ||= Snapshot.where(:site_id => id)
-  end
-  
-  def url_checks
-    @url_checks ||= UrlCheck.where(:site_id => id)
-  end
-  
-  def chart_name
-    title
-  end
-  
-  def title
-    read_attribute(:name).titleize
+  # Returns a new instance of the Site Snapshooter class
+  # Example:
+  #  Snapshooter::KgbDeals.new
+  def snapshooter
+    case self.source_name
+    when 'kgb_deals'
+      Snapshooter::KgbDeals.new
+    end
   end
 end
