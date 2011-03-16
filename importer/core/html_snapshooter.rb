@@ -21,10 +21,7 @@ class HTMLSnapshooter < BaseSnapshooter
   end
   
   def parse_doc
-    puts "-"*80
-    puts raw_data
-    puts "-"*80
-    Nokogiri::HTML(raw_data)
+    raw_data.each{|line| Nokogiri::HTML(line) }
   end
   
   def raw_data

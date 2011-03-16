@@ -16,7 +16,7 @@ module UrlTools
       puts "-"*80
       puts data
       puts "-"*80
-      Nokogiri::HTML(data)
+      data.each{|line| Nokogiri::HTML(line) }
     end
 
     # simple open-uri URL loading. override where needed
