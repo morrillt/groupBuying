@@ -1,5 +1,3 @@
-require 'digest/md5'
-
 module Snapshooter
   class Base    
     def initialize
@@ -20,10 +18,6 @@ module Snapshooter
     
     def xpath(path)
       (@doc/path) || []
-    end
-    
-    def self.tokenize(deal)
-      Digest::MD5.hexdigest(deal.name + deal.permalink + deal.price.to_s)
     end
   end
 end

@@ -1,18 +1,38 @@
-%h1= t '.title'
-%p
-  = link_to t('back'), deals_path
-  = link_to t('edit'), edit_deal_path(@deal)
+=# render :partial => 'shared/chart', :object => @chart
 
-%dl
-  %dt= Deal.human_attribute_name :name
-  %dd= @deal.name
-  %dt= Deal.human_attribute_name :price
-  %dd= @deal.price
-  %dt= Deal.human_attribute_name :division_id
-  %dd= @deal.division_id
-  %dt= Deal.human_attribute_name :site_id
-  %dd= @deal.site_id
-  %dt= Deal.human_attribute_name :active
-  %dd= @deal.active
-  %dt= Deal.human_attribute_name :sold
-  %dd= @deal.sold
+%b Title:
+= @deal.name
+%br
+
+%b URL:
+= link_to_if @deal.permalink, @deal.permalink, @deal.permalink
+%br
+
+%b Status:
+= @deal.active? ? 'active' : 'inactive'
+%br
+
+%b Stats:
+
+%table
+  %tr
+    %th Price
+    %th Buyers Count
+    %th Revenue
+    %th Snapshots
+    
+  %tr
+    %td=number_to_currency(@deal.sale_price)
+    %td=@deal.buyers_count
+    %td=number_to_currency(@deal.revenue)
+    %td=@deal.snapshots.count
+%br
+
+%hr
+=# button_to 'snapshot now!', import_deal_path(@deal)
+
+%hr
+=# render :partial => 'snapshot_diffs/snapshot_diffs', :object => @deal.snapshot_diffs.order(:changed_at.desc).limit(20)
+
+%hr
+=# render :partial => 'snapshots/snapshots', :object => @deal.snapshots.desc(:created_at).limit(20)

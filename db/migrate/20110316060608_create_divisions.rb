@@ -3,7 +3,8 @@ class CreateDivisions < ActiveRecord::Migration
     create_table :divisions do |t|
       t.string :name
       t.string :source
-
+      t.string :url
+      t.integer :site_id
       t.timestamps
     end
   end

@@ -11,14 +11,7 @@
         %td= link_to site.title, site
         %td= site.deals.active.count
         %td
-          = link_to("deals",      site_deals_path(site))
-          |
-          = link_to("divisions",  site_divisions_path(site))
-        %td
-          = link_to("snapshots",  site_snapshots_path(site))
-          |
-          = link_to("diffs",      site_snapshot_diffs_path(site))
-          |
-          = link_to("url_checks", site_url_checks_path(site))
-      
-= render :partial => 'shared/chart', :object => @chart
+          = link_to("Deals",site_deals_path(site))
+          = link_to("Divisions",  site_divisions_path(site))
+             
+=# render :partial => 'shared/chart', :object => @chart

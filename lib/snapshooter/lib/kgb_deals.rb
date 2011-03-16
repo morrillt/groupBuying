@@ -34,7 +34,9 @@ module Snapshooter
         site     = Site.find_by_source_name("kgb_deals")
         
         # Find the division
-        division = Division.find_or_create_by_name(division_hash[:text])
+        division = site.divisions.find_or_initialize_by_name(division_hash[:text])
+        division.url = (base_url + division_hash[:href])
+        division.save
         
         # Find all deal links for that division
         xpath("div[@id=sitemap_body] a").map{|link| 
@@ -43,23 +45,28 @@ module Snapshooter
           get(link["href"], :full_path => true)
           
           # Capture the price
-          price = xpath("div[@class='buy_link'] a").first.html.gsub(/[^0-9\.]/,'').to_f
+          sale_price = xpath("div[@class='buy_link'] a").first.html.gsub(/[^0-9\.]/,'').to_f
+          
+          # Capture Actual Price
+          actual_price = xpath("div[@id='deal_basic_left'] dl dd").first.html.gsub(/[^0-9\.]/,'').to_f
+          
+          # Capture the merchant name
+          merchant_name = (xpath("li[@class='merchant_name']").first.html || "unknown").dasherize
           
           # Build attributes hash
           attributes = {
             :division => division,
-            :site => site,
             :name => link.html,
-            :price => price,
-            :permalink => link["href"]
+            :sale_price => sale_price,
+            :actual_price => actual_price,
+            :permalink => link["href"],
+            :deal_id => merchant_name,
+            :site_id => site.id
           }
           
-          # Generate a unique token
-          attributes[:token] = Snapshooter::Base.tokenize(Deal.new(attributes))
-          
-          # Ensure we dont duplicate deals
-          if deal = Deal.find_or_create_by_token(attributes)
-            puts "Added #{deal.name}"
+          # Ensure we dont duplicate deals use unique deal identifier
+          if deal = division.deals.active.find_or_create_by_deal_id(attributes)
+            puts "#{self.class.to_s} Added #{deal.name}"
           end
           
           # Other usefull stuff.

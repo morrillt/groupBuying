@@ -15,12 +15,16 @@ ActiveRecord::Schema.define(:version => 20110316060833) do
   create_table "deals", :force => true do |t|
     t.string   "name"
     t.string   "permalink"
-    t.string   "token"
-    t.decimal  "price"
+    t.string   "deal_id"
+    t.decimal  "sale_price"
+    t.decimal  "actual_price"
     t.integer  "division_id"
     t.integer  "site_id"
-    t.boolean  "active",      :default => true
-    t.boolean  "sold",        :default => false
+    t.boolean  "active",       :default => true
+    t.boolean  "sold",         :default => false
+    t.integer  "hotness",      :default => 0
+    t.decimal  "lat",          :default => 0.0
+    t.decimal  "lng",          :default => 0.0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -28,6 +32,8 @@ ActiveRecord::Schema.define(:version => 20110316060833) do
   create_table "divisions", :force => true do |t|
     t.string   "name"
     t.string   "source"
+    t.string   "url"
+    t.integer  "site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -44,6 +50,7 @@ ActiveRecord::Schema.define(:version => 20110316060833) do
   create_table "snapshots", :force => true do |t|
     t.string   "deal_id"
     t.integer  "sold_count"
+    t.integer  "site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
