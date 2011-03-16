@@ -1,4 +1,7 @@
 Groupster::Application.routes.draw do
+  
+  resources :snapshots
+
   resources :divisions, :only => [:index, :show]
 
   resources :deals, :only => [:index, :show]
@@ -7,7 +10,9 @@ Groupster::Application.routes.draw do
     resources :deals, :only => [:index, :show]
     
     resources :divisions, :only => [:index, :show] do
-      resources :deals, :only => [:index, :show]
+      resources :deals, :only => [:index, :show] do 
+        resources :snapshots, :only => [:index, :show]
+      end
     end
   end
 

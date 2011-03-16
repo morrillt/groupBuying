@@ -35,4 +35,15 @@
 =# render :partial => 'snapshot_diffs/snapshot_diffs', :object => @deal.snapshot_diffs.order(:changed_at.desc).limit(20)
 
 %hr
-=# render :partial => 'snapshots/snapshots', :object => @deal.snapshots.desc(:created_at).limit(20)
+%h2 Snapshots
+%table
+  %tr
+    %th DB id
+    %th slug
+    %th status
+    %th price
+    %th # sold
+    %th revenue
+    %th imported at
+    
+  = render :partial => 'snapshots/snapshot', :collection => @deal.snapshots.find(:all, :order => "created_at desc", :limit => 20)

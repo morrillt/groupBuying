@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(:version => 20110316060833) do
     t.string   "deal_id"
     t.integer  "sold_count"
     t.integer  "site_id"
+    t.string   "status"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

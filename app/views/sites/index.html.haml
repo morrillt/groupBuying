@@ -25,7 +25,7 @@
       %th details
     - @sites.each do |site|
       %tr
-        %td= link_to site.name, site_deals_path(site)
+        %td= link_to site.name, site_path(site)
         %td= site.deals.active.count
         %td
           = link_to("deals", site_deals_path(site))

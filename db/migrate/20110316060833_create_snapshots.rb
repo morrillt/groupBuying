@@ -4,6 +4,7 @@ class CreateSnapshots < ActiveRecord::Migration
       t.string :deal_id
       t.integer :sold_count
       t.integer :site_id
+      t.string :status
       t.timestamps
     end
   end
