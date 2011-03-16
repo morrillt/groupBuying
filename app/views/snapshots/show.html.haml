@@ -1,7 +1,4 @@
-%h1= t '.title'
-%p
-  = link_to t('back'), snapshots_path
-  = link_to t('edit'), edit_snapshot_path(@snapshot)
+%h1=@snapshot.deal.deal_id
 
 %dl
   %dt= Snapshot.human_attribute_name :deal_id

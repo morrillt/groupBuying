@@ -1,18 +1,19 @@
 Groupster::Application.routes.draw do
   
-  resources :snapshots
+  resources :snapshots, :only => [:index, :show]
 
   resources :divisions, :only => [:index, :show]
 
   resources :deals, :only => [:index, :show]
 
   resources :sites, :only => [:index, :show] do
-    resources :deals, :only => [:index, :show]
+  
+  resources :deals, :only => [:index, :show] do
+    resources :snapshots, :only => [:index, :show]
+  end
     
     resources :divisions, :only => [:index, :show] do
-      resources :deals, :only => [:index, :show] do 
-        resources :snapshots, :only => [:index, :show]
-      end
+      resources :deals, :only => [:index, :show]
     end
   end
 
