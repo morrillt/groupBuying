@@ -1,4 +1,4 @@
-require 'bundler/capistrano'
+#require 'bundler/capistrano'
 
 set :domain, 'group-buying.pogodan.com'
 set :application, domain
@@ -9,7 +9,7 @@ set :branch, "groupie"
 set :scm, "git"
 set :scm_username, "git"
 set :deploy_via, "checkout"
-set :git_enable_submodules, 1
+#set :git_enable_submodules, 1
 
 set :use_sudo, false
 
@@ -18,7 +18,7 @@ ssh_options[:username] = 'root'
 task :staging do
   set :rails_env, "production" # for now
   server "50.56.83.165", :app, :web, :db, :primary => true
-  set :bundle, "bundle"
+  set :bundle, "groupie_bundle"
   set :deploy_to, "/srv/gbd"
   ssh_options[:username] = 'gbd'
 end
@@ -28,7 +28,7 @@ after "deploy:setup", "deploy:god:restart"
 after "deploy:update_code" do
 
   # link the default database.yml
-  run "ln -s #{shared_path}/config/database_groupie.yml #{release_path}/config/database_groupie.yml"
+  run "ln -s #{shared_path}/config/database_groupie.yml #{release_path}/config/database.yml"
 end
 
 namespace :deploy do

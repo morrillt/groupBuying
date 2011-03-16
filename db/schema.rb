@@ -16,15 +16,15 @@ ActiveRecord::Schema.define(:version => 20110316060833) do
     t.string   "name"
     t.string   "permalink"
     t.string   "deal_id"
-    t.decimal  "sale_price"
-    t.decimal  "actual_price"
+    t.decimal  "sale_price",   :precision => 10, :scale => 0
+    t.decimal  "actual_price", :precision => 10, :scale => 0
     t.integer  "division_id"
     t.integer  "site_id"
-    t.boolean  "active",       :default => true
-    t.boolean  "sold",         :default => false
-    t.integer  "hotness",      :default => 0
-    t.decimal  "lat",          :default => 0.0
-    t.decimal  "lng",          :default => 0.0
+    t.boolean  "active",                                      :default => true
+    t.boolean  "sold",                                        :default => false
+    t.integer  "hotness",                                     :default => 0
+    t.decimal  "lat",          :precision => 10, :scale => 0, :default => 0
+    t.decimal  "lng",          :precision => 10, :scale => 0, :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
