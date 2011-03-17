@@ -1,0 +1,11 @@
+#!/usr/bin/ruby
+require File.dirname(__FILE__) + '/../config/environment'
+
+# Called hourly to update the snapshots for a sites active deals
+
+Deal.active.each do |deal|
+  if deal.expires_at >= Time.now
+    # close the deal it has expired
+    deal.close!
+  end
+end

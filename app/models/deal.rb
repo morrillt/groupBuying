@@ -13,8 +13,7 @@ class Deal < ActiveRecord::Base
   validates_presence_of :sale_price
   
   # Geocode lat lng if we have an address
-  before_create :geocode_lat_lng, :unless => Proc.new{|d| d.raw_address.blank? }
-  
+  before_create :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? }
   
   # Scopes
   scope :active, where(:active => true)
@@ -64,9 +63,16 @@ class Deal < ActiveRecord::Base
     snapshots.create!(:site_id => self.site_id)
   end
   
+  # Closes out the deal
+  def close!
+    self.active = false
+    self.closed = true
+    save
+  end
+  
   private
   
-  def geocode_lat_lng
+  def geocode_lat_lng!
     begin
       result = MultiGeocoder.geocode(raw_address.to_s)
       self.lat,self.lng = result.lat, result.lng
