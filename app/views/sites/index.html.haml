@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #sites.main-content
   #chart
   #detailed-report
@@ -6,40 +5,9 @@
     %ul
       - @sites.each do |s|
         %li.site
-<<<<<<< HEAD
           %a{:href=>""}
             = s.name
 
 =content_for(:javascripts)
   :javascript
     var chart_data= #{@chart_data.to_json}
-    
-=======
-.span-12.append-12.last
-  %h2 See Detailed Report
-  %table{:width => '800px'}
-    %tr
-      %th site
-      %th # active
-      %th details
-      %th debug
-    - @sites.each do |site|
-      %tr
-        %td= link_to site.name, site
-        %td= site.deals.active.count
-        %td
-          = link_to("deals",      site_deals_path(site))
-          |
-          =# link_to("divisions",  site_divisions_path(site))
-        %td
-          =# link_to("snapshots",  site_snapshots_path(site))
-          |
-          =# link_to("diffs",      site_snapshot_diffs_path(site))
-          |
-          =# link_to("url_checks", site_url_checks_path(site))
-      
-=# render :partial => 'shared/chart', :object => @chart
->>>>>>> 62992eb1545a85afc81867a39aecdb29e85392c0
-=======
-          %a{:href=>"/sites/#{s.source_name}"} #{s.name}
->>>>>>> 1072645bab8f70ae0bd8dccf303c4faf217a62c3
