@@ -11,6 +11,18 @@ class Chart
     @labels ||= @snapshots.map{|s| s.site.name }
   end
   
+  def revenue_per_hour
+    revenue= {}
+    current_time= Time.now
+    Site.all.each do |site|
+      revenue[site.name]={}
+      22.times do |t|
+        revenue[site.name][current_time-(t+2)]= site.revenue_per_hour(current_time-(t+2).hour)
+      end
+    end
+    revenue
+  end
+
   def datasets
     @snapshots.group_by{ |s| 
       s.created_at.strftime("%H") 

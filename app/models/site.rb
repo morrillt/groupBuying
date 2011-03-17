@@ -18,6 +18,10 @@ class Site < ActiveRecord::Base
     snapshooter.crawl_new_deals
   end
   
+  def revenue_per_hour(time)
+    snapshots.find(:all, :conditions => ["created_at between ? and ?", time, time+1.hour], :include => [:site], :order => "created_at ASC")
+  end
+
   # Returns a new instance of the Site Snapshooter class
   # Example:
   #  Snapshooter::KgbDeals.new

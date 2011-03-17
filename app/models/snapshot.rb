@@ -17,9 +17,8 @@ class Snapshot < ActiveRecord::Base
   def total_revenue
     (price.to_f * buyers_count.to_f)
   end
-  
+
   private
-  
   def capture_current_revenue
     self.sold_count = deal.capture_snapshot
     self.sold_since_last_snapshot_count = (self.sold_count - deal.snapshots.last.sold_count)
