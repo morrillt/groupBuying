@@ -21,4 +21,8 @@
         %li.site
           %a{:href=>""}
             = s.name
+
+=content_for(:javascripts)
+  :javascript
+    var chart_data= #{@chart_data.to_json}
     

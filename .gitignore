@@ -5,3 +5,4 @@ tmp/**/*
 *.sql
 *.gz
 config/database.yml
+db/schema.rb

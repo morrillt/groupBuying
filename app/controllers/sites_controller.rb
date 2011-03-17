@@ -15,6 +15,12 @@ class SitesController < ApplicationController
   # GET /sites/1.xml
   def show
     @site = Site.find(params[:id])
+    @chart_data= {
+      :categories => [],
+      :series => []
+    }
+
+    
 
     respond_to do |format|
       format.html # show.html.erb
