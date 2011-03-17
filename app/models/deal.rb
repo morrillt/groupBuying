@@ -45,7 +45,7 @@ class Deal < ActiveRecord::Base
   # Returns the site record through the last division
   # same for all
   def site
-    @site ||= division.site
+    @site ||= division.try(:site)
   end
   
   def site_name
