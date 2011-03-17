@@ -66,7 +66,7 @@ class Deal < ActiveRecord::Base
   # Closes out the deal
   def close!
     self.active = false
-    self.closed = true
+    self.sold = true
     save
   end
   
