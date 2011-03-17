@@ -8,6 +8,6 @@
           %a{:href=>""}
             = s.name
 
-=content_for(:javascripts)
+=content_for(:javascripts) do
   :javascript
     var chart_data= #{@chart_data.to_json}
