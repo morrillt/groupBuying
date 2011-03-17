@@ -47,6 +47,6 @@ class DealsController < ApplicationController
       end
     end
     
-    send_file("public/deals.csv", :content_type => "text/csv", :filename => "deals.csv")
+    send_file("public/deals.csv", :content_type => "text/csv", :disposistion => "attachment", :filename => "deals.csv")
   end
 end
