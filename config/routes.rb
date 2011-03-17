@@ -1,18 +1,24 @@
 Groupster::Application.routes.draw do
+
+  match "/deals/export" => "deals#export"
+  
+  resources :snapshots, :only => [:index, :show]
+
   resources :divisions, :only => [:index, :show]
 
   resources :deals, :only => [:index, :show]
 
   resources :sites, :only => [:index, :show] do
-    resources :deals, :only => [:index, :show]
+  
+  resources :deals, :only => [:index, :show] do
+    resources :snapshots, :only => [:index, :show]
+  end
     
     resources :divisions, :only => [:index, :show] do
       resources :deals, :only => [:index, :show]
     end
   end
   
-  # match 'sites/:source_name' => 'sites#show'
-
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
