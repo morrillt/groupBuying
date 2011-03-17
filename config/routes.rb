@@ -1,4 +1,5 @@
 Groupster::Application.routes.draw do
+<<<<<<< HEAD
   resources :divisions, :only => [:index, :show]
 
   resources :deals, :only => [:index, :show]
@@ -9,6 +10,14 @@ Groupster::Application.routes.draw do
     resources :divisions, :only => [:index, :show] do
       resources :deals, :only => [:index, :show]
     end
+=======
+  resources :divisions
+
+  resources :deals
+
+  resources :sites do
+    resources :deals
+>>>>>>> 62992eb1545a85afc81867a39aecdb29e85392c0
   end
 
   # The priority is based upon order of creation:

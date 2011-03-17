@@ -1,7 +1,11 @@
 class Site < ActiveRecord::Base
+<<<<<<< HEAD
   has_many :snapshots
   has_many :deals, :through => :divisions
   has_many :divisions
+=======
+  has_many :deals
+>>>>>>> 62992eb1545a85afc81867a39aecdb29e85392c0
 
   scope :active, where(:active => true)
   

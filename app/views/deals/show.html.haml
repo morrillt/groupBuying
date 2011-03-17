@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #site-stats
   #chart
   #deals-activity
@@ -34,3 +35,23 @@
       %span 100
   #deals-trending
     
+=======
+%h1= t '.title'
+%p
+  = link_to t('back'), deals_path
+  = link_to t('edit'), edit_deal_path(@deal)
+
+%dl
+  %dt= Deal.human_attribute_name :name
+  %dd= @deal.name
+  %dt= Deal.human_attribute_name :price
+  %dd= @deal.price
+  %dt= Deal.human_attribute_name :division_id
+  %dd= @deal.division_id
+  %dt= Deal.human_attribute_name :site_id
+  %dd= @deal.site_id
+  %dt= Deal.human_attribute_name :active
+  %dd= @deal.active
+  %dt= Deal.human_attribute_name :sold
+  %dd= @deal.sold
+>>>>>>> 62992eb1545a85afc81867a39aecdb29e85392c0

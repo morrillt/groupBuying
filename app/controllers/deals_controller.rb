@@ -2,8 +2,12 @@ class DealsController < ApplicationController
   # GET /deals
   # GET /deals.xml
   def index
+<<<<<<< HEAD
     @site = Site.find(params[:site_id])
     @deals = @site.deals.active.paginate(:page => (params[:page] || 1), :per_page => 25)
+=======
+    @deals = Deal.all
+>>>>>>> 62992eb1545a85afc81867a39aecdb29e85392c0
 
     respond_to do |format|
       format.html # index.html.erb
