@@ -1,20 +1,6 @@
 %script{:type => 'text/javascript', :src => 'https://www.google.com/jsapi'}
-:javascript
-  google.load("visualization", "1", {packages:["corechart"]});
-  google.setOnLoadCallback(drawChart);
-  function drawChart() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Year');
-    #{@chart.labels}
-    data.addRows([#{@chart.data}]);
-
-    var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-    chart.draw(data, {width: 600, height: 300, title: 'Last 24 Hours',
-      hAxis: {title: 'Hour', titleTextStyle: {color: '#FF0000'}}
-    });
-  }
   
-%div{:id => "chart_div"}
+= render :partial => 'shared/chart', :object => @chart
 
 .span-12.append-12.last
   %h2 See Detailed Report

@@ -18,15 +18,14 @@ ssh_options[:username] = 'root'
 task :staging do
   set :rails_env, "production" # for now
   server "50.56.83.165", :app, :web, :db, :primary => true
-  set :bundle, "groupie_bundle"
+  #set :bundle, "bundle"
   set :deploy_to, "/srv/gbd"
   ssh_options[:username] = 'gbd'
 end
 
-after "deploy:setup", "deploy:god:restart"
-
 after "deploy:update_code" do
-
+  run "rvm rvmrc trust #{release_path}"
+  
   # link the default database.yml
   run "ln -s #{shared_path}/config/database_groupie.yml #{release_path}/config/database.yml"
 end
@@ -40,3 +39,18 @@ namespace :deploy do
     run "touch #{deploy_to}/current/tmp/restart.txt"
   end
 end
+
+namespace :bundler do
+  task :create_symlink, :roles => :app do
+    shared_dir = File.join(shared_path, 'bundle')
+    release_dir = File.join(current_release, '.bundle')
+    run("mkdir -p #{shared_dir} && ln -s #{shared_dir} #{release_dir}")
+  end
+ 
+  task :bundle_new_release, :roles => :app do
+    bundler.create_symlink
+    run "cd #{deploy_to}/current && /home/gbd/.rvm/gems/ree-1.8.7-2011.03@charts/bin/bundle install --quiet --without development test"
+  end
+end
+ 
+after 'deploy:update_code', 'bundler:bundle_new_release'
