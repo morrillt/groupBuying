@@ -1,9 +1,0 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  deal_id: MyString
-  sold_count: 1
-
-two:
-  deal_id: MyString
-  sold_count: 1
