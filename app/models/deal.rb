@@ -49,11 +49,11 @@ class Deal < ActiveRecord::Base
   end
   
   def site_name
-    @site_name ||= site.name
+    @site_name ||= site.try(:name)
   end
   
   def division_name
-    @division_name ||= division.name
+    @division_name ||= division.try(:name)
   end
 
 
