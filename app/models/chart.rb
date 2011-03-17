@@ -1,6 +1,10 @@
 class Chart
-  def initialize(sites = nil)
-    @snapshots = Snapshot.recent
+  def initialize(sites = [])
+    if !sites.empty?
+      @snapshots = Snapshot.recent.find(:all, :conditions => ["site_id in(?)", sites.map(&:id)])
+    else
+      @snapshots = Snapshot.recent
+    end
   end
   
   def labels
