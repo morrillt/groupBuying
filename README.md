@@ -4,11 +4,14 @@ GroupBuying Application
 Installation
 ===============================
 
-`bundle install`
+  Install the required gems
+  `bundle install`
 
-`rake db:create`
+  Create the database
+  `rake db:create`
 
-`rake db:migrate`
+  Create the schema
+  `rake db:migrate`
 
 
 Running the application
