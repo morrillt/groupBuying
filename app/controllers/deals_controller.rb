@@ -15,6 +15,7 @@ class DealsController < ApplicationController
   # GET /deals/1.xml
   def show
     @deal = Deal.find(params[:id])
+    @chart = Chart.new(@deal)
 
     respond_to do |format|
       format.html # show.html.erb
