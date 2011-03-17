@@ -9,7 +9,7 @@ module Snapshooter
     
     def get(resource, options = {})
       url = options[:full_path] ? resource : (base_url + resource)
-      @doc = Hpricot(@agent.get(url).parser.to_s)
+      @doc = Nokogiri::HTML(@agent.get(url).parser.to_s)
     end
     
     def base_url

@@ -12,14 +12,14 @@ module Snapshooter
       # fetch the sitemap
       get("/sitemap")
       # parse the results
-      xpath("div[@class='city'] a").map{ |link| @divisions << {:href => link["href"], :text => link.html } }.flatten
+      xpath("div[@class='city'] a").map{ |link| @divisions << {:href => link["href"], :text => link.text } }.flatten
       @divisions
     end
     
     # Returns the current purchase count of a given deal
     def capture_deal(deal)
       get(deal.permalink, :full_path => true)
-      xpath("h4").first.html.gsub(/[^0-9\.]/,'').to_i
+      xpath("h4").first.text.gsub(/[^0-9\.]/,'').to_i
     end
 
     # deals
@@ -45,18 +45,20 @@ module Snapshooter
           get(link["href"], :full_path => true)
           
           # Capture the price
-          sale_price = xpath("div[@class='buy_link'] a").first.html.gsub(/[^0-9\.]/,'').to_f
+          sale_price = xpath("div[@class='buy_link'] a").first.text.gsub(/[^0-9\.]/,'').to_f
           
           # Capture Actual Price
-          actual_price = xpath("div[@id='deal_basic_left'] dl dd").first.html.gsub(/[^0-9\.]/,'').to_f
+          actual_price = xpath("div[@id='deal_basic_left'] dl dd").first.text.gsub(/[^0-9\.]/,'').to_f
           
           # Capture the merchant name
-          merchant_name = (xpath("li[@class='merchant_name']").first.html || "unknown").dasherize
+          merchant_name = (xpath("li[@class='merchant_name']").first.text || "unknown").dasherize
+          
+          expires_at = xpath("dl[@class='expires'] dd")
           
           # Build attributes hash
           attributes = {
             :division => division,
-            :name => link.html,
+            :name => link.text,
             :sale_price => sale_price,
             :actual_price => actual_price,
             :permalink => link["href"],
@@ -70,9 +72,9 @@ module Snapshooter
           end
           
           # Other usefull stuff.
-          # hash[:discount] = xpath("dl[@class='discount'] dd").first.html.gsub(/[^0-9\.]/,'').to_f
-          # hash[:actual_price] = xpath("div[@id='deal_basic_left'] dl dd").first.html.gsub(/[^0-9\.]/,'').to_f
-          # hash[:purchase_count] = xpath("h4").first.html.gsub(/[^0-9\.]/,'').to_i
+          # hash[:discount] = xpath("dl[@class='discount'] dd").first.text.gsub(/[^0-9\.]/,'').to_f
+          # hash[:actual_price] = xpath("div[@id='deal_basic_left'] dl dd").first.text.gsub(/[^0-9\.]/,'').to_f
+          # hash[:purchase_count] = xpath("h4").first.text.gsub(/[^0-9\.]/,'').to_i
         }
       end
     end

@@ -9,7 +9,6 @@ gem 'mysql2'
 gem 'haml'
 gem 'mechanize'
 gem 'nokogiri'
-gem 'hpricot'
 gem 'will_paginate'
 
 group :test do
