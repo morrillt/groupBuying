@@ -31,6 +31,6 @@ class Snapshot < ActiveRecord::Base
   def capture_current_revenue
     puts "Capturing snapshot for #{deal.inspect}"
     self.sold_count = deal.capture_snapshot
-    self.sold_since_last_snapshot_count = (self.sold_count - deal.snapshots.last.sold_count)
+    self.sold_since_last_snapshot_count = (self.sold_count - deal.snapshots.last.try(:sold_count).to_i)
   end
 end
