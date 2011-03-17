@@ -19,7 +19,7 @@ class Site < ActiveRecord::Base
   end
   
   def revenue_per_hour(time)
-    snapshots.find(:all, :conditions => ["created_at between ? and ?", time, time+1.hour], :include => [:site], :order => "created_at ASC")
+    snapshots.find(:all, :conditions => ["created_at between ? and ?", time, time+1.hour], :order => "created_at ASC")
   end
 
   # Returns a new instance of the Site Snapshooter class
