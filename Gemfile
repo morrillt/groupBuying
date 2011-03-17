@@ -10,7 +10,6 @@ gem 'haml'
 gem 'mechanize'
 gem 'nokogiri'
 gem 'hpricot'
-gem 'whenever'
 gem 'will_paginate'
 
 # Use unicorn as the web server
