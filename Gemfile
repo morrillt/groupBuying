@@ -1,7 +1,6 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.5'
-<<<<<<< HEAD
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -19,19 +18,6 @@ group :development do
   gem "compass", ">= 0.10.6"
 end
 
-=======
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
-gem 'sqlite3'
-gem 'haml'
-gem 'mechanize'
-gem 'nokogiri'
-gem 'hpricot'
-gem 'whenever'
-
->>>>>>> 62992eb1545a85afc81867a39aecdb29e85392c0
 # Use unicorn as the web server
 # gem 'unicorn'
 
