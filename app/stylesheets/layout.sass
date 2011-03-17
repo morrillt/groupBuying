@@ -1,0 +1,45 @@
+body
+  margin-top: 0
+  font-family: "Lucida Grande",Arial,Helvetica,Verdana,sans-serif
+
+li
+  display: block
+  a
+    text-decoration: none
+
+a
+  color: black
+
+.container
+  +container
+
+.top-container
+  +column(25, true)
+  #header
+    height: 50px
+    border: 1px dashed #AAA
+  .logo
+    float: left
+  .logo a
+    color: black
+    font-size: 30px
+    padding: 20px
+  .account
+    float: right
+    padding: 20px
+  .account a
+    float: left
+    margin-left: 10px
+
+.main-container
+  +column(19)
+.right-container
+  +column(6, true)
+
+#main, #right
+  border: 1px dashed #AAA
+  height: 800px
+
+#main
+  .main-content
+    padding: 10px

@@ -1,10 +1,9 @@
 class Deal < ActiveRecord::Base
-  
   # Associations
   has_many :snapshots
   belongs_to :division
   belongs_to :site
-  
+
   # Validations
   validates_presence_of :name
   validates_presence_of :permalink
@@ -16,7 +15,6 @@ class Deal < ActiveRecord::Base
   scope :active, where(:active => true)
   
   # Instance Methods
-
   def revenue
     @revenue ||= (buyers_count.to_f * sale_price.to_f)
   end
@@ -43,7 +41,6 @@ class Deal < ActiveRecord::Base
   def site
     @site ||= division.site
   end
-
 
   # Creates an actual mysql record
   # Captures the most recent data for a deal.

@@ -1,33 +1,24 @@
-%script{:type => 'text/javascript', :src => 'https://www.google.com/jsapi'}
-:javascript
-  google.load("visualization", "1", {packages:["corechart"]});
-  google.setOnLoadCallback(drawChart);
-  function drawChart() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Year');
-    #{@chart.labels}
-    data.addRows([#{@chart.data}]);
-
-    var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-    chart.draw(data, {width: 600, height: 300, title: 'Last 24 Hours',
-      hAxis: {title: 'Hour', titleTextStyle: {color: '#FF0000'}}
-    });
-  }
-  
-%div{:id => "chart_div"}
-
-.span-12.append-12.last
-  %h2 See Detailed Report
-  %table{:width => '800px'}
-    %tr
-      %th site
-      %th # active
-      %th details
-    - @sites.each do |site|
-      %tr
-        %td= link_to site.name, site_deals_path(site)
-        %td= site.deals.active.count
-        %td
-          = link_to("deals", site_deals_path(site))
-          |
-          = link_to("divisions", site_divisions_path(site))
+#sites.main-content
+  #chart
+  #detailed-report
+    %p.label See Detailed Report
+    %ul
+      %li.site
+        %a{:href=>""} GroupOn
+      %li.site
+        %a{:href=>""} Living Social
+      %li.site
+        %a{:href=>""} Kgb Deals
+      %li.site
+        %a{:href=>""} Home Run
+      %li.site
+        %a{:href=>""} Travel Zoo
+      %li.site
+        %a{:href=>""} Open Table
+      %li.site
+        %a{:href=>""} Travel Zoo UK
+      - @sites.each do |s|
+        %li.site
+          %a{:href=>""}
+            = s.name
+    

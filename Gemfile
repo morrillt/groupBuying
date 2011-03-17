@@ -12,6 +12,11 @@ gem 'nokogiri'
 gem 'hpricot'
 gem 'whenever'
 gem 'will_paginate'
+gem 'mysql2'
+
+group :development do
+  gem "compass", ">= 0.10.6"
+end
 
 # Use unicorn as the web server
 # gem 'unicorn'

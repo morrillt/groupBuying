@@ -24,7 +24,9 @@ class Site < ActiveRecord::Base
   def snapshooter
     case self.source_name
     when 'kgb_deals'
-      Snapshooter::KgbDeals.new
+      Snapshooter::KgbDeals.new({:base_url=> self.base_url})
+    when 'groupon_deals'
+      Snapshooter::GroupOnDeals.new
     end
   end
 end
