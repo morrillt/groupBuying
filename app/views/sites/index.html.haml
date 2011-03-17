@@ -3,22 +3,6 @@
   #detailed-report
     %p.label See Detailed Report
     %ul
-      %li.site
-        %a{:href=>""} GroupOn
-      %li.site
-        %a{:href=>""} Living Social
-      %li.site
-        %a{:href=>""} Kgb Deals
-      %li.site
-        %a{:href=>""} Home Run
-      %li.site
-        %a{:href=>""} Travel Zoo
-      %li.site
-        %a{:href=>""} Open Table
-      %li.site
-        %a{:href=>""} Travel Zoo UK
       - @sites.each do |s|
         %li.site
-          %a{:href=>""}
-            = s.name
-    
+          %a{:href=>"/sites/#{s.source_name}"} #{s.name}
