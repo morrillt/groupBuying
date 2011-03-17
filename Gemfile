@@ -14,6 +14,10 @@ gem 'will_paginate'
 
 group :test do
   gem 'rspec-rails', '>= 2.0.0.beta.10'
+  gem 'shoulda'
+  gem 'shoulda-matchers'
+  gem 'shoulda-context'
+  gem 'factory_girl_rails'
 end
 
 # Use unicorn as the web server
