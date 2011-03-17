@@ -1,4 +1,4 @@
-class SitesController < ApplicationController
+class SitesController < ApplicationController # InheritedResources::Base #
   # GET /sites
   # GET /sites.xml
   def index
@@ -15,6 +15,7 @@ class SitesController < ApplicationController
   # GET /sites/1
   # GET /sites/1.xml
   def show
+<<<<<<< HEAD
     @site = Site.find(params[:id])
     @chart_data= {
       :categories => [],
@@ -22,6 +23,9 @@ class SitesController < ApplicationController
     }
 
     
+=======
+    @site = Site.find_by_source_name(params[:id])
+>>>>>>> 1072645bab8f70ae0bd8dccf303c4faf217a62c3
 
     respond_to do |format|
       format.html # show.html.erb
@@ -105,5 +109,9 @@ class SitesController < ApplicationController
       format.xml  { head :ok }
 >>>>>>> 62992eb1545a85afc81867a39aecdb29e85392c0
     end
+  end
+
+  def resource
+    @site = Site.find_by_source_name(params[:id])
   end
 end

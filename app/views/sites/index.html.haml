@@ -4,22 +4,9 @@
   #detailed-report
     %p.label See Detailed Report
     %ul
-      %li.site
-        %a{:href=>""} GroupOn
-      %li.site
-        %a{:href=>""} Living Social
-      %li.site
-        %a{:href=>""} Kgb Deals
-      %li.site
-        %a{:href=>""} Home Run
-      %li.site
-        %a{:href=>""} Travel Zoo
-      %li.site
-        %a{:href=>""} Open Table
-      %li.site
-        %a{:href=>""} Travel Zoo UK
       - @sites.each do |s|
         %li.site
+<<<<<<< HEAD
           %a{:href=>""}
             = s.name
 
@@ -53,3 +40,6 @@
       
 =# render :partial => 'shared/chart', :object => @chart
 >>>>>>> 62992eb1545a85afc81867a39aecdb29e85392c0
+=======
+          %a{:href=>"/sites/#{s.source_name}"} #{s.name}
+>>>>>>> 1072645bab8f70ae0bd8dccf303c4faf217a62c3
