@@ -2,6 +2,8 @@
   
 = render :partial => 'shared/chart', :object => @chart
 
+= button_to("Export Deals To CSV", deals_export_path)
+
 .span-12.append-12.last
   %h2 See Detailed Report
   %table{:width => '800px'}

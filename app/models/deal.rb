@@ -47,6 +47,14 @@ class Deal < ActiveRecord::Base
   def site
     @site ||= division.site
   end
+  
+  def site_name
+    @site_name ||= site.name
+  end
+  
+  def division_name
+    @division_name ||= division.name
+  end
 
 
   # Creates an actual mysql record

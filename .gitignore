@@ -5,3 +5,4 @@ tmp/**/*
 *.sql
 *.gz
 config/database.yml
+public/deals.csv

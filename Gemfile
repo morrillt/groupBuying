@@ -10,6 +10,7 @@ gem 'haml'
 gem 'mechanize'
 gem 'nokogiri'
 gem 'geokit'
+gem 'fastercsv'
 gem 'will_paginate'
 
 group :test do
