@@ -1,7 +1,7 @@
 class Site < ActiveRecord::Base
-  has_many :snapshots
+  has_many :snapshots, :dependent => :destroy
   has_many :deals, :through => :divisions
-  has_many :divisions
+  has_many :divisions, :dependent => :destroy
 
   scope :active, where(:active => true)
   
@@ -18,10 +18,6 @@ class Site < ActiveRecord::Base
     snapshooter.crawl_new_deals
   end
   
-  def revenue_per_hour(time)
-    snapshots.find(:all, :conditions => ["created_at between ? and ?", time, time+1.hour], :order => "created_at ASC")
-  end
-
   # Returns a new instance of the Site Snapshooter class
   # Example:
   #  Snapshooter::KgbDeals.new
