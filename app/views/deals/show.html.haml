@@ -20,12 +20,14 @@
     %th Buyers Count
     %th Revenue
     %th Snapshots
+    %th Expires
     
   %tr
     %td=number_to_currency(@deal.sale_price)
     %td=@deal.buyers_count
     %td=number_to_currency(@deal.revenue)
     %td=@deal.snapshots.count
+    %td #{distance_of_time_in_words(Time.now, @deal.expires_at)} from now
 %br
 
 %hr

@@ -53,7 +53,11 @@ module Snapshooter
           # Capture the merchant name
           merchant_name = (xpath("li[@class='merchant_name']").first.text || "unknown").dasherize
           
-          expires_at = xpath("dl[@class='expires'] dd")
+          ex_time = @doc.search("dl[@class='expires'] dd").first.attributes
+          
+          expires_at = Time.parse("#{ex_time['ey'].value}/#{ex_time['em'].value}/#{ex_time['ed'].value} #{ex_time['eh'].value}:#{ex_time['ei'].value}:#{ex_time['es'].value}")
+          
+          raw_address = @doc.search("a[@id='deal_see_more_back']").first.attributes["deal_map_location"]
           
           # Build attributes hash
           attributes = {
@@ -63,7 +67,9 @@ module Snapshooter
             :actual_price => actual_price,
             :permalink => link["href"],
             :deal_id => merchant_name,
-            :site_id => site.id
+            :site_id => site.id,
+            :expires_at => expires_at,
+            :raw_address => raw_address
           }
           
           # Ensure we dont duplicate deals use unique deal identifier
