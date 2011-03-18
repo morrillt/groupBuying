@@ -18,6 +18,10 @@ class Deal < ActiveRecord::Base
   # Scopes
   scope :active, where(:active => true)
   
+  before_save do
+    self.hotness = calculate_hotness
+  end
+  
   # Instance Methods
 
   def revenue
@@ -34,6 +38,15 @@ class Deal < ActiveRecord::Base
   # It is used to create snapshot records
   def capture_snapshot
     site.snapshooter.capture_deal(self)
+  end
+  
+  # Returns current hotness rating based on snapshot counts
+  def calculate_hotness
+    if snapshots.count > 1
+      snapshots.last.sold_count.to_i.percent_change_from( snapshots.first.sold_count )
+    else
+      0
+    end
   end
   
   # Currently only kind
