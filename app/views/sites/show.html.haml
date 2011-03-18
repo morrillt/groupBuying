@@ -1,0 +1,86 @@
+#site-stats.main-content
+  %h1 #{@site.name}
+  #chart
+  #deals-activity.stats-block
+    .calc
+      %p.label Active deals being tracked
+      %p.value 100
+    .calc
+      %p.label Deals tracked to date
+      %p.value 100
+    .calc
+      %p.label Coupons purchased to date
+      %p.value 100
+    .calc
+      %p.label Total spent on deals to date
+      %p.value 100
+    .calc
+      %p.label Average revenue per deal
+      %p.value 100
+    .calc
+      %p.label Total locations
+      %p.value 100
+    %a.see-locations-btn{:href=>"#"} See Locations
+  #deals-variation.stats-block
+    %ul
+      %li.period
+        %a{:href=>"#"} Day
+      %li.period
+        %a{:href=>"#"} Week
+      %li.period
+        %a{:href=>"#"} Month
+      %li.period
+        %a{:href=>"#"} Quarter
+    .variation-table
+      .entry
+        .calc
+          %p.label Closed Deals
+          %p.value 100
+          %p.change 5%
+        .calc
+          %p.label Coupons Purchased
+          %p.value 100
+          %p.change 5%
+        .calc
+          %p.label Total Spent on Deals
+          %p.value 100
+          %p.change 5%
+        .calc
+          %p.label Average Revenue per Deal
+          %p.value 100
+          %p.change 5%
+  #deals-trending.stats-block
+    %h2 Currently Trending on #{@site.name} 
+    .trending-table
+      .header
+        %p.label Deal
+        %p.label City
+        %p.label Hotness Index
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+
+=content_for(:javascripts) do
+  :javascript
+    var chart_data= #{@chart_data.to_json}

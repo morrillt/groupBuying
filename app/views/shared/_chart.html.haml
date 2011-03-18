@@ -1,0 +1,51 @@
+- return unless @chart
+
+:javascript
+  var chart;
+  $(document).ready(function() {
+    chart = new Highcharts.Chart({
+      chart: {
+        renderTo: 'chart',
+        defaultSeriesType: 'line',
+        
+        marginBottom: 25
+      },
+    title: {
+      text: "Revenue per hour"
+    },
+    yAxis: {
+      title: {
+        text: 'new revenue ($)'
+      },
+      plotLines: [{
+        value: 0,
+        width: 1,
+        color: '#808080'
+      }]
+    },
+    tooltip: {
+      formatter: function() {
+        return '<b>' + this.x + '</b>' + this.y + '$';
+      }
+    },
+    legend: {
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'top',
+      x: -10,
+      y: 100,
+      borderWidth: 0
+    },
+    
+    xAxis: {
+      categories: #{chart.labels.to_json},
+      labels: {
+        rotation: -45,
+      },
+    },
+    series: [
+      #{chart.datasets.map{ |name, data| "{name: '#{name}', data: #{data.to_json}}"}.join(', ')}
+    ]
+    });
+  
+  });

@@ -1,0 +1,28 @@
+%ul
+  %li
+    = "of active deals being tracked #{@data[:tracked_active]}"
+  %li
+    = "of deals tracked to date #{@data[:deals_tracked]}"
+  %li
+    = "coupons purchased to date ---"
+  %li
+    = #{@data[:total_revenue]
+  %li
+    = #{@data[:avg_deal]
+  %li
+    = "locations #{@data[:locations]}"
+%br
+%ul
+  %li
+    = "of closed deals #{@data[:closed_today]}"
+  %li
+    = "of coupons purchased #{@data[:purchased_today]}"
+  %li
+    = "of closed deals #{@data[:closed_yesterday]}"
+  %li
+    = "of coupons purchased #{@data[:purchased_yesterday]}"
+  %li
+    = "of closed deals #{@data[:closed_week]}"
+  %li
+    = "of coupons purchased #{@data[:purchased_week]}"
+%br
