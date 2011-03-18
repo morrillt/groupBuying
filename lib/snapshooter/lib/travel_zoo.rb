@@ -15,6 +15,12 @@ module Snapshooter
       @doc.search("a[@class='seeDetailsBtn']").map{|link| link['href'] if link['href'] =~ %r[/local-deals/deal/(\d+)]  }.compact
     end
     
+    # Returns the current purchase count of a given deal
+    def capture_deal(deal)
+      get(deal.permalink, :full_path => true)
+      @doc.search("span[@id='ctl00_Main_LabelBought']").text.to_i
+    end
+    
     def crawl_new_deals!
       super
       
