@@ -9,7 +9,7 @@ module Snapshooter
       # @agent = Mechanize.new { |agent| agent.user_agent_alias = 'Mac Safari' }
       @deals     = []
       @divisions = []
-      @doc       = ""
+      @doc       = Nokogiri::HTML("")
     end
     
     def get(resource, options = {})

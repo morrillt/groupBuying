@@ -64,7 +64,7 @@ module Snapshooter
           attributes[:actual_price]         = @doc.search("span[@id='ctl00_Main_PriceValue']").text.gsub(/[^0-9]/,'').to_f
           attributes[:raw_address]          = @doc.search("div[@class='smallMap'] p").last.text
           attributes[:lat],attributes[:lng] = @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[1, 2]
-          attributes[:expires_at] = time_left[0].days.from_now + time_left[1].hours +  time_left[1].minutes
+          attributes[:expires_at] = time_left[0].days.from_now + time_left[1].hours +  time_left[2].minutes
           attributes[:permalink] = options[:full_path] ? deal_link : (base_url + deal_link)
           attributes[:site_id] = site.id
           

@@ -33,4 +33,4 @@ Running the importers and snapshooters
 All output is redirected to the log dir.
 You can view all output in a stream with `tail -f`
 
-`cd /srv/gbd/current && tail -f log/crawler.log log/snapshot.log log/deal_closer.log`
+`cd /srv/gbd/current && tail -f log/crawler.log log/snapshot.log log/deal_closer.log

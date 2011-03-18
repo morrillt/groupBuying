@@ -15,14 +15,14 @@ class Site < ActiveRecord::Base
   
   # Captures new deals in the database
   def crawl_new_deals
-    snapshooter.crawl_new_deals
+    snapshooter.crawl_new_deals!
   end
   
   # Returns a new instance of the Site Snapshooter class
   # Example:
   #  Snapshooter::KgbDeals.new
   def snapshooter
-    case self.source_name
+    @snapshooter ||= case self.source_name
     when 'kgb_deals'
       Snapshooter::KgbDeals.new
     when 'travel_zoo'

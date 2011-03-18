@@ -22,4 +22,5 @@ end
 Factory.define(:snapshot) do |f|
   f.site{ Factory(:site) } 
   f.deal{ Factory(:deal) }
+  f.sold_count 10
 end

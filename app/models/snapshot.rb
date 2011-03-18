@@ -4,6 +4,7 @@ class Snapshot < ActiveRecord::Base
   
   before_create :capture_current_revenue
   
+  
   scope :recent, :conditions => ["created_at between ? and ?", 1.day.ago.at_midnight, Time.now], :include => [:site], :order => "created_at ASC"
   
   def site_name
@@ -26,11 +27,17 @@ class Snapshot < ActiveRecord::Base
     (price.to_f * buyers_count.to_f)
   end
   
+  # Calls calculate_hotness! on deal to update hotness
+  def calculate_hotness
+    self.deal.has_more_than_one_snapshot? ? deal.calculate_hotness! : true
+  end
+  
   private
   
   def capture_current_revenue
     return true if Rails.env.test?
     puts "Capturing snapshot for #{deal.inspect}"
+    calculate_hotness
     self.sold_count = deal.capture_snapshot
     self.sold_since_last_snapshot_count = (self.sold_count - deal.snapshots.last.try(:sold_count).to_i)
   end

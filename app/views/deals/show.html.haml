@@ -20,6 +20,7 @@
     %th Buyers Count
     %th Revenue
     %th Snapshots
+    %th Hotness
     %th Expires
     
   %tr
@@ -27,6 +28,7 @@
     %td=@deal.buyers_count
     %td=number_to_currency(@deal.revenue)
     %td=@deal.snapshots.count
+    %td=number_to_percentage(@deal.hotness)
     %td=@deal.expires_at.nil? ? "unknown" : "#{distance_of_time_in_words(Time.now, @deal.expires_at)} from now"
 %br
 
