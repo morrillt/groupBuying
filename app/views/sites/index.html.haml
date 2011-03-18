@@ -5,8 +5,7 @@
     %ul
       - @sites.each do |s|
         %li.site
-          %a{:href=>""}
-            = s.name
+          %a{:href=>"/sites/#{s.source_name}"} #{s.name}
 
 =content_for(:javascripts) do
   :javascript
