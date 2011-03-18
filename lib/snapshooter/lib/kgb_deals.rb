@@ -34,9 +34,9 @@ module Snapshooter
         site     = Site.find_by_source_name("kgb_deals")
         
         # Find the division
-        division = site.divisions.find_or_initialize_by_name(division_hash[:text])
-        division.url = (base_url + division_hash[:href])
-        division.save
+        @division = site.divisions.find_or_initialize_by_name(division_hash[:text])
+        @division.url = (base_url + division_hash[:href])
+        @division.save
         
         # Find all deal links for that division
         xpath("div[@id=sitemap_body] a").map{|link| 
@@ -61,7 +61,7 @@ module Snapshooter
           
           # Build attributes hash
           attributes = {
-            :division => division,
+            :division => @division,
             :name => link.text,
             :sale_price => sale_price,
             :actual_price => actual_price,
@@ -71,10 +71,7 @@ module Snapshooter
             :raw_address => raw_address
           }
           
-          # Ensure we dont duplicate deals use unique deal identifier
-          if deal = division.deals.active.create(attributes)
-            puts "#{self.class.to_s} Added #{deal.name}"
-          end
+          save_deal!(attributes)
           
           # Other usefull stuff.
           # hash[:discount] = xpath("dl[@class='discount'] dd").first.text.gsub(/[^0-9\.]/,'').to_f
