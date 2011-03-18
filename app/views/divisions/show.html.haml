@@ -1,7 +1,10 @@
 %h1= t '.title'
 %p
-  = link_to 'back', divisions_path
+  = link_to t('back'), divisions_path
+  = link_to t('edit'), edit_division_path(@division)
 
 %dl
   %dt= Division.human_attribute_name :name
   %dd= @division.name
+  %dt= Division.human_attribute_name :source
+  %dd= @division.source

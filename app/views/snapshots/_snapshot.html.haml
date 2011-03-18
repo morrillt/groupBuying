@@ -1,9 +1,0 @@
-%tr
-  %td= link_to snapshot.id, snapshot
-  %td= snapshot.deal.deal_id
-  %td=link_to(snapshot.status || 'unknown', snapshot_path(snapshot))
-  %a{:href => "/deals/#{snapshot.deal.id}"}= snapshot.status
-  %td= number_to_currency(snapshot.price)
-  %td= snapshot.buyers_count
-  %td= number_to_currency(snapshot.total_revenue)
-  %td= time_ago_in_words snapshot.created_at
