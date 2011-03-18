@@ -1,0 +1,9 @@
+- form_for @mail_update do |m|
+  %div 
+    = m.label :name
+    = m.text_field :name
+  %div
+    = m.label :email
+    = m.text_field :email
+  %div
+    = m.submit "Sign up"

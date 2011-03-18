@@ -1,7 +1,11 @@
 Groupster::Application.routes.draw do
 
+  resources :mail_updates
+
+  get "mail_updates/new"
+
   match "/deals/export" => "deals#export"
-  
+ 
   resources :snapshots, :only => [:index, :show]
 
   resources :divisions, :only => [:index, :show]
