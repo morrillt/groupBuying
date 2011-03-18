@@ -1,27 +1,27 @@
 #site-stats.main-content
   %h1 #{@site.name}
   #chart
-  #deals-activity
-    %p.calc
-      %span.label Active deals being tracked
-      %span.value 100
-    %p.calc
-      %span.label Deals tracked to date
-      %span.value 100
-    %p.calc
-      %span.label Coupons purchased to date
-      %span.value 100
-    %p.calc
-      %span.label Total spent on deals to date
-      %span.value 100
-    %p.calc
-      %span.label Average revenue per deal
-      %span.value 100
-    %p.calc
-      %span.label Total locations
-      %span.value 100
+  #deals-activity.stats-block
+    .calc
+      %p.label Active deals being tracked
+      %p.value 100
+    .calc
+      %p.label Deals tracked to date
+      %p.value 100
+    .calc
+      %p.label Coupons purchased to date
+      %p.value 100
+    .calc
+      %p.label Total spent on deals to date
+      %p.value 100
+    .calc
+      %p.label Average revenue per deal
+      %p.value 100
+    .calc
+      %p.label Total locations
+      %p.value 100
     %a.see-locations-btn{:href=>"#"} See Locations
-  #deals-variation
+  #deals-variation.stats-block
     %ul
       %li.period
         %a{:href=>"#"} Day
@@ -33,16 +33,24 @@
         %a{:href=>"#"} Quarter
     .variation-table
       .entry
-        %p.label Closed Deals
-        %span 100
-    %p 
-      %span Coupons Purchased
-      %span 100
-    %p 
-      %span Closed Deals
-      %span 100
-  #deals-trending
-    %h2 Currently Trending on 
+        .calc
+          %p.label Closed Deals
+          %p.value 100
+          %p.change 5%
+        .calc
+          %p.label Coupons Purchased
+          %p.value 100
+          %p.change 5%
+        .calc
+          %p.label Total Spent on Deals
+          %p.value 100
+          %p.change 5%
+        .calc
+          %p.label Average Revenue per Deal
+          %p.value 100
+          %p.change 5%
+  #deals-trending.stats-block
+    %h2 Currently Trending on #{@site.name} 
     .trending-table
       .header
         %p.label Deal

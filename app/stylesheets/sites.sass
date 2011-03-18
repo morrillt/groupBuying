@@ -5,24 +5,17 @@
     ul
       margin: 10px
     li
-      float: left
-      a
-        text-decoration: underline
-        font-size: 13px
-        padding: 5px
-        +corner(4px)
-        border: 1px solid #AAA
-        &:hover
-          background-color: #666
-          color: white
+      +hoptions
   #chart
     margin-bottom: 10px
 
 #site-stats
+  #chart
+    margin-bottom: 25px
   #deals-activity
-    margin: 10px 0
     .calc, .see-locations-btn
       clear: left
+    .calc
     .see-locations-btn
       display: block
     .label
@@ -31,3 +24,40 @@
     .value
       width: 50px
       float: left
+  #deals-variation
+    ul
+      margin-bottom: 20px
+      float: left
+    li
+      +hoptions
+    .variation-table
+      clear: left
+    .calc
+      clear: left
+    .label
+      width: 300px
+      float: left
+    .value
+      width: 50px
+      float: left
+    .change
+      width: 50px
+      float: left
+
+  .stats-block
+    padding: 20px 10px
+    margin-bottom: 10px
+    background-color: #EEE
+    +corner(6px)
+    +column(18, true)
+    border-bottom: 1px solid #AAA
+    border-right: 1px solid #AAA
+    
+  #deals-trending
+    .label, .value
+      width: 200px
+      float: left
+    .row
+      clear: left
+      font-size: 13px
+    
