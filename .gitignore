@@ -6,3 +6,4 @@ tmp/**/*
 *.gz
 config/database.yml
 db/schema.rb
+public/stylesheets/css
