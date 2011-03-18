@@ -1,3 +1,4 @@
+require 'digest/md5'
 class Deal < ActiveRecord::Base
   include Geokit::Geocoders
   
@@ -14,6 +15,10 @@ class Deal < ActiveRecord::Base
   
   # Geocode lat lng if we have an address
   before_create :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? }
+  
+  before_create do
+    self.deal_id = Digest::MD5.hexdigest(name + permalink + expires_at.to_s)
+  end
   
   # Scopes
   scope :active, where(:active => true)

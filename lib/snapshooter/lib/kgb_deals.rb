@@ -66,7 +66,6 @@ module Snapshooter
             :sale_price => sale_price,
             :actual_price => actual_price,
             :permalink => link["href"],
-            :deal_id => merchant_name,
             :site_id => site.id,
             :expires_at => expires_at,
             :raw_address => raw_address

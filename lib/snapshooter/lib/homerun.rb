@@ -59,7 +59,6 @@ module Snapshooter
           
           attributes = {}
           attributes[:name]                 = @doc.search("div[@class='title rockwell']").first.text
-          attributes[:deal_id]              = (@doc.search("div[@class='spot'] a").first.text+attributes[:name])
           attributes[:sale_price]           = @doc.search("a[@class='buy-button']").first.text.gsub(/[^0-9]/,'').to_f
           attributes[:actual_price]         = @doc.search("span[@class='econ rockwell']").first.text.gsub(/[^0-9]/,'').to_f
           attributes[:expires_at]           = expires_at

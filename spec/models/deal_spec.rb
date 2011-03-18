@@ -15,14 +15,13 @@ describe Deal do
       @deal.should_receive(:sale_price)
       @deal.revenue
     end
-    
-
-    # TODO:
-    # This is slowing tests due to the capture_snapshot callback
-    #it "should calculate the buyers_count" do
-    #  snapshot = Factory(:snapshot, :deal => @deal, :sold_count => 300)
-    #  @deal.stub(:capture_snapshot).and_return(300)
-    #  @deal.buyers_count.should == 300
-    #end
+  end
+  
+  context "importing" do
+    it "should generate a unique deal id" do
+      deal = Factory.create(:deal)
+      unique_key = Digest::MD5.hexdigest(deal.name + deal.permalink + deal.expires_at.to_s)
+      deal.deal_id.should == unique_key
+    end
   end
 end

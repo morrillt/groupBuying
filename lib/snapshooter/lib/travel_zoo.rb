@@ -58,7 +58,6 @@ module Snapshooter
           attributes = {}
           
           attributes[:name]                 = @doc.search("span[@id='ctl00_Main_LabelDealTitle']").text
-          attributes[:deal_id]              = (@doc.search("span[@id='ctl00_Main_MerchantInMapBox']").text+attributes[:name])
           #attributes[:buyers_count]         = @doc.search("span[@id='ctl00_Main_LabelBought']").text.to_i
           attributes[:sale_price]           = @doc.search("span[@id='ctl00_Main_OurPrice']").text.gsub(/[^0-9]/,'').to_f
           attributes[:actual_price]         = @doc.search("span[@id='ctl00_Main_PriceValue']").text.gsub(/[^0-9]/,'').to_f
