@@ -30,10 +30,10 @@ module Snapshooter
       
       divisions.map do |division_name, division_path|        
         # Find the division
-        division = site.divisions.find_or_initialize_by_name(division_name)
-        division.name, division.url = division_name, division_path
-        division.save
-        get(division.url)
+        @division = site.divisions.find_or_initialize_by_name(division_name)
+        @division.name, @division.url = division_name, division_path
+        @division.save
+        get(@division.url)
         deal_links.map do |deal_link|
           options = {:full_path => deal_link =~ /^http(.+)/i ? true : false}
           puts "Ping: #{deal_link}"
@@ -46,13 +46,13 @@ module Snapshooter
           
           # Skip deal if no expiration time present
           if time_left.empty? || time_left.size < 4
-            puts "Sold out"
+            log "Sold out"
             next
           end
           
           # Skip deal if expired
           if expires_at <= Time.now
-            puts "Expired"
+            log "Expired"
             next
           end
           
@@ -64,11 +64,9 @@ module Snapshooter
           attributes[:expires_at]           = expires_at
           attributes[:permalink]            = options[:full_path] ? deal_link : (base_url + deal_link)
           attributes[:site_id]              = site.id
+          attributes[:division]             = @division
           
-          # Ensure we dont duplicate deals use unique deal identifier
-          if deal = division.deals.active.find_or_create_by_deal_id(attributes)
-            puts "#{self.class.to_s} Added #{deal.name}"
-          end
+          save_deal!(attributes)
           
         end
       end
