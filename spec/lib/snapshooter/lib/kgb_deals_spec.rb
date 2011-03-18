@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Snapshooter::KgbDeals do
   before(:each) do
     @kgb_deals = Snapshooter::KgbDeals.new
+    @kgb_deals.stub(:capture_snapshot).and_return(300)
   end
   
   context "a get request" do

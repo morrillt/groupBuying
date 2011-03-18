@@ -16,8 +16,7 @@ describe Deal do
       @deal.revenue
     end
     
-    
-    
+
     # TODO:
     # This is slowing tests due to the capture_snapshot callback
     #it "should calculate the buyers_count" do
