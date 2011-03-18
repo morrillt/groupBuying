@@ -4,5 +4,11 @@ require File.dirname(__FILE__) + '/../config/environment'
 # Called hourly to update the snapshots for a sites active deals
 
 Site.active.reverse.each do |site|
-  site.update_snapshots!
+  begin
+    site.update_snapshots!
+  rescue => e
+    puts "Error:"
+    puts "-"*90
+    puts e.message
+  end
 end
