@@ -12,6 +12,7 @@ class Deal < ActiveRecord::Base
   validates_presence_of :permalink
   validates_presence_of :actual_price
   validates_presence_of :sale_price
+  validates_uniqueness_of :deal_id
   
   # Geocode lat lng if we have an address
   before_create :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? }

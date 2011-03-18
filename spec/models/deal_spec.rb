@@ -4,10 +4,12 @@ describe Deal do
   it{ should have_many(:snapshots) }
   it{ should belong_to(:site) }
   it{ should belong_to(:division) }
+  it{ should validate_uniqueness_of(:deal_id) }
   
   before(:each) do
     @deal = Factory(:deal)
   end
+  
   
   context "calculations" do
     it "should calcuate revenue" do
