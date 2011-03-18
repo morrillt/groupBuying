@@ -15,7 +15,6 @@ class DealsController < ApplicationController
   # GET /deals/1.xml
   def show
     @deal = Deal.find(params[:id])
-    @chart = Chart.new(@deal)
 
     respond_to do |format|
       format.html # show.html.erb
@@ -23,30 +22,63 @@ class DealsController < ApplicationController
     end
   end
 
-  def export
-    @deals = Deal.find(:all, :conditions => "active = 1", :include => [:division, :site])
-    
-    FasterCSV.open('public/deals.csv','w+') do |csv|
-      csv << %w(id name url sale_price actual_price division site active hotness lat lng expires_at raw_address)
-      @deals.each do |deal|
-        csv << [
-          deal.id,
-          deal.name,
-          deal.permalink,
-          deal.sale_price,
-          deal.actual_price,
-          deal.division_name,
-          deal.site_name,
-          deal.active,
-          deal.hotness,
-          deal.lat,
-          deal.lng,
-          deal.expires_at,
-          deal.raw_address
-        ]
+  # GET /deals/new
+  # GET /deals/new.xml
+  def new
+    @deal = Deal.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml  { render :xml => @deal }
+    end
+  end
+
+  # GET /deals/1/edit
+  def edit
+    @deal = Deal.find(params[:id])
+  end
+
+  # POST /deals
+  # POST /deals.xml
+  def create
+    @deal = Deal.new(params[:deal])
+
+    respond_to do |format|
+      if @deal.save
+        format.html { redirect_to(@deal, :notice => 'Deal was successfully created.') }
+        format.xml  { render :xml => @deal, :status => :created, :location => @deal }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @deal.errors, :status => :unprocessable_entity }
       end
     end
-    
-    send_data(File.read("public/deals.csv"), :content_type => "text/csv", :disposistion => "attachment", :filename => "deals.csv")
+  end
+
+  # PUT /deals/1
+  # PUT /deals/1.xml
+  def update
+    @deal = Deal.find(params[:id])
+
+    respond_to do |format|
+      if @deal.update_attributes(params[:deal])
+        format.html { redirect_to(@deal, :notice => 'Deal was successfully updated.') }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @deal.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /deals/1
+  # DELETE /deals/1.xml
+  def destroy
+    @deal = Deal.find(params[:id])
+    @deal.destroy
+
+    respond_to do |format|
+      format.html { redirect_to(deals_url) }
+      format.xml  { head :ok }
+    end
   end
 end
