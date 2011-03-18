@@ -1,5 +1,7 @@
-%h1 Group Buying Dynamics
-%h2= @site.source_name
+/chart
+
+%h2= @site.name
+= render :partial => "general_data", :locals => {:data => @data, :site => @site}
 
 - if false
   .span-12.last
