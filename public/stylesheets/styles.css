@@ -185,6 +185,11 @@ a {
 }
 
 /* line 13, ../../app/stylesheets/layout.sass */
+h1 {
+  font-size: 30px;
+}
+
+/* line 16, ../../app/stylesheets/layout.sass */
 .container {
   width: 990px;
   margin: 0 auto;
@@ -192,7 +197,7 @@ a {
   *zoom: 1;
 }
 
-/* line 16, ../../app/stylesheets/layout.sass */
+/* line 19, ../../app/stylesheets/layout.sass */
 .top-container {
   display: inline;
   float: left;
@@ -203,33 +208,33 @@ a {
 * html .top-container {
   overflow-x: hidden;
 }
-/* line 18, ../../app/stylesheets/layout.sass */
+/* line 21, ../../app/stylesheets/layout.sass */
 .top-container #header {
   height: 50px;
   border: 1px dashed #aaaaaa;
 }
-/* line 21, ../../app/stylesheets/layout.sass */
+/* line 24, ../../app/stylesheets/layout.sass */
 .top-container .logo {
   float: left;
 }
-/* line 23, ../../app/stylesheets/layout.sass */
+/* line 26, ../../app/stylesheets/layout.sass */
 .top-container .logo a {
   color: black;
   font-size: 30px;
   padding: 20px;
 }
-/* line 27, ../../app/stylesheets/layout.sass */
+/* line 30, ../../app/stylesheets/layout.sass */
 .top-container .account {
   float: right;
   padding: 20px;
 }
-/* line 30, ../../app/stylesheets/layout.sass */
+/* line 33, ../../app/stylesheets/layout.sass */
 .top-container .account a {
   float: left;
   margin-left: 10px;
 }
 
-/* line 34, ../../app/stylesheets/layout.sass */
+/* line 37, ../../app/stylesheets/layout.sass */
 .main-container {
   display: inline;
   float: left;
@@ -241,7 +246,7 @@ a {
   overflow-x: hidden;
 }
 
-/* line 36, ../../app/stylesheets/layout.sass */
+/* line 39, ../../app/stylesheets/layout.sass */
 .right-container {
   display: inline;
   float: left;
@@ -253,13 +258,13 @@ a {
   overflow-x: hidden;
 }
 
-/* line 39, ../../app/stylesheets/layout.sass */
+/* line 42, ../../app/stylesheets/layout.sass */
 #main, #right {
   border: 1px dashed #aaaaaa;
-  height: 800px;
+  min-height: 800px;
 }
 
-/* line 44, ../../app/stylesheets/layout.sass */
+/* line 47, ../../app/stylesheets/layout.sass */
 #main .main-content {
   padding: 10px;
 }
@@ -300,4 +305,27 @@ a {
 /* line 18, ../../app/stylesheets/sites.sass */
 #sites #chart {
   margin-bottom: 10px;
+}
+
+/* line 22, ../../app/stylesheets/sites.sass */
+#site-stats #deals-activity {
+  margin: 10px 0;
+}
+/* line 24, ../../app/stylesheets/sites.sass */
+#site-stats #deals-activity .calc, #site-stats #deals-activity .see-locations-btn {
+  clear: left;
+}
+/* line 26, ../../app/stylesheets/sites.sass */
+#site-stats #deals-activity .see-locations-btn {
+  display: block;
+}
+/* line 28, ../../app/stylesheets/sites.sass */
+#site-stats #deals-activity .label {
+  width: 300px;
+  float: left;
+}
+/* line 31, ../../app/stylesheets/sites.sass */
+#site-stats #deals-activity .value {
+  width: 50px;
+  float: left;
 }

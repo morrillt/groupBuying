@@ -1,19 +1,26 @@
-#site-stats
+#site-stats.main-content
+  %h1 #{@site.name}
   #chart
   #deals-activity
-    %p Active deals being tracked
-      %span 100
-    %p Deals tracked to date
-      %span 100
-    %p Coupons purchased to date
-      %span 100
-    %p Total spent on deals to date
-      %span 100
-    %p Average revenue per deal
-      %span 100
-    %p Total locations
-      %span 100
-    %a{:href=>"#"} See Locations
+    %p.calc
+      %span.label Active deals being tracked
+      %span.value 100
+    %p.calc
+      %span.label Deals tracked to date
+      %span.value 100
+    %p.calc
+      %span.label Coupons purchased to date
+      %span.value 100
+    %p.calc
+      %span.label Total spent on deals to date
+      %span.value 100
+    %p.calc
+      %span.label Average revenue per deal
+      %span.value 100
+    %p.calc
+      %span.label Total locations
+      %span.value 100
+    %a.see-locations-btn{:href=>"#"} See Locations
   #deals-variation
     %ul
       %li.period
@@ -28,8 +35,44 @@
       .entry
         %p.label Closed Deals
         %span 100
-    %p Coupons Purchased
+    %p 
+      %span Coupons Purchased
       %span 100
-    %p Closed Deals
+    %p 
+      %span Closed Deals
       %span 100
   #deals-trending
+    %h2 Currently Trending on 
+    .trending-table
+      .header
+        %p.label Deal
+        %p.label City
+        %p.label Hotness Index
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+      .row
+        %p.value Cheapeast Fly to NY
+        %p.value Anywhere but NY
+        %p.value 666
+
+=content_for(:javascripts) do
+  :javascript
+    var chart_data= #{@chart_data.to_json}

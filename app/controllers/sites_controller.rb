@@ -17,16 +17,8 @@ class SitesController < ApplicationController
   # GET /sites/1
   # GET /sites/1.xml
   def show
-    @site = Site.find_by_source_name(params[:source_name])
-
-    @data = Deal.get_info(@site)
-    # @data[:locations] = @site.divisions.all.length.to_s
-
-
-
-    @chart = Chart.new([@site])
-    
-
+    @site = Site.find_by_source_name(params[:id])
+    @chart_data= Chart.hourly_renevue_by_site
     respond_to do |format|
 
       format.html # show.html.erb

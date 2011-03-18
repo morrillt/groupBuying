@@ -51,4 +51,5 @@ $.widget("ui.chart", {
 
 $(document).ready(function() {
     $("#sites #chart").chart();
+    $("#site-stats #chart").chart();
 });
