@@ -25,6 +25,8 @@ class Site < ActiveRecord::Base
     case self.source_name
     when 'kgb_deals'
       Snapshooter::KgbDeals.new
+    when 'travel_zoo'
+      Snapshooter::TravelZoo.new
     end
   end
 end

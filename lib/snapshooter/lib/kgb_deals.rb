@@ -24,7 +24,7 @@ module Snapshooter
 
     # deals
     def crawl_new_deals!
-      puts "#{self.class.to_s} is crawling"
+      super
       divisions.each do |division_hash|
         
         # Get the deals for this division
@@ -51,7 +51,7 @@ module Snapshooter
           actual_price = xpath("div[@id='deal_basic_left'] dl dd").first.text.gsub(/[^0-9\.]/,'').to_f
           
           # Capture the merchant name
-          merchant_name = (xpath("li[@class='merchant_name']").first.text || "unknown").dasherize
+          merchant_name = ((xpath("li[@class='merchant_name']").first.text || "unknown").dasherize+link.text)
           
           ex_time = @doc.search("dl[@class='expires'] dd").first.attributes
           
