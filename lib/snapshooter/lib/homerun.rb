@@ -66,7 +66,7 @@ module Snapshooter
           attributes[:site_id]              = site.id
           
           # Ensure we dont duplicate deals use unique deal identifier
-          if deal = division.deals.active.find_or_create_by_deal_id(attributes)
+          if deal = division.deals.active.create(attributes)
             puts "#{self.class.to_s} Added #{deal.name}"
           end
           
