@@ -5,6 +5,9 @@ class SitesController < ApplicationController
     @chart = Chart.new
     @sites = Site.active
 
+    @chart_data= Chart.hourly_renevue_by_site
+    # puts @chart_data.inspect
+
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @sites }
