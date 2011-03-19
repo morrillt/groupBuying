@@ -4,25 +4,25 @@
   #deals-activity.stats-block
     .calc
       %p.label Active deals being tracked
-      %p.value #{@site.deals.active.count}
+      %p.value #{number_with_delimiter @site.deals.active.count}
     .calc
       %p.label Deals tracked to date
-      %p.value #{@site.deals.count}
+      %p.value #{number_with_delimiter @site.deals.count}
     .calc
       %p.label Coupons purchased to date
-      %p.value #{@data[:coupon_purchased]}
+      %p.value #{number_with_delimiter @data[:coupon_purchased]}
     .calc
       %p.label Total spent on deals to date
-      %p.value #{@data[:total_revenue]}
+      %p.value #{number_to_currency(@data[:total_revenue], :unit =>"$")}
     .calc
       %p.label Average coupons sold per deal
-      %p.value #{@data[:avg_coupon]}
+      %p.value #{number_to_currency(@data[:avg_coupon], :unit =>"$")}
     .calc
       %p.label Average price per deal
-      %p.value #{@data[:price_deal]}
+      %p.value #{number_to_currency(@data[:price_deal], :unit =>"$")}
     .calc
       %p.label Average revenue per deal
-      %p.value #{@data[:avg_deal]}    
+      %p.value #{number_to_currency(@data[:avg_coupon] * @data[:price_deal],:unit =>"$")}    
     .calc
       %p.label Total locations
       %p.value #{@site.divisions.count}
@@ -42,19 +42,19 @@
       .entry
         .calc
           %p.label Closed Deals
-          %p.value #{@site.deals.inactive.count}
-          %p.change 5%
+          %p.value #{number_with_delimiter @site.deals.inactive.count}
+          %p.change #{@data[:change_today_yesterday]}
         .calc
           %p.label Coupons Purchased
-          %p.value #{@data[:closed_yesterday]}
+          %p.value #{number_with_delimiter @data[:closed_yesterday]}
           %p.change 5%
         .calc
           %p.label Total Spent on Deals
-          %p.value #{@data[:purchased_today]}
+          %p.value #{number_to_currency(@data[:purchased_today],:unit => "$")}
           %p.change 5%
         .calc
           %p.label Average Revenue per Deal
-          %p.value #{@data[:revenue_today]}
+          %p.value #{number_to_currency(@data[:revenue_today],:unit => "$")}
           %p.change 5%
   #deals-trending.stats-block
     %h2 Currently Trending on #{@site.name} 

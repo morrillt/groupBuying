@@ -148,6 +148,15 @@ class Deal < ActiveRecord::Base
 
     #avg revenue yesterday
     data[:avg_revenue_yesterday] = self.find_by_sql("select avg(c) from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) GROUP BY snapshots.deal_id ) x;")
+
+    #changes in %}
+    unless data[:closed_yesterday]==0
+      data[:change_today_yesterday] = (data[:closed_today] - data[:closed_yesterday])/data[:closed_yesterday]
+    else
+      data[:change_today_yesterday] = "No data"
+    end
+    
+
     return data
   end
 
