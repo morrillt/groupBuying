@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 =# render :partial => 'shared/chart', :object => @chart
 
 = will_paginate @deals
@@ -21,31 +20,25 @@
   = render :partial => @deals
 
 = will_paginate @deals
-=======
-%h1= t('.title')
-%p= link_to t('.new_deal'), new_deal_path
+
+%h1=@site.name
 
 %table
   %thead
     %tr
       %th= Deal.human_attribute_name :name
-      %th= Deal.human_attribute_name :price
+      %th= Deal.human_attribute_name :sale_price
       %th= Deal.human_attribute_name :division_id
       %th= Deal.human_attribute_name :site_id
       %th= Deal.human_attribute_name :active
       %th= Deal.human_attribute_name :sold
-      %th{:colspan => 3}= t 'actions'
   
   %tbody
     - for deal in @deals
       %tr{ :class => cycle(:odd, :even) }
         %td= deal.name
-        %td= deal.price
+        %td= deal.sale_price
         %td= deal.division_id
         %td= deal.site_id
         %td= deal.active
         %td= deal.sold
-        %td.action= link_to t('show'), deal
-        %td.action= link_to t('edit'), edit_deal_path(deal)
-        %td.action= link_to t('destroy'), deal, :confirm => t('are_you_sure'), :method => :delete
->>>>>>> 62992eb1545a85afc81867a39aecdb29e85392c0

@@ -6,3 +6,4 @@ tmp/**/*
 *.gz
 config/database.yml
 public/deals.csv
+public/stylesheets/css
