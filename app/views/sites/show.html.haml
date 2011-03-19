@@ -13,21 +13,20 @@
       %p.value #{number_with_delimiter @data[:coupon_purchased]}
     .calc
       %p.label Total spent on deals to date
-      %p.value #{number_to_currency(@data[:total_revenue], :unit =>"$")}
+      %p.value #{number_to_currency(@data[:total_revenue], :unit =>"$", :precision=>0)}
     .calc
       %p.label Average coupons sold per deal
-      %p.value #{number_to_currency(@data[:avg_coupon], :unit =>"$")}
+      %p.value #{number_to_currency(@data[:avg_coupon], :unit =>"$", :precision=>0)}
     .calc
       %p.label Average price per deal
-      %p.value #{number_to_currency(@data[:price_deal], :unit =>"$")}
+      %p.value #{number_to_currency(@data[:price_deal], :unit =>"$", :precision=>0)}
     .calc
       %p.label Average revenue per deal
-      %p.value #{number_to_currency(@data[:avg_coupon] * @data[:price_deal],:unit =>"$")}    
+      %p.value #{number_to_currency(@data[:avg_coupon] * @data[:price_deal],:unit =>"$", :precision=>0)}    
     .calc
       %p.label Total locations
       %p.value #{@site.divisions.count}
 
-    %a.see-locations-btn{:href=>"#"} See Locations
   #deals-variation.stats-block
     %ul
       %li.period
@@ -47,15 +46,15 @@
         .calc
           %p.label Coupons Purchased
           %p.value #{number_with_delimiter @data[:closed_yesterday]}
-          %p.change 5%
+          %p.change #{@data[:change_yesterday]}
         .calc
           %p.label Total Spent on Deals
-          %p.value #{number_to_currency(@data[:purchased_today],:unit => "$")}
-          %p.change 5%
+          %p.value #{number_to_currency(@data[:purchased_today],:unit => "$",:precision=>0)}
+          %p.change #{@data[:purchased_change_today]}
         .calc
           %p.label Average Revenue per Deal
-          %p.value #{number_to_currency(@data[:revenue_today],:unit => "$")}
-          %p.change 5%
+          %p.value #{number_to_currency(@data[:revenue_today],:unit => "$", :precision=>0)}
+          %p.change #{@data[:change_purchased_yesterday]}
   #deals-trending.stats-block
     %h2 Currently Trending on #{@site.name} 
     .trending-table

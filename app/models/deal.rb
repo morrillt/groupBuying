@@ -149,13 +149,38 @@ class Deal < ActiveRecord::Base
     #avg revenue yesterday
     data[:avg_revenue_yesterday] = self.find_by_sql("select avg(c) from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) GROUP BY snapshots.deal_id ) x;")
 
-    #changes in %}
+    ###changes in %
+    # coupons closed today-yesterday    
     unless data[:closed_yesterday]==0
       data[:change_today_yesterday] = (data[:closed_today] - data[:closed_yesterday])/data[:closed_yesterday]
     else
       data[:change_today_yesterday] = "No data"
     end
-    
+
+    # coupons closed today-yesterday
+    tmp = self.find_by_sql("SELECT COUNT(DISTINCT(deal_id)) as closed FROM snapshots WHERE status=0 and DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site.id}").first.closed
+
+    unless tmp==0
+      data[:change_yesterday] = (data[:closed_yesterday] - tmp )/tmp
+    else
+      data[:change_yesterday] = "No data"
+    end
+
+    # coupons change today-yesterday
+    unless data[:purchased_today]==0
+      data[:purchased_change_today] = (data[:purchased_today] - data[:purchased_yesterday])/data[:purchased_yesterday]
+    else
+      data[:purchased_change_today] = "No data"
+    end
+
+    # coupons change yesterday-
+    tmp = self.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site.id}").first.nsold.to_i
+
+    unless tmp==0
+      data[:change_purchased_yesterday] = (data[:purchased_yesterday] - tmp )/tmp
+    else
+      data[:change_purchased_yesterday] = "No data"
+    end
 
     return data
   end
