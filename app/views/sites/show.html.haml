@@ -4,10 +4,10 @@
   #deals-activity.stats-block
     .calc
       %p.label Active deals being tracked
-      %p.value 100
+      %p.value #{@site.deals.active.count}
     .calc
       %p.label Deals tracked to date
-      %p.value 100
+      %p.value #{@site.deals.count}
     .calc
       %p.label Coupons purchased to date
       %p.value 100
@@ -19,7 +19,7 @@
       %p.value 100
     .calc
       %p.label Total locations
-      %p.value 100
+      %p.value #{@site.divisions.count}
     %a.see-locations-btn{:href=>"#"} See Locations
   #deals-variation.stats-block
     %ul
@@ -35,7 +35,7 @@
       .entry
         .calc
           %p.label Closed Deals
-          %p.value 100
+          %p.value #{@site.deals.inactive}
           %p.change 5%
         .calc
           %p.label Coupons Purchased

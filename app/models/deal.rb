@@ -24,6 +24,7 @@ class Deal < ActiveRecord::Base
   
   # Scopes
   scope :active, where(:active => true)
+  scope :inactive, where(:active => false)
   
   # Instance Methods
 
