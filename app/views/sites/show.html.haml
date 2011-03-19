@@ -15,8 +15,14 @@
       %p.label Total spent on deals to date
       %p.value #{@data[:total_revenue]}
     .calc
+      %p.label Average coupons sold per deal
+      %p.value #{@data[:avg_coupon]}
+    .calc
+      %p.label Average price per deal
+      %p.value #{@data[:price_deal]}
+    .calc
       %p.label Average revenue per deal
-      %p.value #{@data[:avg_deal]}
+      %p.value #{@data[:avg_deal]}    
     .calc
       %p.label Total locations
       %p.value #{@site.divisions.count}

@@ -106,10 +106,16 @@ class Deal < ActiveRecord::Base
     data[:coupon_purchased] = self.find_by_sql("select sum(c) as purchased from (SELECT deal_id, MAX(sold_count) AS c FROM snapshots where site_id = #{site.id} GROUP BY deal_id order by deal_id desc) x;").first.purchased.to_i
 
     #total revenue to date
-    # data[:total_revenue] = self.find_by_sql("select sum(c) as revenue from (SELECT MAX(sold_count) * deal.sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.id = #{site.id} GROUP BY snapshots.deal_id ) x;").first.revenue.to_i
+    data[:total_revenue] = self.find_by_sql("select sum(c) as rev from(SELECT MAX(sold_count) * sale_price  AS c, snapshots.site_id FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.site_id = #{site.id} GROUP BY snapshots.deal_id ) x;").first.rev.to_i
+
+    #average coupon sold per deal
+    data[:avg_coupon] = self.find_by_sql("select avg(sold) as coupon_sold from (select distinct(snapshots.deal_id),max(sold_count) as sold from snapshots left join deals on deals.id = snapshots.deal_id where deals.site_id = #{site.id}) x;").first.coupon_sold.to_f
+
+    #average price per deal
+    data[:price_deal] = self.find_by_sql("select avg(sale_price) as price from deals where site_id = #{site.id};").first.price.to_f
 
     #avg revenue per deal
-    data[:avg_deal] = self.find_by_sql("select avg(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.site_id = #{site.id} GROUP BY snapshots.deal_id ) x;").first.prom.to_i
+    data[:avg_deal] = self.find_by_sql("select avg(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.site_id = #{site.id} GROUP BY snapshots.deal_id ) x;").first.prom.to_f
     
     # deal closed today
     data[:closed_today] = self.find_by_sql("SELECT COUNT(DISTINCT(deals.id)) as closed FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE active=0 and deals.id = #{site.id} AND DATE(snapshots.created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) AND DATE(snapshots.created_at)<=DATE(NOW())").first.closed
@@ -138,7 +144,7 @@ class Deal < ActiveRecord::Base
     data[:revenue_yesterday] = self.find_by_sql("select sum(c) from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = #{site.id} and DATE(snapshots.created_at) = DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) GROUP BY snapshots.deal_id ) x;")
 
     #avg revenue today
-    data[:avg_revenue_today] = self.find_by_sql("select avg(c) from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=date(now()) GROUP BY snapshots.deal_id ) x;")
+    data[:avg_revenue_today] = self.find_by_sql("select avg(c) as avg_revenue_today from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=date(now()) GROUP BY snapshots.deal_id ) x;").first.avg_revenue_today.to_f
 
     #avg revenue yesterday
     data[:avg_revenue_yesterday] = self.find_by_sql("select avg(c) from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) GROUP BY snapshots.deal_id ) x;")
