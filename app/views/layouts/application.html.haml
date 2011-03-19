@@ -22,13 +22,20 @@
           #email-updates
             %p Sign Up for Email Updates
             %a{:href => "mail_updates/new", :id=> "lnk-new-user", :class=> "iframe"} Sign Up
+          #overall-trending
+            %p.label Top Trending Deals
+            %ul
+            - @overall_trending.each do |t|
+              %li
+                %a{:href=>""} #{t.name}
+            %a.see-chart-btn{:href=>"#"} See chart
       .bottom-container
         #bottom
 
-    = javascript_include_tag "thirdparty/jquery-1.5.1.min"
-    = javascript_include_tag "thirdparty/ui/jquery.ui.core.min"
-    = javascript_include_tag "thirdparty/ui/jquery.ui.widget.min"
-    = javascript_include_tag "thirdparty/highcharts/highcharts"
-    = javascript_include_tag "thirdparty/fancybox/jquery.fancybox-1.3.4.pack"
-    = yield :javascripts
-    = javascript_include_tag "app"
+  = javascript_include_tag "thirdparty/jquery-1.5.1.min"
+  = javascript_include_tag "thirdparty/ui/jquery.ui.core.min"
+  = javascript_include_tag "thirdparty/ui/jquery.ui.widget.min"
+  = javascript_include_tag "thirdparty/highcharts/highcharts"
+  = javascript_include_tag "thirdparty/fancybox/jquery.fancybox-1.3.4.pack"
+  = yield :javascripts
+  = javascript_include_tag "app"
