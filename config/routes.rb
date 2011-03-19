@@ -2,6 +2,7 @@ Groupster::Application.routes.draw do
   resources :mail_updates
 
   match "/deals/export" => "deals#export"
+  match "/sites/coupons_count" => "sites#coupons_count"
   
   resources :snapshots, :only => [:index, :show]
 

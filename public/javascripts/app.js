@@ -1,6 +1,21 @@
+$.widget("ui.counter", {
+    _init: function() {
+	var cnt = 0;
+	$.get("/sites/coupons_count", function(data) {
+	    cnt= data.coupons_count;
+	});
+        var counter = setInterval(function() {
+            $('#coupons-counter .count').html(cnt);
+            cnt++;
+        }, 500);
+    }
+});
+
 $.widget("ui.chart", {
     _init: function() {
 	var $el= this.element;
+	var self= this;
+	this.data= this.options.data;
 	this.chart = new Highcharts.Chart({
 	    chart: {
 		renderTo: 'chart',
@@ -35,13 +50,13 @@ $.widget("ui.chart", {
 	    },
 	    
 	    xAxis: {
-		categories: chart_data.categories,
+		categories: self.data.categories,
 		// ["06:00","08:00","10:00","12:00","14:00","16:00","18:00","20:00","22:00","00:00"],
 		labels: {
 		    rotation: -45
 		}
 	    },
-	    series: chart_data.series
+	    series: self.data.series
 	    // [
 	    // 	{name: 'Home Run', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {name: 'Living Social', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {name: 'Open Table', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {name: 'Kgb Deals', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {name: 'Groupon', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {name: 'Travel Zoo', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
 	    // ]
@@ -50,6 +65,7 @@ $.widget("ui.chart", {
 });
 
 $(document).ready(function() {
-    $("#sites #chart").chart();
-    $("#site-stats #chart").chart();
+    $("#sites #chart").chart({data:chart_data});
+    $("#site-stats #chart").chart({data:chart_data});
+    $("#coupons-counter").counter();
 });
