@@ -51,7 +51,7 @@ class Chart
 
   def self.hourly_revenue_by_divisions(site_id)
     site= Site.find(site_id)
-    divisions= site.division
+    divisions= site.divisions
     today= Time.now
     chart= {
       :categories => (1..24).map { |t| "#{(today-t.hours).hour}:00" }.reverse,
