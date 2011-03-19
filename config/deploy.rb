@@ -26,7 +26,7 @@ end
 after "deploy:update_code" do
   run "rvm rvmrc trust #{release_path}"
   
-  run "cd #{release_path}; compass"
+  run "cd #{release_path}; /home/gbd/.rvm/gems/ree-1.8.7-2011.03@charts/bin/compass compile --trace"
   # link the default database.yml
   run "ln -s #{shared_path}/config/database_groupie.yml #{release_path}/config/database.yml"
 end
