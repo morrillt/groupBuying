@@ -26,6 +26,7 @@ end
 after "deploy:update_code" do
   run "rvm rvmrc trust #{release_path}"
   
+  run "cd #{release_path}; compass"
   # link the default database.yml
   run "ln -s #{shared_path}/config/database_groupie.yml #{release_path}/config/database.yml"
 end
