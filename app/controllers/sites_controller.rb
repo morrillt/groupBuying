@@ -18,6 +18,8 @@ class SitesController < ApplicationController
   # GET /sites/1.xml
   def show
     @site = Site.find_by_source_name(params[:id])
+    @data = Deal.get_info(@site)
+    @data[:locations] = @site.divisions.length
     @chart_data= Chart.hourly_revenue_by_divisions(@site.id)
     respond_to do |format|
 

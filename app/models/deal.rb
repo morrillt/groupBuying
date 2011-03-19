@@ -91,6 +91,59 @@ class Deal < ActiveRecord::Base
     self.sold = true
     save
   end
+
+  #Yep, I know this is not the most beatiful thing... 
+  def self.get_info(site)
+    data = Hash.new 
+    #active deals
+    data[:tracked_active] = self.find(:all, :conditions => {:site_id =>  site.id, :active => true }).length
+    
+    # deals tracked to date
+    data[:deals_tracked] = self.find(:all,:conditions => {:site_id => site.id}).length
+    
+    #coupones purchased to date
+    data[:coupon_purchased] = self.find_by_sql("select sum(c) as purchased from (SELECT deal_id, MAX(sold_count) AS c FROM snapshots where site_id = #{site.id} GROUP BY deal_id order by deal_id desc) x;").first.purchased.to_i
+
+    #total revenue to date
+    # data[:total_revenue] = self.find_by_sql("select sum(c) as revenue from (SELECT MAX(sold_count) * deal.sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.id = #{site.id} GROUP BY snapshots.deal_id ) x;").first.revenue.to_i
+
+    #avg revenue per deal
+    data[:avg_deal] = self.find_by_sql("select avg(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.site_id = #{site.id} GROUP BY snapshots.deal_id ) x;").first.prom.to_i
+    
+    # deal closed today
+    data[:closed_today] = self.find_by_sql("SELECT COUNT(DISTINCT(deals.id)) as closed FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE active=0 and deals.id = #{site.id} AND DATE(snapshots.created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) AND DATE(snapshots.created_at)<=DATE(NOW())").first.closed
+    
+    #deals closed yesterday
+    data[:closed_yesterday] = self.find_by_sql("SELECT COUNT(DISTINCT(deal_id)) as closed FROM snapshots WHERE status=0 AND
+    DATE(created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site.id}").first.closed
+
+    #deals closed this week
+    data[:closed_week] = self.find_by_sql("SELECT COUNT(DISTINCT(deals.id)) as closed FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE active=0 and deals.site_id = #{site.id} AND DATE(snapshots.created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) AND DATE(snapshots.created_at)<=DATE(NOW());").first.closed
+
+    #coupons purchased today
+    data[:purchased_today] = self.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where
+    DATE(created_at)=DATE(NOW()) and site_id = #{site.id}").first.nsold.to_i
+
+    #coupons purchased yesterday
+    data[:purchased_yesterday] = self.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site.id}").first.nsold.to_i
+
+    #coupons purchased week
+    data[:purchased_week] = self.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) and DATE(created_at)<=DATE(NOW()) and site_id = #{site.id}").first.nsold.to_i
+
+    #revenue today
+    data[:revenue_today] = self.find_by_sql("select sum(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = #{site.id} and DATE(snapshots.created_at) = DATE(NOW()) GROUP BY snapshots.deal_id ) x;").first.prom.to_i
+    
+    #revenue yesterday
+    data[:revenue_yesterday] = self.find_by_sql("select sum(c) from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = #{site.id} and DATE(snapshots.created_at) = DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) GROUP BY snapshots.deal_id ) x;")
+
+    #avg revenue today
+    data[:avg_revenue_today] = self.find_by_sql("select avg(c) from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=date(now()) GROUP BY snapshots.deal_id ) x;")
+
+    #avg revenue yesterday
+    data[:avg_revenue_yesterday] = self.find_by_sql("select avg(c) from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) GROUP BY snapshots.deal_id ) x;")
+    return data
+  end
+
   
   private
   
