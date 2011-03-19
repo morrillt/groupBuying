@@ -51,6 +51,7 @@ class Chart
 
   def self.hourly_revenue_by_divisions(site_id)
     site= Site.find(site_id)
+    divisions= site.divisions
     today= Time.now
     chart= {
       :categories => (1..24).map { |t| "#{(today-t.hours).hour}:00" }.reverse,
@@ -58,15 +59,17 @@ class Chart
     }
     pre_data= {}
     divisions_names= []
+    divisions.each do |d|
+      revs= (1..24).map { 0 }
+      divisions_names << d.name
+      pre_data[d.name]= {:name=> d.name, :revs => revs}
+    end
+
     (1..24).map do |t|
       today= Time.now-t.hours # should not be Time.now
       revenues= site.revenue_for_all_divisions_by_given_hour_and_date(today.hour, today)
       revenues.each do |r|
-        if !pre_data[r.name]
-          divisions_names << r.name
-          pre_data[r.name]= {:revs=>[]}
-        end
-        pre_data[r.name][:revs] << r.rev
+        pre_data[r.name][:revs][t]= r.rev.to_f
       end
     end
     divisions_names.sort!

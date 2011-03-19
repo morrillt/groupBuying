@@ -10,12 +10,3 @@
 =content_for(:javascripts) do
   :javascript
     var chart_data= #{@chart_data.to_json}
-  :javascript  
-    $("a#iframe").fancybox();
-    $("a#lnk-new-user").fancybox({
-      'transitionIn'	:	'elastic',
-      'transitionOut'	:	'elastic',
-      'speedIn'		:	600, 
-      'speedOut'	:	200, 
-      'overlayShow'	:	false
-      });

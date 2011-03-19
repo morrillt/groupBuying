@@ -160,6 +160,10 @@ class Deal < ActiveRecord::Base
     return data
   end
 
+  def self.overall_trending
+    Deal.find(:all, :order => "hotness", :limit => 5)
+  end
+
   
   private
   
