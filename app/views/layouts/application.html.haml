@@ -15,9 +15,15 @@
           = yield
       .right-container
         #right
+          = yield :right_nav
+          #coupons-counter
+            %p.count 0
+            %p.label Coupons Analyzed to Date
+          #email-updates
+            %p Sign Up for Email Updates
+            %a{:href => "mail_updates/new", :id=> "lnk-new-user", :class=> "iframe"} Sign Up
       .bottom-container
         #bottom
-      = yield :right_nav
 
     = javascript_include_tag "thirdparty/jquery-1.5.1.min"
     = javascript_include_tag "thirdparty/ui/jquery.ui.core.min"

@@ -1,10 +1,8 @@
 class MailUpdatesController < ApplicationController
-
   def new
     @mail_update = MailUpdate.new
-
     respond_to do |format|
-      format.html # new.html.erb
+      format.html { render :layout => false }
       format.xml  { render :xml => @mail_update }
     end
   end
