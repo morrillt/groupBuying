@@ -25,8 +25,6 @@ end
 
 after "deploy:update_code" do
   run "rvm rvmrc trust #{release_path}"
-  
-  run "cd #{release_path}; /home/gbd/.rvm/gems/ree-1.8.7-2011.03@charts/bin/compass compile --trace"
   # link the default database.yml
   run "ln -s #{shared_path}/config/database_groupie.yml #{release_path}/config/database.yml"
 end
@@ -53,5 +51,14 @@ namespace :bundler do
     run "cd #{deploy_to}/current && /home/gbd/.rvm/gems/ree-1.8.7-2011.03@charts/bin/bundle install --quiet --without development test"
   end
 end
+
+namespace :compass do  
+  desc 'Compile sass scripts'
+  task :compile do
+    system "rm -rf css/*"
+    system "compass compile"
+  end
+end
  
 after 'deploy:update_code', 'bundler:bundle_new_release'
+after 'deploy:update_code', 'compass:compile'
