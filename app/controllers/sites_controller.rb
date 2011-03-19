@@ -30,7 +30,7 @@ class SitesController < ApplicationController
   def coupons_count
     count= Site.coupons_purchased_to_date
     respond_to do |format|
-      format.json  { render :json => {:coupons_count => count} }
+      format.json { render :json => {:coupons_count => count} }
     end
   end
 end

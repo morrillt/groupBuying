@@ -1,9 +1,28 @@
-- form_for @mail_update do |m|
-  %div 
-    = m.label :name
-    = m.text_field :name
-  %div
-    = m.label :email
-    = m.text_field :email
-  %div
-    = m.submit "Sign up"
+!!!5
+%html
+  %head
+    %style
+      :sass
+        @import utils
+        body
+          font-family: "Lucida Grande",Arial,Helvetica,Verdana,sans-serif
+        h1
+          text-align: center
+        #new_mail_update
+          border: 1px solid #AAA
+          background-color: #EEE
+          padding: 20px
+          +corner(6px)
+          .field
+            margin-bottom: 10px
+  %body
+    %h1 Sign Up for Email Updates
+    - form_for @mail_update do |m|
+      %div.field
+        = m.label :name
+        = m.text_field :name
+      %div.field
+        = m.label :email
+        = m.text_field :email
+      %div
+        = m.submit "Sign up"

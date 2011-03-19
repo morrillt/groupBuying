@@ -1,3 +1,9 @@
+=left_widget
+  +corner(6px)
+  border: 1px solid #AAA
+  padding: 15px 0
+  margin-bottom: 10px
+
 body
   margin-top: 0
   font-family: "Lucida Grande",Arial,Helvetica,Verdana,sans-serif
@@ -51,11 +57,18 @@ h2
     padding: 10px
 
 #coupons-counter
-  +corner(6px)
-  border: 1px solid #AAA
-  padding: 15px 0
+  +left_widget
   .count
     font-size: 30px
   p
     text-align: center
-    
+
+#email-updates
+  +left_widget
+  a, p
+    display: block
+    text-align: center
+
+#new_mail_update
+  border: 1px solid #AAA
+  background-color: #EEE

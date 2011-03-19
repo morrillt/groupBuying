@@ -6,10 +6,6 @@
       - @sites.each do |s|
         %li.site
           %a{:href=>"/sites/#{s.source_name}"} #{s.name}
-#machete
-  %a{:href => "mail_updates/new", :id=> "lnk-new-user", :class=> "iframe"} 
-    Sign Up
-
 
 =content_for(:javascripts) do
   :javascript
