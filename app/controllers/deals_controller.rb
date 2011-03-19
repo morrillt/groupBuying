@@ -2,6 +2,8 @@ class DealsController < ApplicationController
   # GET /deals
   # GET /deals.xml
   def index
+    render_404 && return if params[:site_id].nil?
+    
     @site = Site.find(params[:site_id])
     @deals = @site.deals.active.paginate(:page => (params[:page] || 1), :per_page => 25)
 

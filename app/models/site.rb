@@ -29,6 +29,8 @@ class Site < ActiveRecord::Base
       Snapshooter::TravelZoo.new
     when 'homerun'
       Snapshooter::Homerun.new
+    when 'open_table'
+      Snapshooter::Homerun.new
     else
       raise Exception, "Unknown site source_name #{self.source_name}"
     end
