@@ -64,7 +64,7 @@
         %p.hotness.label Hotness
       - @trending.each do |d|
         .row
-          %p.deal #{d.name}
+          %a.deal{:href=>"#{d.permalink}"} #{d.name}
           %p.division #{d.division}
           %p.hotness #{d.hotness}
 
