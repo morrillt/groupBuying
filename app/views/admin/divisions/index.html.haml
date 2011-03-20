@@ -1,0 +1,27 @@
+%h1 Divisions
+
+= will_paginate(@divisions)
+
+%table
+  %tr
+    %th id
+    %th name
+    %th source
+    %th url
+    %th site_id
+    %th created_at
+    %th updated_at
+    %th division_id
+  
+  - @divisions.each do |division|
+    %tr
+      %td=division.id
+      %td=division.name
+      %td=division.source
+      %td=division.url
+      %td=division.site_id
+      %td=division.created_at
+      %td=division.updated_at
+      %td=division.division_id
+  
+= will_paginate(@divisions)

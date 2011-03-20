@@ -1,0 +1,23 @@
+%h1=@snapshot.deal.name
+
+%table
+  %thead
+    %th id
+    %th deal_id
+    %th sold_count
+    %th site_id
+    %th status
+    %th created_at
+    %th updated_at
+    %th sold_since_last_snapshot_count
+
+  %tbody
+    %td=@snapshot.id
+    %td=@snapshot.deal_id
+    %td=@snapshot.sold_count
+    %td=@snapshot.site_id
+    %td=@snapshot.status
+    %td=@snapshot.created_at
+    %td=@snapshot.updated_at
+    %td=@snapshot.sold_since_last_snapshot_count
+      

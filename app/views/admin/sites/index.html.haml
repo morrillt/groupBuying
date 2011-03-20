@@ -1,0 +1,25 @@
+%h1 Sites
+
+= will_paginate(@sites)
+
+%table
+  %tr
+    %th id
+    %th name
+    %th base_url
+    %th source_name
+    %th active
+    %th created_at
+    %th updated_at
+  
+  - @sites.each do |site|
+    %tr
+      %td=link_to(site.id, admin_site_path(site))
+      %td=site.name
+      %td=site.base_url
+      %td=site.source_name
+      %td=site.active
+      %td=site.created_at
+      %td=site.updated_at
+    
+= will_paginate(@sites)

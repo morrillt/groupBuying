@@ -5,7 +5,7 @@ class DealsController < ApplicationController
     render_404 && return if params[:site_id].nil?
     
     @site = Site.find(params[:site_id])
-    @deals = @site.deals.active.paginate(:page => (params[:page] || 1), :per_page => 25)
+    @deals = @site.deals.active.paginate(:page => (params[:page] || 1), :per_page => 25, :include => [:site, :division])
 
     respond_to do |format|
       format.html # index.html.erb

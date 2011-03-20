@@ -21,6 +21,28 @@ Groupster::Application.routes.draw do
     end
   end
   
+  # Admin routes
+  namespace :admin do
+    root :to => 'sites#index'
+    
+    resources :snapshots, :only => [:index, :show]
+
+    resources :divisions, :only => [:index, :show]
+
+    resources :deals, :only => [:index, :show]
+
+    resources :sites, :only => [:index, :show] do
+
+    resources :deals, :only => [:index, :show] do
+      resources :snapshots, :only => [:index, :show]
+    end
+
+      resources :divisions, :only => [:index, :show] do
+        resources :deals, :only => [:index, :show]
+      end
+    end
+  end
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
