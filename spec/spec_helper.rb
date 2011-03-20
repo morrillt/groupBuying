@@ -5,6 +5,7 @@ require 'rspec/rails'
 
 require 'shoulda'
 require 'factory_girl'
+require 'json'
 Factory.definition_file_paths = [ File.join(Rails.root, 'spec', 'factories') ]
 
 # Requires supporting ruby files with custom matchers and macros, etc,

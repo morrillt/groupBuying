@@ -13,8 +13,10 @@ gem 'geokit'
 gem 'fastercsv'
 gem 'will_paginate'
 gem "compass", ">= 0.10.6"
+gem "groupon"
 
 group :test do
+  gem 'json'
   gem 'rspec-rails', '>= 2.0.0.beta.10'
   gem 'shoulda'
   gem 'shoulda-matchers'

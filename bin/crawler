@@ -3,12 +3,14 @@ require File.dirname(__FILE__) + '/../config/environment'
 
 # Called hourly to find new deals
 
-Site.active.reverse.each do |site|
+Site.active.map do |site|
   begin
-    site.snapshooter.crawl_new_deals!
+    Thread.new do
+      site.snapshooter.crawl_new_deals!
+    end
   rescue => e
     puts "Error:"
     puts "-"*90
     puts e.message
   end
-end
+end.map{|t| t.join if t.respond_to?(:join) }
