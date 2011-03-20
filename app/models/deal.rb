@@ -189,13 +189,21 @@ class Deal < ActiveRecord::Base
     return data
   end
 
-  def self.overall_trending
-    Deal.find(:all, :order => "hotness", :limit => 5)
+  def self.overall_trending(limit=5)
+    Deal.find(:all, :order => "hotness", :limit => limit)
   end
 
-  
+  def self.current_revenue_trending
+    now= Time.now
+    Deal.revenue_trending_by_hour(now, now.hour)
+  end
+
+  def self.revenue_trending_by_hour(date, hour, limit=25)
+    Deal.find_by_sql ["SELECT deals.id, deals.name, deals.permalink, (snapshots.sold_count*deals.sale_price) AS revenue FROM snapshots, deals WHERE snapshots.deal_id = deals.id AND YEAR(snapshots.created_at) = ? AND MONTH(snapshots.created_at) = ? AND DAY(snapshots.created_at) = ? AND HOUR(snapshots.created_at) = ? GROUP BY permalink ORDER BY revenue DESC LIMIT ?", date.year, date.month, date.day, hour, limit]
+  end
+
+
   private
-  
   def geocode_lat_lng!
     begin
       result = MultiGeocoder.geocode(raw_address.to_s)

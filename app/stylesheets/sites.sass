@@ -22,7 +22,7 @@
       width: 300px
       float: left
     .value
-      width: 50px
+      width: 300px
       float: left
   #deals-variation
     ul
@@ -38,10 +38,10 @@
       width: 300px
       float: left
     .value
-      width: 50px
+      width: 200px
       float: left
     .change
-      width: 50px
+      width: 200px
       float: left
 
   .stats-block
@@ -65,6 +65,7 @@
       border: 1px solid white
       +corner(6px)
       padding: 10px
+      width: 650px
     .deal, .division
       border-right: 1px dashed white
     .deal
@@ -77,3 +78,31 @@
       +column(3, true)
     .label
       border: 0
+
+#trends
+  .trends-box
+    +column(9)
+    font-size: 13px
+    &#by-hotness
+      +column(9, true)
+  .trends-box ul
+    padding: 5px
+    border: 1px solid #AAA
+    float: left
+    li
+      margin: 10px 0
+      float: left
+      .thumb, a
+        float: left
+      a
+        width: 295px
+        margin-left: 10px
+    .thumb
+      height: 30px
+      width: 30px
+      border: 1px solid #AAA
+    .info
+      padding: 5px
+  #by-revenue
+    margin-left: 20px
+    margin-right: 0

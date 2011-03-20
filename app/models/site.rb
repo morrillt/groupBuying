@@ -57,7 +57,6 @@ class Site < ActiveRecord::Base
   end
 
   def currently_trending
-    # Deal.find_all_by_site_id(self.id, :order => "hotness", :limit => 10)
     Site.find_by_sql(["SELECT deals.name, deals.permalink, divisions.name as division, deals.hotness FROM deals, divisions WHERE deals.division_id = divisions.id AND deals.site_id = ? ORDER BY hotness DESC LIMIT 10", self.id])
   end
 

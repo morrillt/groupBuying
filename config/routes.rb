@@ -3,6 +3,8 @@ Groupster::Application.routes.draw do
 
   match "/sites/coupons_count" => "sites#coupons_count"
   
+  resources :trends, :only => [:index]
+
   resources :snapshots, :only => [:index, :show]
 
   resources :divisions, :only => [:index, :show]
@@ -10,10 +12,9 @@ Groupster::Application.routes.draw do
   resources :deals, :only => [:index, :show]
 
   resources :sites, :only => [:index, :show] do
-  
-  resources :deals, :only => [:index, :show] do
-    resources :snapshots, :only => [:index, :show]
-  end
+    resources :deals, :only => [:index, :show] do
+      resources :snapshots, :only => [:index, :show]
+    end
     
     resources :divisions, :only => [:index, :show] do
       resources :deals, :only => [:index, :show]

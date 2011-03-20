@@ -1,13 +1,14 @@
 $.widget("ui.counter", {
     _init: function() {
 	var cnt = 0;
+        var counter;
 	$.get("/sites/coupons_count", function(data) {
 	    cnt= data.coupons_count;
+	    counter = setInterval(function() {
+		$('#coupons-counter .count').html(cnt);
+		cnt++;
+            }, 500);
 	});
-        var counter = setInterval(function() {
-            $('#coupons-counter .count').html(cnt);
-            cnt++;
-        }, 500);
     }
 });
 
@@ -65,7 +66,7 @@ $.widget("ui.chart", {
 });
 
 $(document).ready(function() {
+    $("#coupons-counter").counter();
     $("#sites #chart").chart({data:chart_data});
     $("#site-stats #chart").chart({data:chart_data});
-    $("#coupons-counter").counter();
 });

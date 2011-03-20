@@ -22,11 +22,10 @@
       %p.value #{number_to_currency(@data[:price_deal], :unit =>"$", :precision=>0)}
     .calc
       %p.label Average revenue per deal
-      %p.value #{number_to_currency(@data[:avg_coupon] * @data[:price_deal],:unit =>"$", :precision=>0)}    
+      %p.value #{number_to_currency(@data[:avg_coupon] * @data[:price_deal],:unit =>"$", :precision=>0)}
     .calc
       %p.label Total locations
       %p.value #{@site.divisions.count}
-
   #deals-variation.stats-block
     %ul
       %li.period
@@ -64,7 +63,7 @@
         %p.hotness.label Hotness
       - @trending.each do |d|
         .row
-          %a.deal{:href=>"#{d.permalink}"} #{d.name}
+          %a.deal{:href=>"#{d.permalink}", :target=>"_blank"} #{d.name}
           %p.division #{d.division}
           %p.hotness #{d.hotness}
 
