@@ -60,4 +60,20 @@
     .row
       clear: left
       font-size: 13px
-    
+      margin: 10px 0
+      float: left
+      border: 1px solid white
+      +corner(6px)
+      padding: 10px
+    .deal, .division
+      border-right: 1px dashed white
+    .deal
+      +column(10)
+    .division
+      +column(3)
+      &.label
+        margin-left: 10px
+    .hotness
+      +column(3, true)
+    .label
+      border: 0

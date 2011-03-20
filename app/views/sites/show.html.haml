@@ -60,33 +60,14 @@
     %h2 Currently Trending on #{@site.name} 
     .trending-table
       .header
-        %p.label Deal
-        %p.label City
-        %p.label Hotness Index
-      .row
-        %p.value Cheapeast Fly to NY
-        %p.value Anywhere but NY
-        %p.value 666
-      .row
-        %p.value Cheapeast Fly to NY
-        %p.value Anywhere but NY
-        %p.value 666
-      .row
-        %p.value Cheapeast Fly to NY
-        %p.value Anywhere but NY
-        %p.value 666
-      .row
-        %p.value Cheapeast Fly to NY
-        %p.value Anywhere but NY
-        %p.value 666
-      .row
-        %p.value Cheapeast Fly to NY
-        %p.value Anywhere but NY
-        %p.value 666
-      .row
-        %p.value Cheapeast Fly to NY
-        %p.value Anywhere but NY
-        %p.value 666
+        %p.deal.label Deal
+        %p.division.label City
+        %p.hotness.label Hotness
+      - @trending.each do |d|
+        .row
+          %p.deal #{d.name}
+          %p.division #{d.division}
+          %p.hotness #{d.hotness}
 
 =content_for(:javascripts) do
   :javascript

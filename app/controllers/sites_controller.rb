@@ -21,6 +21,7 @@ class SitesController < ApplicationController
     @data = Deal.get_info(@site)
     @data[:locations] = @site.divisions.length
     @chart_data= Chart.hourly_revenue_by_divisions(@site.id)
+    @trending= @site.currently_trending
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @site }
