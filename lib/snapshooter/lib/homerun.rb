@@ -8,7 +8,8 @@ module Snapshooter
     def divisions
       return @divisions unless @divisions.empty?
       get("/local")
-      @doc.search("li a").map{|link| [link.text, link['href']] }.compact
+       # todo returing nil added || []
+      @doc.search("li a").map{|link| [link.text, link['href']] }.compact || []
     end
     
     def deal_links
