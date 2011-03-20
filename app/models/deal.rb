@@ -168,7 +168,11 @@ class Deal < ActiveRecord::Base
 
     # coupons change today-yesterday
     unless data[:purchased_today]==0
-      data[:purchased_change_today] = (data[:purchased_today] - data[:purchased_yesterday])/data[:purchased_yesterday]
+      data[:purchased_change_today] = if(data[:purchased_yesterday] == 0) 
+        data[:purchased_today]
+      else
+        (data[:purchased_today].to_i - data[:purchased_yesterday].to_i) / data[:purchased_yesterday]
+      end
     else
       data[:purchased_change_today] = "No data"
     end

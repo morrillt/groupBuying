@@ -6,10 +6,12 @@
       .top-container
         #header
           .logo
-            %a{:href=>"/"} Group Buying Analytics
+            %a{:href=>"/admin"} Admin / Group Buying Analytics
           .account
-            %a{:href=>"#"} Login
-            %a{:href=>"#"} Sign up
+            %a{:href=>"/admin/sites"} Sites
+            %a{:href=>"/admin/deals"} Deals
+            %a{:href=>"/admin/divisions"} Divisions
+            %a{:href=>"/admin/snapshots"} Snapshots
       .main-container
         #main
           = yield
