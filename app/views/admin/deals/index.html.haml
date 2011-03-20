@@ -1,36 +1,33 @@
 %h1 Admin Deals
 
-= will_paginate(@deals)
+%div
+  = will_paginate(@deals)
+:css
+  table tr td{ padding: 0.2em 1em; }
 
-%table
-  %tr
-    %th name
-    %th sale_price
-    %th actual_price
+%table.span-12
+  %tr{:style => "background: #ccc;"}
+    %th Name
+    %th Price
     %th division
     %th site
     %th active
     %th hotness
-    %th lat
-    %th lng
-    %th created_at
-    %th expires_at
     %th raw_address
 
   - @deals.each do |deal|
-    %tr
-      %td{:colspan=>12}=link_to(deal.name, admin_deal_path(deal))
-    %tr
-      %td=deal.sale_price
-      %td=deal.actual_price
-      %td=deal.division.try(:name)
-      %td=deal.site.try(:name)
+    - color = cycle('#eee','#aaa')
+    %tr{:style => "background: #{color};"}
+      %td{:colspan=>12}
+      
+        =link_to(deal.name, admin_deal_path(deal))
+    %tr{:style => "background: #{color};"}
+      %td= number_to_currency(deal.sale_price)
+      %td=deal.division_id
       %td=deal.active
       %td=deal.hotness
-      %td=deal.lat
-      %td=deal.lng
-      %td=deal.created_at
-      %td=deal.expires_at
       %td=deal.raw_address
+      %td &nbsp;
 
-= will_paginate(@deals)
+%div
+  = will_paginate(@deals)

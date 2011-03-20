@@ -12,25 +12,10 @@
             %a{:href=>"/admin/deals"} Deals
             %a{:href=>"/admin/divisions"} Divisions
             %a{:href=>"/admin/snapshots"} Snapshots
-      .main-container
+            %a{:href=>"/admin/deals/export"} Deals CSV Export
+      %div
         #main
           = yield
-      .right-container
-        #right
-          = yield :right_nav
-          #coupons-counter
-            %p.count 0
-            %p.label Coupons Analyzed to Date
-          #email-updates
-            %p Sign Up for Email Updates
-            %a{:href => "/mail_updates/new", :id=> "lnk-new-user", :class=> "iframe"} Sign Up
-          #overall-trending
-            %p.label Top Trending Deals
-            %ul
-            - @overall_trending.each do |t|
-              %li
-                %a{:href=>""} #{t.name}
-            %a.see-chart-btn{:href=>"#"} See chart
       .bottom-container
         #bottom
 

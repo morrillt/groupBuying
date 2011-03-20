@@ -35,7 +35,7 @@ class Snapshot < ActiveRecord::Base
   private
   
   def capture_current_revenue
-    return true if Rails.env.test?
+    return true unless Rails.env.production? # rspec triggers it
     puts "Capturing snapshot for #{deal.inspect}"
     calculate_hotness
     self.sold_count = deal.capture_snapshot
