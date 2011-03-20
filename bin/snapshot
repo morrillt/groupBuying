@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../config/environment'
 
 # Called hourly to update the snapshots for a sites active deals
 
-Site.active.reverse.each do |site|
+Site.active.each do |site|
   begin
     site.update_snapshots!
   rescue => e

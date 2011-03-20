@@ -12,6 +12,10 @@ module Snapshooter
       @doc       = Nokogiri::HTML("")
     end
     
+    def detect_absolute_path(url, options)
+      options[:full_path] = (url =~ /^http(.+)/i) ? true : false
+    end
+    
     def log(msg)
       unless Rails.env.test?
         pp "#{self.class.to_s} [#{Time.now.to_s}] #{msg}"

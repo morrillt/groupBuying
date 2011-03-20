@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../config/environment'
 
 # Called hourly to find new deals
 
-Site.active.reverse.each do |site|
+Site.active.each do |site|
   begin
     site.snapshooter.crawl_new_deals!
   rescue => e
