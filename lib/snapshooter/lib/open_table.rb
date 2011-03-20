@@ -23,7 +23,9 @@ module Snapshooter
     def crawl_new_deals!
       super      
       log "not crawling for right now"
-      exit
+      return true
+      
+      
       divisions.map(&:url).each do |division_url|
         options = {}
         
