@@ -1,0 +1,20 @@
+#trends.main-content
+  #by-hotness.trends-box
+    %h2 Deal Hotness by Count Change
+    %p.date #{Date.today.to_s(:long)}
+    %ul
+      %p.info The 25 fastest accelerating deals across the Internet most likely to blow up
+      -@by_hotness.each do |d|
+        %li
+          %img.thumb{:src=>"#{sites_thumb(d.source_name)}"}
+          %a{:href=>"#{d.permalink}", :target=>"_blank"} #{d.name}
+
+  #by-revenue.trends-box
+    %h2 Deal Hotness by Revenue Change
+    %p.date #{Date.today.to_s(:long)}
+    %ul
+      %p.info The 25 fastest accelerating deals across the Internet most likely to blow up
+      -@by_revenue.each do |d|
+        %li
+          %img.thumb{:src=>"#{sites_thumb(d.source_name)}"}
+          %a{:href=>"#{d.permalink}", :target=>"_blank"} #{d.name}

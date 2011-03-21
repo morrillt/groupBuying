@@ -190,7 +190,10 @@ class Deal < ActiveRecord::Base
   end
 
   def self.overall_trending(limit=5)
-    Deal.find(:all, :order => "hotness", :limit => limit)
+    # Deal.find(:all, :order => "hotness", :limit => limit)
+    # Deal.find(:all, :include => :site, :order => "hotness DESC", :limit => limit)
+    date= Time.now
+    Deal.find_by_sql ["SELECT deals.id, deals.name, sites.source_name AS source_name, deals.permalink FROM deals, sites WHERE deals.site_id = sites.id AND deals.active = 1 GROUP BY permalink ORDER BY hotness DESC LIMIT ?", limit]
   end
 
   def self.current_revenue_trending
@@ -199,7 +202,8 @@ class Deal < ActiveRecord::Base
   end
 
   def self.revenue_trending_by_hour(date, hour, limit=25)
-    Deal.find_by_sql ["SELECT deals.id, deals.name, deals.permalink, (snapshots.sold_count*deals.sale_price) AS revenue FROM snapshots, deals WHERE snapshots.deal_id = deals.id AND YEAR(snapshots.created_at) = ? AND MONTH(snapshots.created_at) = ? AND DAY(snapshots.created_at) = ? AND HOUR(snapshots.created_at) = ? GROUP BY permalink ORDER BY revenue DESC LIMIT ?", date.year, date.month, date.day, hour, limit]
+    r= Deal.find_by_sql ["SELECT deals.id, deals.name, sites.source_name AS source_name, deals.permalink, (snapshots.sold_count*deals.sale_price) AS revenue FROM snapshots, deals, sites WHERE snapshots.deal_id = deals.id AND deals.site_id = sites.id AND YEAR(snapshots.created_at) = ? AND MONTH(snapshots.created_at) = ? AND DAY(snapshots.created_at) = ? AND HOUR(snapshots.created_at) = ? GROUP BY permalink ORDER BY revenue DESC LIMIT ?", date.year, date.month, date.day, hour, limit]
+    r
   end
 
 
