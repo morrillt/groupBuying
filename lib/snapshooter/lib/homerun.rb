@@ -21,7 +21,7 @@ module Snapshooter
     # Returns the current purchase count of a given deal
     def capture_deal(deal)
       get(deal.permalink, :full_path => true)
-      @doc.search("div[@class='rockwell']").first.text.scan(/\d+/)[0]
+      @doc.to_s.scan(/\d+ bought\./).try(:first).to_i
     end
     
     def crawl_new_deals!

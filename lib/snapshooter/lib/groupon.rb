@@ -17,7 +17,7 @@ module Snapshooter
     
     # Returns the current purchase count of a given deal
     def capture_deal(deal)
-      Nokogiri::HTML(open(d.permalink)).search("span[@class='number']").first.text.to_i rescue 0
+      Nokogiri::HTML(open(deal.permalink)).search("span[@class='number']").first.try(:text).to_i
     end
     
     def crawl_new_deals!

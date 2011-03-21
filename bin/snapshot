@@ -5,6 +5,18 @@ require File.dirname(__FILE__) + '/../config/environment'
 
 Site.active.map do |site|
   begin
+    site.update_snapshots!
+  rescue => e
+    puts "Error:"
+    puts "-"*90
+    puts e.message
+  end
+end
+
+=begin
+# Turn off threading for now
+Site.active.map do |site|
+  begin
     Thread.new do
       site.update_snapshots!
     end
@@ -14,3 +26,4 @@ Site.active.map do |site|
     puts e.message
   end
 end.map{|t| t.join if t.respond_to?(:join) }
+=end
