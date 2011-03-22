@@ -2,7 +2,7 @@ class Admin::SnapshotsController < Admin::ApplicationController
   layout "admin"
   
   def index
-    @snapshots = Snapshot.paginate(:per_page => 25, :page => (params[:page] || 1))
+    @model_name= 'snapshot'
   end
   
   def show

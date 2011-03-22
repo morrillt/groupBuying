@@ -2,8 +2,7 @@ class Admin::DealsController < Admin::ApplicationController
   layout "admin"
   
   def index
-    # todo need a way to show inactive deals too.
-    @deals = Deal.active.paginate(:per_page => 25, :page => (params[:page] || 1), :include => [:site, :division, :snapshots])
+    @model_name= 'deal'
   end
   
   def show
