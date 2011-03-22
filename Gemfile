@@ -14,6 +14,9 @@ gem 'fastercsv'
 gem 'will_paginate'
 gem "compass", ">= 0.10.6"
 gem "groupon"
+gem 'resque'
+gem 'resque-scheduler'
+gem 'system_timer'
 
 group :test do
   gem 'json'
