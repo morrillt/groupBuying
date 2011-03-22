@@ -14,6 +14,11 @@ gem 'fastercsv'
 gem 'will_paginate'
 gem "compass", ">= 0.10.6"
 gem "groupon"
+#simple geo gems
+gem 'oauth'
+gem 'crack'
+gem 'simplegeo'
+gem 'json'
 
 group :test do
   gem 'json'

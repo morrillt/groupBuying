@@ -4,6 +4,7 @@ class Deal < ActiveRecord::Base
   
   # Associations
   has_many :snapshots, :dependent => :destroy
+  has_one :simple_geo_data
   belongs_to :division
   belongs_to :site
   

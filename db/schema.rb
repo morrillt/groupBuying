@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110320002957) do
+ActiveRecord::Schema.define(:version => 20110322161253) do
 
   create_table "deals", :force => true do |t|
     t.string   "name"
@@ -44,6 +44,17 @@ ActiveRecord::Schema.define(:version => 20110320002957) do
   create_table "mail_updates", :force => true do |t|
     t.string   "name"
     t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "simple_geo_data", :force => true do |t|
+    t.integer  "deal_id"
+    t.string   "category"
+    t.string   "weather"
+    t.integer  "population"
+    t.string   "timezone"
+    t.string   "census_data"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
