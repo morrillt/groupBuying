@@ -2,7 +2,7 @@ class Admin::DivisionsController < Admin::ApplicationController
   layout "admin"
   
   def index
-    @divisions = Division.paginate(:per_page => 25, :page => (params[:page] || 1))
+    @model_name= 'division'
   end
   
   def show

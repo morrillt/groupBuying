@@ -1,6 +1,6 @@
 !!!5
 %html
-  = render "shared/head"    
+  = render "admin/shared/head"
   %body
     .container
       .top-container
@@ -20,18 +20,10 @@
         #bottom
 
   = javascript_include_tag "thirdparty/jquery-1.5.1.min"
-  = javascript_include_tag "thirdparty/ui/jquery.ui.core.min"
-  = javascript_include_tag "thirdparty/ui/jquery.ui.widget.min"
-  = javascript_include_tag "thirdparty/highcharts/highcharts"
-  = javascript_include_tag "thirdparty/fancybox/jquery.fancybox-1.3.4.pack"
+  = javascript_include_tag "thirdparty/MyAjax/ajaxTables"
+  :javascript
+    var model= "#{@model_name}";
+    loadTable();
+    label2value();
+
   = yield :javascripts
-  :javascript  
-    $("a#iframe").fancybox();
-    $("a#lnk-new-user").fancybox({
-      'transitionIn'	:	'elastic',
-      'transitionOut'	:	'elastic',
-      'speedIn'		:	600, 
-      'speedOut'	:	200, 
-      'overlayShow'	:	false
-      });
-  = javascript_include_tag "app"

@@ -16,7 +16,7 @@
       %p.value #{number_to_currency(@data[:total_revenue], :unit =>"$", :precision=>0)}
     .calc
       %p.label Average coupons sold per deal
-      %p.value #{number_to_currency(@data[:avg_coupon], :unit =>"$", :precision=>0)}
+      %p.value #{number_with_delimiter @data[:avg_coupon]}
     .calc
       %p.label Average price per deal
       %p.value #{number_to_currency(@data[:price_deal], :unit =>"$", :precision=>0)}

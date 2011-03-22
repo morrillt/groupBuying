@@ -1,0 +1,45 @@
+.ajaxTable  {
+	width: 100%;
+	text-align: center;
+    border-width: 5px 5px 1px 5px;
+    border-spacing: 0;
+    border-collapse: collapse;
+	border-color: #eeeeee;
+    border-style: solid;
+	font-size: 80%;
+}
+.ajaxTable td
+{
+    border-color: #dddddd;
+    border-style: solid;
+    padding: 4px;
+    border-width: 1px 0px 0px 0px;
+}
+
+.ajaxTable tfoot
+{
+   background: #e5e5e5;
+   font-style: italic;
+}
+
+.ajaxTable th
+{
+padding-top: 10px;
+height: 40px;
+}
+
+
+
+.tdOdd {
+   background-color: #FFF;
+}
+.tdEven {
+	background-color: #f9f9f9;
+}
+
+tr.hovered {
+  background-color: #ffffcc;
+}
+.ajaxTable tr:hover {
+  background-color: #ffffcc;
+}

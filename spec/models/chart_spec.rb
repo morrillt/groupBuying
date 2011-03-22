@@ -7,7 +7,7 @@ describe Chart do
    
   context "calculations" do
     it "should def calculate hourly_revenue_by_divisions" do
-      true
+      Chart.hourly_revenue_by_divisions
     end
-  end 
+  end
 end

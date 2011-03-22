@@ -26,6 +26,7 @@ Groupster::Application.routes.draw do
     root :to => 'sites#index'
     
     match "/deals/export" => "deals#export"
+    match "/:model/table" => "application#table"
     
     resources :snapshots, :only => [:index, :show]
 

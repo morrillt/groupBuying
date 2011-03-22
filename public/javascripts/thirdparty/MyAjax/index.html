@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Ajax Tables</title>
+
+	<link href="reset.css" rel="stylesheet" type="text/css" />
+	<link href="table.css" rel="stylesheet" type="text/css" />
+	<link href="stylesheet.css" rel="stylesheet" type="text/css" />
+
+	<script src="jquery.js" type="text/javascript" language="javascript"></script>
+	<script src="ajaxTables.js" type="text/javascript" language="javascript"></script>
+
+	<script type="text/javascript">
+	$().ready(function() {
+	loadTable();
+	label2value();
+	});
+	</script>
+
+</head>
+<body>
+
+<h1 class="pageTitle">Ajax MySQL Tables</h1>
+
+<!--
+<p>In this demo the below variables have been set in config.php:</p>
+<code>
+<ul>
+<li>$pageLimit = 20;</li>
+<li>$fields = array("id"=>"Rank","ManufacturerMake"=>"Manuf","ModelName"=>"Model","Categoryclass"=>"Category","EngineType"=>"Engine","Year"=>"Year");</li>
+<li>$searchField = "ModelName";</li>
+</ul>
+</code>
+-->
+<div id="container">
+<div class="content-left">
+	<div class="ajaxTableHeader">
+		<h1>Ajax MySQL Tables Demo</h1>
+		
+		<label for="searchText">Search</label>
+		<input type="text" id="searchText" name="searchText" value="" size="30" onkeyup="javascript:searchTable(this.value);" />
+		
+		<div id="ajax_loading_div" style="display:none;"><img src="ajax-loader.gif" alt="Loading" /></div>
+	</div>
+
+	<div id="ajaxTable"></div>
+</div>
+<div class="content-right">
+	<h2>Description:</h2><br />
+	
+	<p>This script allows for searching, sorting, and viewing large amounts of table data quickly and easily via an Ajax interface. Search any size table and get results instantly. Paginate massive amounts of table data, and quickly browse this data using Ajax controls. Easily links up to a MySQL database.</p>
+
+	<p>Ideal for using with large MySQL databases, as all data is stored on the server and only fetched as is required.</p>
+	<p>Demo is running from a MySQL database containing 9,772 rows. I have tested this with MUCH larger databases, 1 Million plus rows over a remote server and results are equally as fast.</p>
+	<p>Straight out of the box you can simply link this up to a MySQL database by specifying your host credentials and a table name.</p>
+	<p>Further variables can be tweaked such as results per page, which SQL fields to display, and which column the Ajax search is performed on.</p>
+
+	<br /><h2>Notable Features:</h2><br />
+	<ul>
+	<li>Uses jQuery.</li>
+	<li>Ideal for large amounts of MySQL data.</li>
+	<li>Easily browse a SQL database via Ajax. (Example code included)</li>
+	<li>Only loads data that is required.</li>
+	<li>Ajax search.</li>
+	<li>Paginated results.</li>
+	<li>Set how many results to view per page.</li>
+	<li>Ajax sortable columns.</li>
+	<li>Specify which SQL fields to display</li>
+	<li>Specify which database field Ajax search is performed on.</li>
+	<li>Fluid table width and clean styling.</li>
+	</ul>
+</div>
+</div>
+
+
+</body>
+</html>

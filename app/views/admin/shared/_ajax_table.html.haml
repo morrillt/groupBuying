@@ -1,0 +1,65 @@
+.ajaxTableHeader
+  %h1 Admin for #{@model_name.pluralize.capitalize}
+  %label{:for=>"searchText", :style=>"display:none;"} Search
+  %input{:type=>"text", :id=>"searchText", :name=>"searchText", :value=>"", :size=>"30", :onkeyup=>"javascript:searchTable(this.value);"}
+  #ajax_loading_div{:style=>"display:none;"}
+    %img{:src=>"/javascripts/thirdparty/MyAjax/ajax-loader.gif", :alt=>"Loading"}
+.tableBorder
+  %table.ajaxTable{:cellpadding=>0, :cellspacing=>0, :border=>0}
+    %thead
+      %tr
+        -@fields.each do |f|
+          - if f == @order_by
+            - imgsrc= "/javascripts/thirdparty/MyAjax/#{@direction}.gif"
+            - sort = @direction
+          - else
+            - imgsrc= "/javascripts/thirdparty/MyAjax/arrows_updown.gif"
+            - sort = "DESC"
+          %th 
+            %a{:href=>"#", :onclick=>"javascript:sortTable('#{f}','#{sort}')"}
+              #{f}
+              %img{:id=>"#{f}", :src=>"#{imgsrc}"}
+    %tbody
+      - @table.each_index do |i|
+        - row= @table[i]
+        - odd= (i%2==0)
+        %tr{:class=> "#{odd ? 'tdOdd' : 'tdEven'}"}
+          - @fields.each do |f|
+            %td #{row[f]}
+    %tfoot
+      %tr
+        %td{:colspan=>"30"}
+          %h2 #{@count} Results - #{@number_of_pages} Pages
+
+  .pagination
+    -current_page= @start||0 / @page_limit+1
+    -x=1
+    -@start= 0
+
+    -if current_page <= 9
+      -while x <= @number_of_pages
+        -if x <= 10
+          -if current_page == x
+            -pag_class= "paginationSelected"
+          -else
+            -pag_class= ""
+          %a{:href=>"", :class=>"#{pag_class}", :onclick=>"javascript:gotoStart($start);"} #{x}
+        -if x>10 && x==@number_of_pages
+          #{'...'}
+          %a{:href=>"", :onclick=>"javascript:gotoStart(#{@start});"} #{x}
+        -@start= @start + @page_limit
+        -x= x+1
+
+    -x= 1
+    -if current_page >= 10
+      -page_counter= current_page-5
+      -while(x <= 10)
+        -page_number= page_counter*@page_limit - @page_limit
+        -if page_counter <= @number_of_pages
+          -if current_page == page_counter
+            -pag_class= "paginationSelected"
+          -else
+            -pag_class= ""
+          %a{:href=>"#", :class=>"#{pag_class}", :onclick=>"javascript:gotoStart(#{page_number});"} #{page_counter}
+        -page_counter= page_counter+1
+        -x= x+1
