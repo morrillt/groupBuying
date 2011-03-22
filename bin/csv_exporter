@@ -3,7 +3,9 @@ require File.dirname(__FILE__) + '/../config/environment'
 
 @deals = Deal.active.find(:all, :include => [:division, :site], :conditions => ["created_at between ? and ?", 2.days.ago.at_midnight, Time.now])
 
-FasterCSV.open('public/deals.csv','w+') do |csv|
+export_path = File.join(Rails.root, 'public', 'deals.csv')
+
+FasterCSV.open(export_path,'w+') do |csv|
   csv << %w(id name url sale_price actual_price division site active hotness lat lng expires_at raw_address sold_count)
   @deals.each do |deal|
     csv << [
