@@ -11,10 +11,10 @@ class Admin::DealsController < Admin::ApplicationController
   end
   
   def export
-    @deals = Deal.active.find(:all, :include => [:division, :site])
+    @deals = Deal.active.find(:all, :include => [:division, :site], :conditions => ["created_at between ? and ?", 1.day.ago.at_midnight, Time.now])
     
     FasterCSV.open('public/deals.csv','w+') do |csv|
-      csv << %w(id name url sale_price actual_price division site active hotness lat lng expires_at raw_address)
+      csv << %w(id name url sale_price actual_price division site active hotness lat lng expires_at raw_address sold_count)
       @deals.each do |deal|
         csv << [
           deal.id,
@@ -29,7 +29,8 @@ class Admin::DealsController < Admin::ApplicationController
           deal.lat,
           deal.lng,
           deal.expires_at,
-          deal.raw_address
+          deal.raw_address,
+          deal.buyers_count
         ]
       end
     end
