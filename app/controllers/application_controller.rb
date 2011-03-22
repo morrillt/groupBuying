@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   before_filter :overall_trending
   
   def render_404
-    render :text => File.read(RAILS_ROOT + '/public/404.html'), :status => 404
+    render :text => File.read(Rails.root.to_s + '/public/404.html'), :status => 404
   end
 
   private
