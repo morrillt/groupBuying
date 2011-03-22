@@ -55,13 +55,17 @@ module Snapshooter
             next
           end
           
+          raw_address = @doc.search("div[@class='smallMap'] p").last.text
+          raw_address, telephone = split_address_telephone(raw_address)          
+                    
           attributes = {}
           
           attributes[:name]                 = @doc.search("span[@id='ctl00_Main_LabelDealTitle']").text
           #attributes[:buyers_count]         = @doc.search("span[@id='ctl00_Main_LabelBought']").text.to_i
           attributes[:sale_price]           = @doc.search("span[@id='ctl00_Main_OurPrice']").text.gsub(/[^0-9]/,'').to_f
           attributes[:actual_price]         = @doc.search("span[@id='ctl00_Main_PriceValue']").text.gsub(/[^0-9]/,'').to_f
-          attributes[:raw_address]          = @doc.search("div[@class='smallMap'] p").last.text
+          attributes[:raw_address]          = raw_address
+          attributes[:telephone]            = telephone 
           attributes[:lat],attributes[:lng] = @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[1, 2]
           attributes[:expires_at]           = time_left[0].days.from_now + time_left[1].hours +  time_left[2].minutes
           attributes[:permalink]            = options[:full_path] ? deal_link : (base_url + deal_link)

@@ -57,7 +57,8 @@ module Snapshooter
           
           expires_at = Time.parse("#{ex_time['ey'].value}/#{ex_time['em'].value}/#{ex_time['ed'].value} #{ex_time['eh'].value}:#{ex_time['ei'].value}:#{ex_time['es'].value}")
           
-          raw_address = @doc.search("a[@id='deal_see_more_back']").first.attributes["deal_map_location"].value
+          raw_address = @doc.search("a[@id='deal_see_more_back']").first.attributes["deal_map_location"].value          
+          raw_address, telephone = split_address_telephone(raw_address)
           
           # Build attributes hash
           attributes = {
@@ -68,7 +69,8 @@ module Snapshooter
             :permalink => link["href"],
             :site_id => site.id,
             :expires_at => expires_at,
-            :raw_address => raw_address
+            :raw_address => raw_address,
+            :telephone => telephone
           }
           
           save_deal!(attributes)
