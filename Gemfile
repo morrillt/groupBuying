@@ -14,6 +14,9 @@ gem 'fastercsv'
 gem 'will_paginate'
 gem "compass", ">= 0.10.6"
 gem "groupon"
+gem 'resque'
+gem 'resque-scheduler'
+gem 'system_timer'
 
 group :test do
   gem 'json'
@@ -21,7 +24,8 @@ group :test do
   gem 'shoulda'
   gem 'shoulda-matchers'
   gem 'shoulda-context'
-  gem 'factory_girl_rails'
+  gem 'factory_girl'
+  gem 'resque_spec'
 end
 
 # Use unicorn as the web server
