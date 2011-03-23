@@ -16,19 +16,20 @@ ActiveRecord::Schema.define(:version => 20110322233744) do
     t.string   "name"
     t.string   "permalink"
     t.string   "deal_id"
-    t.decimal  "sale_price",   :precision => 10, :scale => 0
-    t.decimal  "actual_price", :precision => 10, :scale => 0
+    t.decimal  "sale_price",                 :precision => 10, :scale => 0
+    t.decimal  "actual_price",               :precision => 10, :scale => 0
     t.integer  "division_id"
     t.integer  "site_id"
-    t.boolean  "active",                                      :default => true
-    t.boolean  "sold",                                        :default => false
-    t.integer  "hotness",                                     :default => 0
-    t.float    "lat",                                         :default => 0.0
-    t.float    "lng",                                         :default => 0.0
+    t.boolean  "active",                                                    :default => true
+    t.boolean  "sold",                                                      :default => false
+    t.integer  "hotness",                                                   :default => 0
+    t.float    "lat",                                                       :default => 0.0
+    t.float    "lng",                                                       :default => 0.0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "expires_at"
     t.string   "raw_address"
+    t.string   "telephone",    :limit => 30
   end
 
   create_table "divisions", :force => true do |t|
@@ -55,6 +56,11 @@ ActiveRecord::Schema.define(:version => 20110322233744) do
     t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "coupons_purchased_to_date_metric",     :default => 0
+    t.float    "total_spent_on_deals_to_date_metric",  :default => 0.0
+    t.integer  "average_coupons_sold_per_deal_metric", :default => 0
+    t.float    "average_price_per_deal_metric",        :default => 0.0
+    t.float    "average_revenue_per_deal_metric",      :default => 0.0
   end
 
   create_table "snapshots", :force => true do |t|
