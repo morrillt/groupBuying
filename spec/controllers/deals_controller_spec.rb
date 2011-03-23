@@ -10,10 +10,5 @@ describe DealsController do
   it "should render 404 given no site id" do
     get :index
     response.code.to_i.should == 404
-  end
-  
-  it "should export the deals" do
-    get(:export)
-    response.should be_success
-  end
+  end  
 end
