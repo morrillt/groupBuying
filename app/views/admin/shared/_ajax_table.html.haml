@@ -32,9 +32,9 @@
           %h2 #{@count} Results - #{@number_of_pages} Pages
 
   .pagination
-    -current_page= @start||0 / @page_limit+1
+    -current_page= @page
     -x=1
-    -@start= 0
+    -@start= 1
 
     -if current_page <= 9
       -while x <= @number_of_pages
@@ -43,10 +43,10 @@
             -pag_class= "paginationSelected"
           -else
             -pag_class= ""
-          %a{:href=>"", :class=>"#{pag_class}", :onclick=>"javascript:gotoStart($start);"} #{x}
+          %a{:href=>"#", :class=>"#{pag_class}", :onclick=>"javascript:gotoStart(#{@start});"} #{x}
         -if x>10 && x==@number_of_pages
           #{'...'}
-          %a{:href=>"", :onclick=>"javascript:gotoStart(#{@start});"} #{x}
+          %a{:href=>"#", :onclick=>"javascript:gotoStart(#{@start});"} #{x}
         -@start= @start + @page_limit
         -x= x+1
 
