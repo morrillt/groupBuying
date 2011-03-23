@@ -37,9 +37,6 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     factory_girl (1.3.3)
-    factory_girl_rails (1.0.1)
-      factory_girl (~> 1.3)
-      railties (>= 3.0.0)
     fastercsv (1.5.4)
     geokit (1.5.0)
     groupon (0.0.1)
@@ -108,7 +105,7 @@ PLATFORMS
 
 DEPENDENCIES
   compass (>= 0.10.6)
-  factory_girl_rails
+  factory_girl
   fastercsv
   geokit
   groupon

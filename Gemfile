@@ -21,7 +21,7 @@ group :test do
   gem 'shoulda'
   gem 'shoulda-matchers'
   gem 'shoulda-context'
-  gem 'factory_girl_rails'
+  gem 'factory_girl'
 end
 
 # Use unicorn as the web server
