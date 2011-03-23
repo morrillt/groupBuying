@@ -6,7 +6,11 @@ namespace :routines do
     Deal.all.each {|d|
       if d.raw_address
         address, telephone = base.split_address_telephone(d.raw_address)
-        d.update_attributes(:raw_address => address, :telephone => telephone)
+        if telephone
+          d.raw_address = address
+          d.telephone = telephone
+          d.save(false)
+        end
       end
     } 
   end
