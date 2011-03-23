@@ -24,6 +24,7 @@ class Deal < ActiveRecord::Base
   # Scopes
   scope :active, where(:active => true)
   scope :inactive, where(:active => false)
+  scope :expired, where("expires_at IS NOT NULL AND expires_at < NOW()")
   
   # Instance Methods
 

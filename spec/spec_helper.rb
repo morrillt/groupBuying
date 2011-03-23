@@ -5,6 +5,7 @@ require 'rspec/rails'
 
 require 'shoulda'
 # require 'factory_girl'
+require 'resque_spec'
 require 'json'
 
 # Factory.definition_file_paths = [ File.join(Rails.root, 'spec', 'factories') ]
