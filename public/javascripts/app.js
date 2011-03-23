@@ -1,3 +1,35 @@
+/* Made by Mathias Bynens <http://mathiasbynens.be/> */
+function number_format(a, b, c, d) {
+    a = Math.round(a * Math.pow(10, b)) / Math.pow(10, b);
+    e = a + '';
+    f = e.split('.');
+    if (!f[0]) {
+	f[0] = '0';
+    }
+    if (!f[1]) {
+	f[1] = '';
+    }
+    if (f[1].length < b) {
+	g = f[1];
+	for (i=f[1].length + 1; i <= b; i++) {
+	    g += '0';
+	}
+	f[1] = g;
+    }
+    if(d != '' && f[0].length > 3) {
+	h = f[0];
+	f[0] = '';
+	for(j = 3; j < h.length; j+=3) {
+	    i = h.slice(h.length - j, h.length - j + 3);
+	    f[0] = d + i +  f[0] + '';
+	}
+	j = h.substr(0, (h.length % 3 == 0) ? 3 : (h.length % 3));
+	f[0] = j + f[0];
+    }
+    c = (b <= 0) ? '' : c;
+    return f[0];// + c + f[1];
+}
+
 $.widget("ui.counter", {
     _init: function() {
 	var cnt = 0;
@@ -5,7 +37,7 @@ $.widget("ui.counter", {
 	$.get("/sites/coupons_count", function(data) {
 	    cnt= data.coupons_count;
 	    counter = setInterval(function() {
-		$('#coupons-counter .count').html(cnt);
+		$('#coupons-counter .count').html(number_format(cnt, 2, '', ','));
 		cnt++;
             }, 500);
 	});
@@ -52,21 +84,20 @@ $.widget("ui.chart", {
 	    
 	    xAxis: {
 		categories: self.data.categories,
-		// ["06:00","08:00","10:00","12:00","14:00","16:00","18:00","20:00","22:00","00:00"],
 		labels: {
 		    rotation: -45
 		}
 	    },
 	    series: self.data.series
-	    // [
-	    // 	{name: 'Home Run', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {name: 'Living Social', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {name: 'Open Table', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {name: 'Kgb Deals', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {name: 'Groupon', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {name: 'Travel Zoo', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
-	    // ]
 	});	
     }
 });
 
 $(document).ready(function() {
     $("#coupons-counter").counter();
-    $("#sites #chart").chart({data:chart_data});
-    $("#site-stats #chart").chart({data:chart_data});
+    try {
+	$("#sites #chart").chart({data:chart_data});
+	$("#site-stats #chart").chart({data:chart_data});
+    } catch (err) {
+    }
 });
