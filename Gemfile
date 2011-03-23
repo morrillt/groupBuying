@@ -25,6 +25,7 @@ group :test do
   gem 'shoulda-matchers'
   gem 'shoulda-context'
   gem 'factory_girl'
+  gem 'resque_spec'
 end
 
 # Use unicorn as the web server
