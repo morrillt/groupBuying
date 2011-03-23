@@ -1,11 +1,17 @@
 class SnapshotJob
   @queue = :snapshot
   
-  def self.perform()
+  def self.perform(site_id = nil)
     puts "Snapshot Run"        
-    Site.active.map do |site|
+    
+    # Divide and conquer
+    unless site_id
+      Site.active.each do |site|
+        Resque.enqueue(SnapshotJob, site.id)
+      end
+    else      
       begin
-        site.update_snapshots!
+        Site.find(site_id).update_snapshots!
       rescue => e
         puts "Error:"
         puts "-"*90

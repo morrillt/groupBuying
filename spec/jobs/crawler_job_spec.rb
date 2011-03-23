@@ -12,5 +12,12 @@ describe CrawlerJob do
       CrawlerJob.should have_queued(site.id).in(:crawler)
     }
   end
+  
+  it "should crawl_new_deals!" do
+    # TODO: add test for crawling site deals work
+    with_resque do
+    end                                             
+    pending
+  end  
 
 end

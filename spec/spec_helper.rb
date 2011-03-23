@@ -6,11 +6,13 @@ require 'rspec/rails'
 require 'shoulda'
 require 'factory_girl'
 require 'json'
+require 'resque_spec'
 Factory.definition_file_paths = [ File.join(Rails.root, 'spec', 'factories') ]
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+
 
 RSpec.configure do |config|
   # == Mock Framework

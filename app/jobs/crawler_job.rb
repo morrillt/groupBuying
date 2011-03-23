@@ -6,11 +6,9 @@ class CrawlerJob
     
     # Divide and conquer
     unless site_id
-      2.times { 
-        Site.active.map do |site|
-          Resque.enqueue(CrawlerJob, site.id)
-        end
-      }
+      Site.active.each do |site|
+        Resque.enqueue(CrawlerJob, site.id)
+      end
     else
       begin
         Site.find(site_id).snapshooter.crawl_new_deals!
