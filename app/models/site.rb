@@ -1,4 +1,4 @@
-class Site < ActiveRecord::Base
+_class Site < ActiveRecord::Base
   has_many :snapshots, :dependent => :destroy
   has_many :deals, :through => :divisions
   has_many :divisions, :dependent => :destroy

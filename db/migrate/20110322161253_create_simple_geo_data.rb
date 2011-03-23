@@ -9,6 +9,9 @@ class CreateSimpleGeoData < ActiveRecord::Migration
       t.string :census_data
 
       t.timestamps
+      # execute "ALTER TABLE 'simple_geo_data' ADD CONSTRAINT 'fk_deal_id'
+      # FOREIGN KEY ('deal_id') REFERENCE deals(id)"
+
     end
   end
 

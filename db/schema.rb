@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110322161253) do
+ActiveRecord::Schema.define(:version => 20110322225638) do
 
   create_table "deals", :force => true do |t|
     t.string   "name"
@@ -57,6 +57,26 @@ ActiveRecord::Schema.define(:version => 20110322161253) do
     t.string   "census_data"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "tomorrow_precipitation"
+    t.string   "tomorrow_conditions"
+    t.string   "tomorrow_min_temp"
+    t.string   "tomorrow_max_temp"
+    t.string   "tonight_precipitation"
+    t.string   "tonigth_conditions"
+    t.string   "tonigth_min_temp"
+    t.string   "tonight_max_temp"
+    t.string   "today_precipitation"
+    t.string   "today_conditions"
+    t.string   "today_min_temp"
+    t.string   "today_max_temp"
+    t.string   "conditions"
+    t.string   "temperature"
+    t.string   "wind_direction"
+    t.string   "cloud_cover"
+    t.string   "wind_speed"
+    t.string   "dewpoint"
+    t.string   "metro_score"
+    t.string   "timestamp_sg"
   end
 
   create_table "sites", :force => true do |t|
