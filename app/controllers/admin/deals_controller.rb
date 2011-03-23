@@ -10,9 +10,8 @@ class Admin::DealsController < Admin::ApplicationController
   end
   
   def export
-    
-    render_404 && return unless File.exists?("public/deals.csv")
-    
-    send_file("public/deals.csv", :content_type => "text/csv", :disposistion => "inline", :filename => "deals.csv")
+    csv_file_path = File.join(Rails.root, '..', 'shared', 'deals.csv')
+    render_404 && return unless File.exists?(csv_file_path)
+    send_file(csv_file_path, :content_type => "text/csv", :disposistion => "inline", :filename => "deals.csv")
   end
 end
