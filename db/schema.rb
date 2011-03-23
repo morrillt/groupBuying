@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110320002957) do
+ActiveRecord::Schema.define(:version => 20110322233744) do
 
   create_table "deals", :force => true do |t|
     t.string   "name"
@@ -23,8 +23,8 @@ ActiveRecord::Schema.define(:version => 20110320002957) do
     t.boolean  "active",                                      :default => true
     t.boolean  "sold",                                        :default => false
     t.integer  "hotness",                                     :default => 0
-    t.decimal  "lat",          :precision => 10, :scale => 0, :default => 0
-    t.decimal  "lng",          :precision => 10, :scale => 0, :default => 0
+    t.float    "lat",                                         :default => 0.0
+    t.float    "lng",                                         :default => 0.0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "expires_at"
