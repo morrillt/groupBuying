@@ -1,1 +1,22 @@
-hola 
+#header
+  .logo
+    %a{:href=>"/"}
+  .account
+    %a{:href=>"#"} Login
+    %a{:href=>"#"} Sign up
+#main
+  #left
+    .left-content
+      .deals-list-wrapper
+        .deals-list
+          %ul
+          - @deals.each do |d| 
+            %li
+              %a{:href=>"#"} 
+                %span.thumb
+                  %img{:src=>"#{sites_thumb(d.source_name)}"}
+                %span.name #{d.name}
+              %p.at Location: #{d.lat}, #{d.lng}
+  #content
+    .content
+      #map_canvas
