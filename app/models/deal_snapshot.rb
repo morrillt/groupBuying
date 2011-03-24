@@ -45,7 +45,10 @@ class DealSnapshot
   end
   
   def self.create_from_deal!(deal)
-    return false if deal.expires_at <= Time.now
+    if deal.expires_at <= Time.now
+      deal.close!
+      return false
+    end
     this = new
     this.deal_id = deal.id
     # Capture hotness of deal
