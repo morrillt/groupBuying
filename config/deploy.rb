@@ -23,6 +23,14 @@ task :staging do
   ssh_options[:username] = 'gbd'
 end
 
+task :dev do
+  set :rails_env, "production"
+  server "66.228.33.23", :app, :web, :db, :primary => true
+  set :deploy_to, '/srv/gbd'
+  ssh_options[:username] = 'gbd'
+end
+
+
 after "deploy:update_code" do
   run "rvm rvmrc trust #{release_path}"
   # link the default database.yml

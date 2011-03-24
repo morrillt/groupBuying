@@ -22,6 +22,7 @@ gem 'json'
 gem 'resque'
 gem 'resque-scheduler'
 gem 'system_timer'
+gem 'sinatra', '1.1.3'
 
 
 group :test do
@@ -31,7 +32,6 @@ group :test do
   gem 'shoulda-matchers'
   gem 'shoulda-context'
   gem 'factory_girl'
-  gem 'resque_spec'
 end
 
 # Use unicorn as the web server

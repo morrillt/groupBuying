@@ -2,17 +2,22 @@
 require File.dirname(__FILE__) + '/../config/environment'
 
 # Called hourly to update the snapshots for a sites active deals
+site_source_names = Site.active.map(&:source_name)
 
-Site.active.map do |site|
-  begin
-    site.update_snapshots!
-  rescue => e
-    puts "Error:"
-    puts "-"*90
-    puts e.message
+if ARGV[0] && site_source_names.include?(ARGV[0])
+  s=Site.find_by_source_name(ARGV[0]).update_snapshots!
+  puts s.inspect
+else
+  Site.active.map do |site|
+    begin
+      site.update_snapshots!
+    rescue => e
+      puts "Error:"
+      puts "-"*90
+      puts e.message
+    end
   end
 end
-
 =begin
 # Turn off threading for now
 Site.active.map do |site|
