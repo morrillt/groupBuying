@@ -6,7 +6,7 @@ class Admin::DealsController < Admin::ApplicationController
   end
   
   def show
-    @deal = Deal.find(params[:id], :include => [:site, :division, :snapshots])
+    @deal = Deal.find(params[:id], :include => [:site, :division])
   end
   
   def export
