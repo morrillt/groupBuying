@@ -13,8 +13,7 @@ class Deal < ActiveRecord::Base
   validates_presence_of :permalink
   validates_presence_of :actual_price
   validates_presence_of :sale_price
-  validates_uniqueness_of :deal_id
-  validates_uniqueness_of :name, :scope => :deal_id
+  validates_uniqueness_of :deal_id, :scope => :site_id
   
   # Geocode lat lng if we have an address
   before_create :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? }
@@ -26,6 +25,7 @@ class Deal < ActiveRecord::Base
   # Scopes
   scope :active, where(:active => true)
   scope :inactive, where(:active => false)
+  scope :expired, where("expires_at IS NOT NULL AND expires_at < NOW()")
   
   # Instance Methods
 
@@ -55,8 +55,9 @@ class Deal < ActiveRecord::Base
   
   # Simply captures the snapshot data from the host
   # This method does not store anything
-  # It is used to create snapshot records
-  def capture_snapshot
+  # It is used to create snapshot records, 
+  # and returns the current sold count for the deal
+  def capture_sold_count
     site.snapshooter.capture_deal(self)
   end
   

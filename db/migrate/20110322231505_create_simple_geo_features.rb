@@ -16,10 +16,6 @@ class CreateSimpleGeoFeatures < ActiveRecord::Migration
       t.string :link
 
       t.timestamps
-      execute "ALTER TABLE simple_geo_features 
-      ADD CONSTRAINT fk_simple_geo_id 
-      FOREIGN KEY (simple_geo_data_id) REFERENCE
-      simple_geo_data(id)"
     end
   end
 

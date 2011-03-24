@@ -23,6 +23,16 @@ describe Snapshooter::Base do
       @base.stub(:doc).and_return(Nokogiri::HTML("<span id='foo'>rspec testing</span>"))
       @base.xpath("span[@id='foo']").first.text.should == 'rspec testing'
     end
+  end     
+  
+  context "split_address_telephone" do
+    it "should separate raw_address and telephone" do
+      @base.split_address_telephone("Sycamore 500 Valley Rd. WestDanville, California 222-831-3644").should eql(["Sycamore 500 Valley Rd. WestDanville, California ", "222-831-3644"])
+    end
+
+    it "should not affect ordinary numbers in address" do
+      @base.split_address_telephone("Sycamore 500 Valley Rd. WestDanville, California 29087").should eql(["Sycamore 500 Valley Rd. WestDanville, California 29087", nil])
+    end
   end
   
 end

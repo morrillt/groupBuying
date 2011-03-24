@@ -6,7 +6,8 @@
       .top-container
         #header
           .logo
-            %a{:href=>"/"} Group Buying Analytics
+            %a{:href=>"/"}
+              %img{:src=>"/images/logo-200.png"}
           .account
             %a{:href=>"#"} Login
             %a{:href=>"#"} Sign up
@@ -47,4 +48,12 @@
       'speedOut'	:	200, 
       'overlayShow'	:	false
       });
+  :javascript
+    var vglnk = { api_url: '//api.viglink.com/api', key: 'af8f3417cae7a943d42f592b56bd68f6' };
+    (function(d, t) {
+    var s = d.createElement(t); s.type = 'text/javascript'; s.async = true;
+    s.src = ('https:' == document.location.protocol ? vglnk.api_url :
+    '//cdn.viglink.com/api') + '/vglnk.js';
+    var r = d.getElementsByTagName(t)[0]; r.parentNode.insertBefore(s, r);
+    }(document, 'script'));
   = javascript_include_tag "app"

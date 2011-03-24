@@ -5,22 +5,16 @@ module SimpleGeo
   #SimpleGeo::SimpleGeoCollector.new
   class SimpleGeoCollector
     
-    def search address
+    def search hash
       authenticate
-      # address = "694 Valencia St.San Francisco, California 94110"
+      address = "#{hash[:address]} #{hash[:zip_code]}"
       options = {'radius' => 0.1}
       places = (SimpleGeo::Client.get_places_by_address(address,
                                                         options))[:features]
       for p in places
-        site = p if p[:properties][:phone]
+        site = p if p[:properties][:phone].include?hash[:phone]
       end
-      coords = site[:geometry][:coordinates]
-      context = SimpleGeo::Client.get_context(coords.last,coords.first)
-      context               
-      #site = nil
-      
-      #site
-      #places
+      site
     end
     
     def parsing string
@@ -39,5 +33,4 @@ module SimpleGeo
       SimpleGeo::Client.set_credentials(tokens['token'],tokens['secret_token'])
     end
   end
- 
 end

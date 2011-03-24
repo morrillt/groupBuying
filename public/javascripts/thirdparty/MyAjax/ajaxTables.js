@@ -13,23 +13,23 @@ function loadingTimer(){
 }
 
 function searchTable(searchTerm){
-loadingTimer();
-	$("#ajaxTable").load("/admin/"+model+"/table?search=" + encodeURI(searchTerm));
+    loadingTimer();
+    $("#ajaxTable").load("/admin/"+model+"/table?search=" + encodeURI(searchTerm));
 }
 
 function gotoStart(start){
-loadingTimer();
-var search_text = '';
-if($("#searchText").val()!='Search'){search_text=$("#searchText").val()}
-	$("#ajaxTable").load("/admin/"+model+"/table?start=" + start + "&search=" + search_text);
+    loadingTimer();
+    var search_text = '';
+    if($("#searchText").val()!='Search'){search_text=$("#searchText").val()}
+    $("#ajaxTable").load("/admin/"+model+"/table?start=" + start + "&search=" + search_text);
 }
 
 function sortTable(order_by,direction){
-loadingTimer();
-var search_text = '';
-if($("#searchText").val()!='Search'){search_text=$("#searchText").val()}
-	$("#ajaxTable").load("/admin/"+model+"/table?start=0&search=" + search_text + "&order_by=" + order_by + "&direction=" + direction);
-	$("#" + order_by).attr("src","img' + '/javascripts/thirdparty/MyAjax/arrow_down.gif");
+    loadingTimer();
+    var search_text = '';
+    if($("#searchText").val()!='Search'){search_text=$("#searchText").val()}
+    $("#ajaxTable").load("/admin/"+model+"/table?start=1&search=" + search_text + "&order_by=" + order_by + "&direction=" + direction);
+    $("#" + order_by).attr("src","img' + '/javascripts/thirdparty/MyAjax/arrow_down.gif");
 }
 
 

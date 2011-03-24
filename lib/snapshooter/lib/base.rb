@@ -2,6 +2,8 @@ require 'open-uri'
 module Snapshooter
   class Base    
     attr_reader :base_url, :doc
+
+    TELEPHONE_REGEX = /[0-9]*[\-\(\)]+[0-9\-\(\)]+/
     
     def initialize
       # setup a mechanize agent for crawling
@@ -45,6 +47,15 @@ module Snapshooter
         end
       rescue => e
         log "Error: #{e.message}"
+      end
+    end
+    
+    def split_address_telephone(address)
+      match_data = address.match(TELEPHONE_REGEX)
+      if match_data
+        [address.gsub(TELEPHONE_REGEX, ''), match_data.to_s]
+      else
+        [address, nil]
       end
     end
   end
