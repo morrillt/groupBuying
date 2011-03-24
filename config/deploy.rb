@@ -26,8 +26,8 @@ end
 task :dev do
   set :rails_env, "production"
   server "66.228.33.23", :app, :web, :db, :primary => true
-  set :deploy_to, '/srv/gbd'
-  ssh_options[:username] = 'gbd'
+  set :deploy_to, '/home/deploy/groupie'
+  ssh_options[:username] = 'deploy'
 end
 
 
@@ -66,6 +66,18 @@ namespace :compass do
     system "rm -rf css/*"
     system "compass compile"
   end
+end    
+
+namespace :resque do 
+  desc "Stop the resque daemon" 
+  task :stop, :roles => :resque do
+    run "cd #{current_path} && RAILS_ENV=production WORKER_YML=#{resque_workers_yml} rake resque:stop_daemons; true"
+  end
+
+  desc "Start the resque daemon" 
+  task :start, :roles => :resque do
+    run "cd #{current_path} && RAILS_ENV=production WORKER_YML=#{resque_workers_yml} rake resque:start_daemons"
+  end 
 end
  
 after 'deploy:update_code', 'bundler:bundle_new_release'
