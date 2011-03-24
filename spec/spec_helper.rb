@@ -9,6 +9,7 @@ require 'resque_spec'
 require 'json'
 
 # Factory.definition_file_paths = [ File.join(Rails.root, 'spec', 'factories') ]
+require Rails.root.join("spec/factories/factories.rb")
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
