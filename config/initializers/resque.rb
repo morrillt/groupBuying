@@ -3,7 +3,8 @@ Dir["#{Rails.root}/app/jobs/*.rb"].each { |file| require file }
                   
 # Redis config
 config = YAML::load(File.open("#{Rails.root}/config/redis.yml"))[Rails.env]
-Resque.redis = Redis.new(:host => config['host'], :port => config['port'])
+$redis = Redis.new(:host => config['host'], :port => config['port'])
+Resque.redis = $redis
               
 # Scheduler tasks
 require 'resque_scheduler'

@@ -38,13 +38,10 @@ class Chart
     chart= {
       :categories => (1..24).map { |t| "#{(today-t.hours).hour}:00" }.reverse,
       :series => []
-    }
-    Site.active.each do |site|
-      data= (1..24).map do |t|
-        today= Time.now-t.hours
-        site.revenue_by_given_hour_and_date(today.hour, today)
-      end.reverse
-      chart[:series] << { :name => site.name, :data => data }
+    }           
+    Site.includes(:hourly_revenue_by_site).active.each do |site|
+      data = site.hourly_revenue_by_site.sort_by(&:order).reverse.collect(&:revenue)
+      chart[:series] << { :name => site.name, :data => data } 
     end
     chart
   end
