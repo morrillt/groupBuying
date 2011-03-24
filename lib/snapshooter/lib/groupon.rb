@@ -39,6 +39,15 @@ module Snapshooter
             return
           end
           
+          # Build the full address
+          full_address = ""
+          full_address << groupon_deal.redemptionLocations.first.try(:streetAddress1).to_s + "\n"
+          full_address << groupon_deal.redemptionLocations.first.try(:streetAddress2).to_s + "\n"
+          full_address << groupon_deal.redemptionLocations.first.try(:city).to_s + ", "
+          full_address << groupon_deal.redemptionLocations.first.try(:state).to_s + "\n"
+          full_address << groupon_deal.redemptionLocations.first.try(:postalCode).to_s
+          
+          
           # calculate full price
           normal_price = [:price, :discount_amount].map do |key|
             groupon_deal[key] = (groupon_deal[key].gsub(/[^0-9]/,'').to_f * 0.01)
@@ -54,6 +63,7 @@ module Snapshooter
           new_deal_attributes[:deal_id]            = groupon_deal.id
           new_deal_attributes[:site_id]            = @site.id
           new_deal_attributes[:division]           = division
+          new_deal_attributes[:raw_address]        = full_address
 
           save_deal!(new_deal_attributes)
         end
