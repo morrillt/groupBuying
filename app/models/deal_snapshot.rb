@@ -11,17 +11,52 @@ class DealSnapshot
   # Validations
   validates_presence_of :buyers_count
   
-  # Callbacks
-  before_save :populate_values
+  # Scopes
+  def self.recent
+    where({:created_at.gte => 1.day.ago.at_midnight}).order(:created_at.asc).to_a
+  end
   
-  private
+  def total_revenue
+    (price.to_f * buyers_count.to_f)
+  end
   
-  def populate_values
-    deal = Deal.find(self.deal_id)
+  def price
+    @price ||= deal.try(:sale_price).to_f
+  end
+  
+  def deal_name
+    @deal_name ||= self.deal.name
+  end
+  
+  def site_name
+    @site_name ||= self.site.name
+  end
+
+  def site
+    @site ||= Site.find(site_id)
+  end
+  
+  def deal
+    @deal ||= Deal.find(deal_id)
+  end
+  
+  def self.last_recorded_buyers_count_for_deal(deal)
+    where({:deal_id => deal.id}).order(:created_at.asc).last.try(:buyers_count).to_i
+  end
+  
+  def self.create_from_deal!(deal)
+    return false if deal.expires_at >= Time.now
+    this = new
+    this.deal_id = deal.id
+    # Capture hotness of deal
+    this.deal.calculate_hotness!
+    # Capture the buyers count from the deal
+    this.buyers_count = deal.capture_sold_count
     # Capture the last buyers_count value
-    self.last_buyers_count = self.class.where({:deal_id => deal.id}).order(:created_at.asc).last.try(:buyers_count).to_i
+    this.last_buyers_count = last_recorded_buyers_count_for_deal(this.deal)
     # Store the site id in the snapshot table for easy reference
-    self.site_id = deal.site_id
+    this.site_id = deal.site_id
+    this.save
   end
 end
   

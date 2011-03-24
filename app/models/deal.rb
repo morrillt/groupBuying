@@ -3,7 +3,6 @@ class Deal < ActiveRecord::Base
   include Geokit::Geocoders
   
   # Associations
-  has_many :snapshots, :dependent => :destroy
   belongs_to :division
   belongs_to :site
   
@@ -28,6 +27,10 @@ class Deal < ActiveRecord::Base
   
   # Instance Methods
 
+  def snapshots
+    @snapshots ||= DealSnapshot.where(:deal_id => self.id)
+  end
+
   # returns true if more than one snapshot for deal
   def has_more_than_one_snapshot?
     @has_more_than_one_snapshot ||= snapshots.count.to_i > 1
@@ -35,7 +38,7 @@ class Deal < ActiveRecord::Base
   
   def calculate_hotness!
     if has_more_than_one_snapshot?
-      first_snapshot_sold_count = snapshots.first.sold_count
+      first_snapshot_sold_count = snapshots.first.buyers_count
       rating = buyers_count.to_i.percent_change_from( first_snapshot_sold_count.to_i )
       update_attribute(:hotness, rating)
     else
@@ -49,7 +52,7 @@ class Deal < ActiveRecord::Base
   
   # Returns the latest snapshots sold_count value
   def buyers_count
-    @buyers_count ||= snapshots.last.try(:sold_count).to_i
+    @buyers_count ||= snapshots.last.try(:buyers_count).to_i
   end
   
   # Simply captures the snapshot data from the host
@@ -80,11 +83,17 @@ class Deal < ActiveRecord::Base
   end
 
 
+  # DEPRECIATED
   # Creates an actual mysql record
   # Captures the most recent data for a deal.
   # This is run every n hours and used to visualize the deals progress.
   def take_snapshot!
     snapshots.create!(:site_id => self.site_id)
+  end
+  
+  # replaces take_snapshot!
+  def take_mongo_snapshot!
+    DealSnapshot.create_from_deal!(self)
   end
   
   # Closes out the deal

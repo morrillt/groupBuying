@@ -10,7 +10,8 @@ class Site < ActiveRecord::Base
   # snapshots of the deal
   def update_snapshots!
     deals.active.each do |deal|
-      deal.take_snapshot!
+      # record the deal into mongodb as DealSnapshot
+      deal.take_mongo_snapshot!
     end
   end
   
