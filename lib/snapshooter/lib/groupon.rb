@@ -17,7 +17,7 @@ module Snapshooter
     
     # Returns the current purchase count of a given deal
     def capture_deal(deal)
-      Nokogiri::HTML(open(deal.permalink)).search("span[@class='number']").first.try(:text).to_i
+      Groupon.deals(:deal_id => deal.deal_id).last.quantity_sold
     end
     
     def crawl_new_deals!
@@ -31,21 +31,27 @@ module Snapshooter
         @division = division
         
         new_deal_attributes = {}
-        
-        Groupon.deals(:division => division.division_id).each do |deal_hash|
+
+        Groupon.deals(:division => division.site_division_id).each do |groupon_deal|
+          
+          if division.url == "http://www.groupon.com/appleton"
+            puts groupon_deal.options.inspect
+            return
+          end
           
           # calculate full price
           normal_price = [:price, :discount_amount].map do |key|
-            deal_hash[key] = (deal_hash[key].gsub(/[^0-9]/,'').to_f * 0.01)
+            groupon_deal[key] = (groupon_deal[key].gsub(/[^0-9]/,'').to_f * 0.01)
           end.sum
           
-          new_deal_attributes[:name]               = deal_hash[:title]
-          new_deal_attributes[:sale_price]         = deal_hash[:price]
+          new_deal_attributes[:name]               = groupon_deal.title
+          new_deal_attributes[:sale_price]         = groupon_deal.price
           new_deal_attributes[:actual_price]       = normal_price
-          new_deal_attributes[:lat]                = deal_hash[:division_lat]
-          new_deal_attributes[:lng]                = deal_hash[:division_lng]
-          new_deal_attributes[:expires_at]         = deal_hash[:end_date]
-          new_deal_attributes[:permalink]          = deal_hash[:deal_url]
+          new_deal_attributes[:lat]                = groupon_deal.division_lat
+          new_deal_attributes[:lng]                = groupon_deal.division_lng
+          new_deal_attributes[:expires_at]         = groupon_deal.end_date
+          new_deal_attributes[:permalink]          = groupon_deal.deal_url
+          new_deal_attributes[:deal_id]            = groupon_deal.id
           new_deal_attributes[:site_id]            = @site.id
           new_deal_attributes[:division]           = division
 
