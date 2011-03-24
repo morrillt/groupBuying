@@ -18,7 +18,7 @@ class Deal < ActiveRecord::Base
   before_create :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? }
   
   before_create do
-    self.deal_id = Digest::MD5.hexdigest(name + permalink + expires_at.to_s)
+    self.deal_id = Digest::MD5.hexdigest(name + permalink + expires_at.to_s) unless self.deal_id.present?
   end
   
   # Scopes

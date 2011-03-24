@@ -51,3 +51,22 @@ Workers can be separated by queues [crawler, deals, snapshots]:
   $ rake resque:scheduler  
 
 Web interface mounted to /resque path
+
+# Modles
+
+  <strong>Deals</strong>
+  
+  Attributes
+  * name (required)
+  * sale_price (required)
+  * actual_price (required)
+  * lat
+  * lng
+  * expires_at (required) # timestamp when the deal expires or ends
+  * permalink  (required) # url to the deal
+  * deal_id (required) # unique key to identify deal
+  * site_id (required) # fk for parent model Site
+  * division (required) # division from source site
+  * raw_address
+  
+  

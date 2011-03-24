@@ -29,6 +29,8 @@ GEM
       activesupport (= 3.0.5)
     activesupport (3.0.5)
     arel (2.0.9)
+    bson (1.2.4)
+    bson_ext (1.2.4)
     builder (2.1.2)
     compass (0.10.6)
       haml (>= 3.0.4)
@@ -57,6 +59,13 @@ GEM
     mechanize (1.0.0)
       nokogiri (>= 1.2.1)
     mime-types (1.16)
+    mongo (1.2.4)
+      bson (>= 1.2.4)
+    mongoid (2.0.0.rc.6)
+      activemodel (~> 3.0)
+      mongo (~> 1.2)
+      tzinfo (~> 0.3.22)
+      will_paginate (~> 3.0.pre)
     mysql2 (0.2.6)
     nokogiri (1.4.4)
     polyglot (0.3.1)
@@ -126,6 +135,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bson_ext (~> 1.2)
   compass (>= 0.10.6)
   factory_girl
   fastercsv
@@ -134,6 +144,7 @@ DEPENDENCIES
   haml
   json
   mechanize
+  mongoid (= 2.0.0.rc.6)
   mysql2
   nokogiri
   rails (= 3.0.5)
