@@ -149,10 +149,7 @@ DEPENDENCIES
   shoulda
   shoulda-context
   shoulda-matchers
-<<<<<<< HEAD
   simplegeo
-=======
   sinatra (= 1.1.3)
->>>>>>> groupie
   system_timer
   will_paginate
