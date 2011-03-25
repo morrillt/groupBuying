@@ -1,6 +1,6 @@
 primary: 
-  queues: crawler, snapshot
+  queues: "crawler,snapshot"
   count: 3
 secondary: 
-  queues: deals, chart
+  queues: "deals,chart"
   count: 1

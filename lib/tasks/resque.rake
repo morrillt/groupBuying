@@ -9,7 +9,7 @@ namespace :resque do
   task :start_daemons do
     mrake_start "resque_scheduler resque:scheduler" 
       workers_config.each do |worker, config|
-      mrake_start "resque_#{worker} resque:work QUEUE=#{config['queues']}" 
+      mrake_start "resque_#{worker} resque:work QUEUE=#{config['queues']} COUNT=#{config['count']}" 
     end
   end
 
