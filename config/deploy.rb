@@ -12,6 +12,7 @@ set :scm_username, "git"
 set :deploy_via, "checkout"
 #set :git_enable_submodules, 1
 
+
 set :use_sudo, false
 
 ssh_options[:username] = 'root'
@@ -22,6 +23,8 @@ task :staging do
   #set :bundle, "bundle"
   set :deploy_to, "/srv/gbd"
   ssh_options[:username] = 'gbd'
+  set :gem_bin, "/home/#{ssh_options[:username]}/.rvm/gems/ree-1.8.7-2011.03@charts/bin"
+  set :rvm_bin, "/home/#{ssh_options[:username]}/.rvm/bin"
 end
 
 task :dev do
@@ -29,11 +32,14 @@ task :dev do
   server "66.228.33.23", :app, :web, :db, :primary => true
   set :deploy_to, '/home/deploy/groupie'
   ssh_options[:username] = 'deploy'
+  set :gem_bin, "/home/#{ssh_options[:username]}/.rvm/gems/ree-1.8.7-2011.03@charts/bin"
+  set :rvm_bin, "/home/#{ssh_options[:username]}/.rvm/bin"
 end
+    
 
 
 after "deploy:update_code" do
-  run "/home/#{ssh_options[:username]}/.rvm/bin/rvm rvmrc trust #{release_path}"
+  run "#{rvm_bin}/rvm rvmrc trust #{release_path}"
   # link the default database.yml
   run "ln -s #{shared_path}/config/database_groupie.yml #{release_path}/config/database.yml"
 end
@@ -57,7 +63,7 @@ namespace :bundler do
  
   task :bundle_new_release, :roles => :app do
     bundler.create_symlink
-    run "cd #{deploy_to}/current && /home/#{ssh_options[:username]}/.rvm/gems/ree-1.8.7-2011.03@charts/bin/bundle install --quiet --without development test"
+    run "cd #{deploy_to}/current && #{gem_bin}/bundle install --quiet --without development test"
   end
 end
 
@@ -71,14 +77,19 @@ end
 
 namespace :resque do 
   desc "Stop the resque daemon" 
-  task :stop, :roles => :resque do
-    run "cd #{current_path} && RAILS_ENV=production WORKER_YML=#{resque_workers_yml} rake resque:stop_daemons; true"
+  task :stop do
+    run "cd #{current_path} && RAILS_ENV=production #{gem_bin}/rake resque:stop_daemons; true"
   end
 
   desc "Start the resque daemon" 
-  task :start, :roles => :resque do
-    run "cd #{current_path} && RAILS_ENV=production WORKER_YML=#{resque_workers_yml} rake resque:start_daemons"
-  end 
+  task :start do
+    run "cd #{current_path} && RAILS_ENV=production #{gem_bin}/rake resque:start_daemons"
+  end   
+  
+  task :restart do 
+    stop
+    start
+  end
 end
  
 after 'deploy:update_code', 'bundler:bundle_new_release'
@@ -117,7 +128,8 @@ after "deploy:setup",           "db:setup"   unless fetch(:skip_db_setup, false)
 
 
 namespace :monit do
-  desc "Generate monitrc file from template"
+  
+  desc "Generate monitrc file from template. Regeneration needed when resque_workers.yml file changed"
   task :setup do 
     monitrc = <<-EOF
     check process resque_scheduler 
@@ -139,16 +151,27 @@ namespace :monit do
     end
     
     config = ERB.new(monitrc)
-    put config.result(binding), "#{current_path}/monitrc"
+    put config.result(binding), "#{shared_path}/config/monitrc"
   end
-  
+       
+  desc "Restart resque scheduler and workers. Restart needed only when changes was made in app/jobs"
   task :restart do                
-    run "cd #{current_path} && RAILS_ENV=production rake resque:stop_daemons"
-    run "/etc/init.d/monit restart"
-    run "cd #{current_path} && RAILS_ENV=production rake resque:start_daemons"
+    run "cd #{current_path} && RAILS_ENV=production #{gem_bin}/rake resque:stop_daemons"
+    system "/etc/init.d/monit stop"
+    system "/etc/init.d/monit start"
+    run "cd #{current_path} && RAILS_ENV=production #{gem_bin}/rake resque:start_daemons"
   end
   
+  task :reconfig do 
+    setup
+    restart 
+  end                               
+  
+  desc "Create symlink to monitrc in current"
+  task :symlink do
+    # Nothing here, although careful. 
+    # need include ...deploy/shared/config/monitrc in your /etc/monit/monitrc
+    # When resque_workers.yml changed - reconfig
+  end
 end    
 
-after 'deploy:update_code', 'monit:setup'
-after 'deploy:update_code', 'monit:restart'
