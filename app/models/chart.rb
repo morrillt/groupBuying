@@ -2,45 +2,38 @@ class Chart
   # Returns a hash containing the revenue for each
   # hour during the last 24 hours, for each site
   def self.hourly_revenue_by_site
-    today= Time.now
-    chart= {
-      :categories => (1..24).map { |t| "#{(today-t.hours).hour}:00" }.reverse,
-      :series => []
-    }           
-    Site.includes(:hourly_revenue_by_site).active.each do |site|
-      data = site.hourly_revenue_by_site.sort_by(&:order).reverse.collect(&:revenue)
-      chart[:series] << { :name => site.name, :data => data } 
+    chart = init_chart
+    hourly_revenues = HourlyRevenueBySite.all
+    sites = Site.active
+    
+    hourly_revenues.each do |hr|
+      site_name = sites.detect{|s| s.id == hr.site_id}.name
+      data = hr.revenue.keys.sort.reverse.collect{|k| hr.revenue[k]} 
+      chart[:series] << { :name => site_name, :data => data } 
     end
     chart
   end
 
   def self.hourly_revenue_by_divisions(site_id)
-    site= Site.find(site_id)
-    divisions= site.divisions
+    chart = self.init_chart
+    hourly_revenues = HourlyRevenueByDivision.where(:site_id => site_id)
+    ar_divisions = Division.where(:site_id => site_id).order('name ASC')
+    ar_divisions.each do |division|        
+      hr_division = hourly_revenues.detect{ |hr| hr.division_id == division.id }
+      data = hr_division ?  (1..24).to_a.reverse.collect {|key| hr_division.revenue[key.to_s] } : (1..24).collect { 0 }
+      chart[:series] << { :name => division.name, :data => data }        
+    end
+    chart
+  end
+  
+  private   
+
+  def self.init_chart
     today= Time.now
-    chart= {
+    chart = {
       :categories => (1..24).map { |t| "#{(today-t.hours).hour}:00" }.reverse,
       :series => []
-    }
-    pre_data= {}
-    divisions_names= []
-    divisions.each do |d|
-      revs= (1..24).map { 0 }
-      divisions_names << d.name
-      pre_data[d.name]= {:name=> d.name, :revs => revs}
-    end
-
-    (1..24).map do |t|
-      today= Time.now-t.hours # should not be Time.now
-      revenues= site.revenue_for_all_divisions_by_given_hour_and_date(today.hour, today)
-      revenues.each do |r|
-        pre_data[r.name][:revs][t]= r.rev.to_f
-      end
-    end
-    divisions_names.sort!
-    divisions_names.each do |d|
-      chart[:series] << { :name => d, :data => pre_data[d][:revs].reverse! }
-    end
+    }       
     chart
   end
 end
