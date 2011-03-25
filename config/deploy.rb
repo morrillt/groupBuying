@@ -2,6 +2,7 @@
 
 set :domain, 'group-buying.pogodan.com'
 set :application, domain
+set :db_prefix, 'group_buying'
 
 default_run_options[:pty] = true
 set :repository,  "git@github.com:morrillt/groupBuying.git"
@@ -82,3 +83,67 @@ end
  
 after 'deploy:update_code', 'bundler:bundle_new_release'
 after 'deploy:update_code', 'compass:compile'
+   
+namespace :db do   
+  desc "Creates the database.yml configuration file in shared path"
+  task :setup, :except => { :no_release => true } do
+    default_template = <<-EOF
+    setup: &setup
+      adapter: mysql2
+      encoding: utf8
+      host: localhost
+      username: root
+      password: 
+    development:
+      <<: *setup
+      database: #{db_prefix}
+    test:
+      <<: *setup
+      database: #{db_prefix}_test
+    staging:
+      <<: *setup
+      database: #{db_prefix}_stage
+    production:
+      <<: *setup
+      database: #{db_prefix}_live
+    EOF
+    config = ERB.new(default_template)
+
+    run "mkdir -p #{shared_path}/config"
+    put config.result(binding), "#{shared_path}/config/database_groupie.yml"
+  end
+end
+after "deploy:setup",           "db:setup"   unless fetch(:skip_db_setup, false)
+
+
+namespace :monit do
+  desc "Generate monitrc file from template"
+  task :setup do 
+    monitrc = <<-EOF
+    check process resque_scheduler 
+      with pidfile #{current_path}/tmp/pids/resque_scheduler.pid 
+      group resque 
+      alert penkinv@gmail.com
+      start program = "/bin/sh -c 'cd #{current_path}; RAILS_ENV=production ./script/monit_rake start resque_scheduler resque:scheduler'" 
+      stop program = "/bin/sh -c 'cd #{current_path}; RAILS_ENV=production ./script/monit_rake stop resque_scheduler'"
+    EOF
+    YAML.load(File.open('config/resque_workers.yml')).each_pair do |worker, config|
+      monitrc << <<-EOF
+      check process resque_#{worker}
+        with pidfile #{current_path}/tmp/pids/resque_#{worker}.pid 
+        group resque 
+        alert penkinv@gmail.com
+        start program = "/bin/sh -c 'cd #{current_path}; RAILS_ENV=production ./script/monit_rake start resque_#{worker} resque:work QUEUE=#{config['queues']} COUNT=#{config['count']}'" 
+        stop program = "/bin/sh -c 'cd #{current_path}; RAILS_ENV=production ./script/monit_rake  stop resque_#{worker}'" 
+      EOF
+    end
+    
+    config = ERB.new(monitrc)
+    put config.result(binding), "#{current_path}/monitrc"
+  end
+  
+  task :restart do 
+    run "/etc/init.d/monit restart"
+  end
+  
+end

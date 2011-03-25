@@ -1,0 +1,15 @@
+check process resque_scheduler 
+  with pidfile <%= @rails_root %>/tmp/pids/resque_scheduler.pid 
+  group resque 
+  alert errors@domain.com 
+  start program = "/bin/sh -c 'cd <%= @rails_root %>; RAILS_ENV=production ./script/monit_rake start resque_scheduler resque:scheduler'" 
+  stop program = "/bin/sh -c 'cd <%= @rails_root %>; RAILS_ENV=production ./script/monit_rake stop resque_scheduler'"
+
+<% YAML.load(File.open(Rails.root+'/config/production/resque/resque_workers.yml')).each_pair do |worker, config| %> 
+check process resque_<%=worker%>
+  with pidfile <%= @rails_root %>/tmp/pids/resque_<%=worker%>.pid 
+  group resque 
+  alert errors@domain.com 
+  start program = "/bin/sh -c 'cd <%= @rails_root %>; RAILS_ENV=production ./script/monit_rake start resque_<%=worker%> resque:work QUEUE=<%=config['queues']%>'" 
+  stop program = "/bin/sh -c 'cd <%= @rails_root %>; RAILS_ENV=production ./script/monit_rake  top resque_<%=worker%>'" 
+<% end %>
