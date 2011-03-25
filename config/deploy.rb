@@ -124,7 +124,7 @@ namespace :monit do
       with pidfile #{current_path}/tmp/pids/resque_scheduler.pid 
       group resque 
       alert penkinv@gmail.com
-      start program = "/bin/sh -c 'cd #{current_path}; RAILS_ENV=production ./script/monit_rake start resque_scheduler resque:scheduler'" 
+      start program = "/bin/sh -c 'cd #{current_path}; RAILS_ENV=production nohup ./script/monit_rake start resque_scheduler resque:scheduler >> log/scheduler.log &'" 
       stop program = "/bin/sh -c 'cd #{current_path}; RAILS_ENV=production ./script/monit_rake stop resque_scheduler'"
     EOF
     YAML.load(File.open('config/resque_workers.yml')).each_pair do |worker, config|
@@ -133,7 +133,7 @@ namespace :monit do
         with pidfile #{current_path}/tmp/pids/resque_#{worker}.pid 
         group resque 
         alert penkinv@gmail.com
-        start program = "/bin/sh -c 'cd #{current_path}; RAILS_ENV=production ./script/monit_rake start resque_#{worker} resque:work QUEUE=#{config['queues']} COUNT=#{config['count']}'" 
+        start program = "/bin/sh -c 'cd #{current_path}; RAILS_ENV=production nohup ./script/monit_rake start resque_#{worker} resque:workers QUEUE=#{config['queues']} COUNT=#{config['count']} >> log/workers.log &'" 
         stop program = "/bin/sh -c 'cd #{current_path}; RAILS_ENV=production ./script/monit_rake  stop resque_#{worker}'" 
       EOF
     end
@@ -142,8 +142,13 @@ namespace :monit do
     put config.result(binding), "#{current_path}/monitrc"
   end
   
-  task :restart do 
+  task :restart do                
+    run 'cd #{current_path} && RAILS_ENV=production rake resque:stop_daemons'
     run "/etc/init.d/monit restart"
+    run 'cd #{current_path} && RAILS_ENV=production rake resque:start_daemons'
   end
   
-end
+end    
+
+after 'deploy:update_code', 'monit:setup'
+after 'deploy:update_code', 'monit:restart'

@@ -26,6 +26,6 @@ namespace :resque do
   end                                                                    
 
   def self.mrake_start(task) 
-    sh "nohup ./script/monit_rake start #{task} RAILS_ENV=#{ENV['RAILS_ENV']} >> log/workers.log &"
+    sh "nohup ./script/monit_rake start #{task} RAILS_ENV=production >> log/workers.log &"
   end 
 end
