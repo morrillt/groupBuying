@@ -143,9 +143,9 @@ namespace :monit do
   end
   
   task :restart do                
-    run 'cd #{current_path} && RAILS_ENV=production rake resque:stop_daemons'
+    run "cd #{current_path} && RAILS_ENV=production rake resque:stop_daemons"
     run "/etc/init.d/monit restart"
-    run 'cd #{current_path} && RAILS_ENV=production rake resque:start_daemons'
+    run "cd #{current_path} && RAILS_ENV=production rake resque:start_daemons"
   end
   
 end    
