@@ -1,15 +1,14 @@
 $.widget("ui.map", {
     _init: function() {
-	var latlng = new google.maps.LatLng(40.79513, -73.96331);
-
+	var latlng = new google.maps.LatLng(40.79513, -100.96331);
+	// var latlng = new google.maps.LatLng(6.2604225,-75.5902047);
 	var myOptions = {
-            zoom: 12,
+            zoom: 4,
             center: latlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	this.map = new google.maps.Map(document.getElementById("map_canvas"),
 				       myOptions);
-
     },
     mark: function(lat,lng, title) {
     	var latlng = new google.maps.LatLng(lat,lng);

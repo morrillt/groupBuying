@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110322233744) do
+ActiveRecord::Schema.define(:version => 20110325170713) do
 
   create_table "deals", :force => true do |t|
     t.string   "name"
@@ -40,6 +40,33 @@ ActiveRecord::Schema.define(:version => 20110322233744) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "division_id"
+    t.string   "site_division_id"
+  end
+
+  create_table "geo_codes", :force => true do |t|
+    t.integer  "deal_id"
+    t.float    "lat"
+    t.float    "lng"
+    t.string   "formatted_address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "geocodes", :force => true do |t|
+    t.integer  "deal_id"
+    t.float    "lat"
+    t.float    "lng"
+    t.string   "formatted_address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "hourly_revenue_by_sites", :force => true do |t|
+    t.integer  "site_id"
+    t.integer  "order"
+    t.integer  "revenue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "mail_updates", :force => true do |t|
@@ -56,11 +83,6 @@ ActiveRecord::Schema.define(:version => 20110322233744) do
     t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "coupons_purchased_to_date_metric",     :default => 0
-    t.float    "total_spent_on_deals_to_date_metric",  :default => 0.0
-    t.integer  "average_coupons_sold_per_deal_metric", :default => 0
-    t.float    "average_price_per_deal_metric",        :default => 0.0
-    t.float    "average_revenue_per_deal_metric",      :default => 0.0
   end
 
   create_table "snapshots", :force => true do |t|
