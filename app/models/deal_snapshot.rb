@@ -5,6 +5,7 @@ class DealSnapshot
   # Fields
   field :site_id, :type => Integer
   field :deal_id, :type => Integer
+  field :division_id, :type => Integer
   field :buyers_count, :type => Integer
   field :last_buyers_count, :type => Integer
   
@@ -12,6 +13,12 @@ class DealSnapshot
   validates_presence_of :buyers_count
   
   # Scopes
+  
+  def self.by_date_range(from, to, conditions = {})
+    query = {:created_at.gte => from, :created_at.lte => to}
+    where(query.merge!(conditions)).to_a
+  end
+  
   def self.recent
     where({:created_at.gte => 1.day.ago.at_midnight}).order(:created_at.asc).to_a
   end
@@ -36,8 +43,11 @@ class DealSnapshot
     @site ||= Site.find(site_id)
   end
   
+  # TODO
+  # add a before_destroy callback to deals
+  # to remove the DealSnpshots
   def deal
-    @deal ||= Deal.find(deal_id)
+    @deal ||= Deal.find(deal_id) rescue nil
   end
   
   def self.last_recorded_buyers_count_for_deal(deal)
@@ -59,6 +69,8 @@ class DealSnapshot
     this.last_buyers_count = last_recorded_buyers_count_for_deal(this.deal)
     # Store the site id in the snapshot table for easy reference
     this.site_id = deal.site_id
+    # Store the division id from the deal for metrics
+    this.division_id = deal.division_id
     this.save
   end
 end
