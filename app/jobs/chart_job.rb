@@ -22,8 +22,8 @@ class ChartJob
     }
     
     sites.each do |site|     
-      (1..24).map do |t|
-        today= Time.now-t.hours
+      (0..23).map do |t|
+        today = (Time.now.at_midnight + t.hours)
         revenue = site.revenue_by_given_hour_and_date(today.hour, today)
         data[site.id.to_s][t.to_s] = revenue
       end      
@@ -45,17 +45,20 @@ class ChartJob
     data = {}
     divisions.each {|div|
       data[div.id.to_s] = {:site_id => div.site_id, :data => {}}
-    }                 
+    }
     
-    (1..24).map do |t|
-      today= Time.now - t.hours # should not be Time.now
+    # only build this once
+    hours_array = (0..23).to_a   
+    
+    hours_array.map do |t|
+      today = (Time.now.at_midnight + t.hours)
       revenues = site.revenue_for_all_divisions_by_given_hour_and_date(today.hour, today)            
       revenues.each do |r|
         data[r.id][:data][t.to_s] = r.rev.to_f
       end
     end                                               
     placeholder = {}
-    (1..24).each {|i| placeholder[i.to_s] = 0}
+    hours_array.each {|i| placeholder[i.to_s] = 0}
     
     data.keys.each {|div_id|
       hr = HourlyRevenueByDivision.find_or_create_by(:division_id => div_id, :site_id => data[div_id][:site_id] )

@@ -43,11 +43,18 @@ class Site < ActiveRecord::Base
   # Returns the total revenue for all active deals of this site
   # for a given hour of a given date. 
   def revenue_by_given_hour_and_date(hour, date)
-    snapshots= Snapshot.find_by_sql ["SELECT snapshots.deal_id, SUM(sold_since_last_snapshot_count) AS total_count, deals.sale_price FROM snapshots, deals WHERE snapshots.site_id = ? AND YEAR(snapshots.created_at) = ? AND MONTH(snapshots.created_at) = ? AND DAY(snapshots.created_at) = ? AND HOUR(snapshots.created_at) = ? AND sold_since_last_snapshot_count NOT IN (0) AND snapshots.deal_id = deals.id GROUP BY deal_id", self.id, date.year, date.month, date.day, hour]
-    
+    if hour.to_i < 10
+      hour = "0#{hour}"
+    end
+    puts "revenue_by_given_hour_and_date(#{hour},#{date})"
+    #snapshots= Snapshot.find_by_sql ["SELECT snapshots.deal_id, SUM(sold_since_last_snapshot_count) AS total_count, deals.sale_price FROM snapshots, deals WHERE snapshots.site_id = ? AND YEAR(snapshots.created_at) = ? AND MONTH(snapshots.created_at) = ? AND DAY(snapshots.created_at) = ? AND HOUR(snapshots.created_at) = ? AND sold_since_last_snapshot_count NOT IN (0) AND snapshots.deal_id = deals.id GROUP BY deal_id", self.id, date.year, date.month, date.day, hour]
+    start_at = Time.parse("#{date.year}-#{date.month}-#{date.day} #{hour}:00:00").utc
+    end_at   = Time.parse("#{date.year}-#{date.month}-#{date.day} #{hour}:59:59").utc
+    snapshots = DealSnapshot.by_date_range(start_at, end_at, :site_id => self.id)
+    puts "Snapshots: #{snapshots.count}"
     revenue= 0
     snapshots.each do |s|
-      revenue += s.total_count * s.sale_price
+      revenue += (s.buyers_count.to_f * s.price.to_f)
     end
     revenue.to_f
   end
@@ -55,7 +62,8 @@ class Site < ActiveRecord::Base
   # Returns the total revenue for each division of this site
   # within the given hour of the given date
   def revenue_for_all_divisions_by_given_hour_and_date(hour, date)
-    snapshots= Snapshot.find_by_sql ["SELECT deals.division_id AS division_id, divisions.name, SUM(total_count*price) AS rev FROM (SELECT snapshots.site_id, snapshots.deal_id, MAX(sold_since_last_snapshot_count) AS total_count, deals.sale_price AS price FROM snapshots, deals WHERE snapshots.site_id = ?	AND YEAR(snapshots.created_at) = ? AND MONTH(snapshots.created_at) = ? AND DAY(snapshots.created_at) = ? AND HOUR(snapshots.created_at) = ? AND sold_since_last_snapshot_count NOT IN (0) AND snapshots.deal_id = deals.id GROUP BY deal_id) revenue, deals, divisions WHERE revenue.deal_id = deals.id AND deals.division_id = divisions.id GROUP BY division_id", self.id, date.year, date.month, date.day, hour]
+    start_at = Time.parse("#{date.year}-#{date.month}-#{date.day} #{hour}:00:00")
+    snapshots = DealSnapshot.by_date_range(start_at, (start_at+59.seconds), :site_id => self.id)
   end
 
   def currently_trending
