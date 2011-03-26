@@ -11,6 +11,7 @@ class Deal < ActiveRecord::Base
   validates_presence_of :permalink
   validates_presence_of :actual_price
   validates_presence_of :sale_price
+  validates_presence_of :expires_at
   validates_uniqueness_of :deal_id, :scope => :site_id
   validates_uniqueness_of :permalink, :scope => :site_id
   
@@ -19,6 +20,11 @@ class Deal < ActiveRecord::Base
   
   before_create do
     self.deal_id = Digest::MD5.hexdigest(name + permalink + expires_at.to_s) unless self.deal_id.present?
+  end
+  
+  before_destroy do
+    snapshots = DealSnapshot.where(:deal_id => self.id)
+    snapshots.destroy_all
   end
   
   # Scopes

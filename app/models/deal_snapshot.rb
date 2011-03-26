@@ -43,9 +43,6 @@ class DealSnapshot
     @site ||= Site.find(site_id)
   end
   
-  # TODO
-  # add a before_destroy callback to deals
-  # to remove the DealSnpshots
   def deal
     @deal ||= Deal.find(deal_id) rescue nil
   end
