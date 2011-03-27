@@ -81,7 +81,7 @@ class Site < ActiveRecord::Base
   end   
                       
   def total_revenue                     
-    Deal.by_site(self.id).select("max_sold_count * sale_price as rev").collect(&:rev).sum.to_i
+    Deal.by_site(self.id).select("max_sold_count * sale_price as rev").collect{|s| s.rev || 0).sum.to_i
   end 
   
   def avg_coupon
