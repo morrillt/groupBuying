@@ -8,7 +8,7 @@ class Chart
     
     hourly_revenues.each do |hr|
       site_name = sites.detect{|s| s.id == hr.site_id}.name
-      data = hr.revenue.keys.sort.reverse.collect{|k| hr.revenue[k]} 
+      data = (0..23).to_a.reverse.collect{|k| hr.revenue["%02d"%k]} 
       chart[:series] << { :name => site_name, :data => data } 
     end
     chart
@@ -20,7 +20,7 @@ class Chart
     ar_divisions = Division.where(:site_id => site_id).order('name ASC')
     ar_divisions.each do |division|        
       hr_division = hourly_revenues.detect{ |hr| hr.division_id == division.id }
-      data = hr_division ?  (1..24).to_a.reverse.collect {|key| hr_division.revenue[key.to_s] } : (1..24).collect { 0 }
+      data = (0..23).to_a.reverse.collect {|k| hr_division ? hr_division.revenue["%02d"%k] : 0 }
       chart[:series] << { :name => division.name, :data => data }        
     end
     chart
@@ -31,7 +31,7 @@ class Chart
   def self.init_chart
     today= Time.now
     chart = {
-      :categories => (1..24).map { |t| "#{(today-t.hours).hour}:00" }.reverse,
+      :categories => (0..23).map { |t| "#{(today-t.hours).hour}:00" }.reverse,
       :series => []
     }       
     chart

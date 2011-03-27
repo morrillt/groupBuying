@@ -63,8 +63,97 @@ class Site < ActiveRecord::Base
   # within the given hour of the given date
   def revenue_for_all_divisions_by_given_hour_and_date(hour, date)
     start_at = Time.parse("#{date.year}-#{date.month}-#{date.day} #{hour}:00:00")
-    snapshots = DealSnapshot.by_date_range(start_at, (start_at+59.seconds), :site_id => self.id)
+    snapshots = DealSnapshot.by_date_range(start_at, (start_at + 59.minutes), :site_id => self.id)
+    revenues = {}
+    snapshots.each do |s|
+      revenues[s.division_id] ||= 0
+      revenues[s.division_id] += (s.buyers_count.to_f * s.price.to_f)
+    end
+    revenues
+  end      
+   
+  # ================================== TODO FIXME ======================================
+  # ========================== Change to map-reduce functions ==========================
+  
+  def coupon_purchased
+    DealSnapshot.only(:deal_id).where({:site_id => self.id}).group.collect{|group| group["group"].collect(&:buyers_count).max}.sum
+  end   
+                      
+  # TODO: FIXME: active == 1 ??
+  def total_revenue                     
+    deals = {}                                                                                                                
+    Deal.where(:site_id => self.id).each {|d| deals[d.id] = d.sale_price}
+    DealSnapshot.only(:deal_id).where({:site_id => self.id}).group.collect{|group| deals[group["deal_id"].to_i] * group["group"].max(&:buyers_count).buyers_count }.sum
+  end 
+  
+  def avg_coupon
+    sold = DealSnapshot.only(:deal_id).where({:site_id => 1}).group.collect{|group| group["group"].collect(&:buyers_count).max}
+    sold.empty? ? 0 : sold.sum / sold.size
   end
+  
+  def avg_deal
+    DealSnapshot.only(:deal_id).where({:site_id => self.id}).group.collect{|group| group["group"].collect(&:buyers_count).max}.sum    
+  end                                                                                                                             
+  
+  def closed_today
+    snaps = DealSnapshot.by_date_range(Time.now - 1.days, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
+    Deal.where(:id => snaps, :active => 0).count
+  end                               
+  
+  def closed_yesterday
+    snaps = DealSnapshot.by_date_range(Time.now - 2.days, Time.now - 1.days, {:site_id => self.id}).collect(&:deal_id).uniq
+    Deal.where(:id => snaps, :active => 0).count
+  end
+
+  def closed_week
+    snaps = DealSnapshot.by_date_range(Time.now - 7.days, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
+    Deal.where(:id => snaps, :active => 0).count
+  end                                                             
+  
+  def purchased_today
+    DealSnapshot.by_date_range(Time.now - 1.days, Time.now, {:site_id => self.id}).collect(&:last_buyers_count).sum
+  end
+
+  def purchased_yesterday
+    DealSnapshot.by_date_range(Time.now - 2.days, Time.now - 1.days, {:site_id => self.id}).collect(&:last_buyers_count).sum
+  end
+
+  def purchased_week
+    DealSnapshot.by_date_range(Time.now - 7.days, Time.now, {:site_id => self.id}).collect(&:last_buyers_count).sum
+  end                                           
+  
+  def revenue_today
+    deals = {}                                                                                                                
+    Deal.where(:site_id => self.id).each {|d| deals[d.id] = d.sale_price}
+    DealSnapshot.only(:deal_id).by_date_range(Time.now - 1.days, Time.now, {:site_id => self.id}).group.collect{|group| deals[group["deal_id"].to_i] * group["group"].max(&:buyers_count).buyers_count }.sum    
+  end
+
+  def revenue_yesterday
+    deals = {}                                                                                                                
+    Deal.where(:site_id => self.id).each {|d| deals[d.id] = d.sale_price}
+    DealSnapshot.only(:deal_id).by_date_range(Time.now - 2.days, Time.now-1.days, {:site_id => self.id}).group.collect{|group| deals[group["deal_id"].to_i] * group["group"].max(&:buyers_count).buyers_count }.sum    
+  end
+
+  def revenue_week
+    deals = {}                                                                                                                
+    Deal.where(:site_id => self.id).each {|d| deals[d.id] = d.sale_price}
+    DealSnapshot.only(:deal_id).by_date_range(Time.now - 7.days, Time.now, {:site_id => self.id}).group.collect{|group| deals[group["deal_id"].to_i] * group["group"].max(&:buyers_count).buyers_count }.sum    
+  end            
+  
+  def avg_revenue_today
+    deals = {}                                                                                                                
+    Deal.where(:site_id => self.id).each {|d| deals[d.id] = d.sale_price}
+    revenue = DealSnapshot.only(:deal_id).by_date_range(Time.now - 1.days, Time.now, {:site_id => self.id}).group.collect{|group| deals[group["deal_id"].to_i] * group["group"].max(&:buyers_count).buyers_count }
+    revenue.empty? ? 0 : revenue.sum / revenue.size
+  end
+  
+  def avg_revenue_yesterday
+    deals = {}                                                                                                                
+    Deal.where(:site_id => self.id).each {|d| deals[d.id] = d.sale_price}
+    revenue = DealSnapshot.only(:deal_id).by_date_range(Time.now - 2.days, Time.now - 1.days, {:site_id => self.id}).group.collect{|group| deals[group["deal_id"].to_i] * group["group"].max(&:buyers_count).buyers_count }
+    revenue.empty? ? 0 : revenue.sum / revenue.size
+  end
+  
 
   def currently_trending
     Site.find_by_sql(["SELECT deals.name, deals.permalink, divisions.name as division, deals.hotness FROM deals, divisions WHERE deals.division_id = divisions.id AND deals.site_id = ? ORDER BY hotness DESC LIMIT 10", self.id])
@@ -75,6 +164,7 @@ class Site < ActiveRecord::Base
   end
 
   def self.coupons_purchased_to_date
-    find_by_sql("select SUM(c) as purchased from (SELECT deal_id, MAX(sold_count) AS c FROM snapshots GROUP BY deal_id order by deal_id desc) x").first.purchased.to_i
+    # find_by_sql("select SUM(c) as purchased from (SELECT deal_id, MAX(sold_count) AS c FROM snapshots GROUP BY deal_id order by deal_id desc) x").first.purchased.to_i
+    DealSnapshot.only(:deal_id).group.collect{|group| group["group"].collect(&:buyers_count).max}.sum
   end
 end

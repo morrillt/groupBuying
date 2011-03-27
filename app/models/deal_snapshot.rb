@@ -16,7 +16,7 @@ class DealSnapshot
   
   def self.by_date_range(from, to, conditions = {})
     query = {:created_at.gte => from, :created_at.lte => to}
-    where(query.merge!(conditions)).to_a
+    where(query.merge!(conditions))#.to_a
   end
   
   def self.recent

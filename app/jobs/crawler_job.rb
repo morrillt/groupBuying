@@ -2,8 +2,7 @@ class CrawlerJob
    @queue = :crawler
 
   def self.perform(site_id = nil)   
-    puts "CrawlerJob Run"    
-    
+    puts "CrawlerJob Start for #{site_id}"        
     # Divide and conquer
     unless site_id
       Site.active.each do |site|
@@ -18,6 +17,7 @@ class CrawlerJob
         puts e.message
       end
     end  
+    puts "CrawlerJob Finish"
   end
    
 end
