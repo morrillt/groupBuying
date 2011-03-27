@@ -81,58 +81,58 @@ class Site < ActiveRecord::Base
   end   
                       
   def total_revenue                     
-    Deal.by_site(self.id).select("max_sold_count * sale_price as rev").collect{|s| s.rev || 0}.sum.to_i
+    Deal.by_site(self.id).select("SUM(max_sold_count * sale_price) as rev").first.rev.to_i
   end 
   
   def avg_coupon
     coupon_purchased == 0 ? 0 : total_revenue / coupon_purchased
   end
   
-  def avg_deal
-    deals = Deal.by_site(self.id).collect(&:max_sold_count)
-    deals.empty? ? 0 : deals.compact.sum / deals.size 
+  def avg_deal                                                
+    deals_count = Deal.by_site(self.id).count
+    deals_count == 0 ? 0 : Deal.by_site(self.id).sum(:max_sold_count) / deals_count
   end                                                                                                                             
   
   def closed_today
-    snaps = DealSnapshot.by_date_range(0.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
-    Deal.where(:id => snaps, :active => 0).count
+    ids = DealSnapshot.by_date_range(0.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
+    deals_count_by_deals_ids(ids)
   end                               
   
   def closed_yesterday
-    snaps = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:deal_id).uniq
-    Deal.where(:id => snaps, :active => 0).count
+    ids = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:deal_id).uniq
+    Deal.where(:id => ids, :active => 0).count
   end
 
   def closed_week
-    snaps = DealSnapshot.by_date_range(7.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
-    Deal.where(:id => snaps, :active => 0).count
+    ids = DealSnapshot.by_date_range(7.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
+    Deal.where(:id => ids, :active => 0).count
   end                                                             
   
   def purchased_today
-    DealSnapshot.by_date_range(0.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:last_buyers_count).compact.sum
+    DealSnapshot.by_date_range(0.days.ago.at_midnight, Time.now, {:site_id => self.id}).sum(:last_buyers_count) || 0
   end
 
   def purchased_yesterday
-    DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:last_buyers_count).compact.sum
+    DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).sum(:last_buyers_count) || 0
   end
 
   def purchased_week
-    DealSnapshot.by_date_range(7.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:last_buyers_count).compact.sum
+    DealSnapshot.by_date_range(7.days.ago.at_midnight, Time.now, {:site_id => self.id}).sum(:last_buyers_count) || 0
   end                                           
   
   def revenue_today    
-    deal_ids = DealSnapshot.by_date_range(0.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
-    Deal.where(:deal_id => deal_ids).collect{|deal| deal.max_sold_count * deal.sale_price}.compact.sum
+    deal_ids = DealSnapshot.by_date_range(0.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq   
+    revenue_by_deals_ids(deal_ids)
   end
 
   def revenue_yesterday
     deal_ids = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:deal_id).uniq
-    Deal.where(:deal_id => deal_ids).collect{|deal| deal.max_sold_count * deal.sale_price}.compact.sum
+    revenue_by_deals_ids(deal_ids)
   end
 
   def revenue_week
     deal_ids = DealSnapshot.by_date_range(7.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
-    Deal.where(:deal_id => deal_ids).collect{|deal| deal.max_sold_count * deal.sale_price}.compact.sum
+    revenue_by_deals_ids(deal_ids)
   end            
   
   def avg_revenue_today
@@ -153,7 +153,16 @@ class Site < ActiveRecord::Base
 
   def self.coupons_purchased_to_date
     # find_by_sql("select SUM(c) as purchased from (SELECT deal_id, MAX(sold_count) AS c FROM snapshots GROUP BY deal_id order by deal_id desc) x").first.purchased.to_i
-    # DealSnapshot.only(:deal_id).group.collect{|group| group["group"].collect(&:buyers_count).max}.sum
     Deal.sum(:max_sold_count)
-  end
+  end     
+  
+  private 
+  
+    def revenue_by_deals_ids(deals_ids)
+      Deal.where(:deal_id => deals_ids).select("SUM(max_sold_count * sale_price) as rev").first.rev.to_i
+    end    
+    
+    def deals_count_by_deals_ids(deals_ids)
+      Deal.where(:id => deals_ids, :active => 0).count
+    end
 end
