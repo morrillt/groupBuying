@@ -94,44 +94,44 @@ class Site < ActiveRecord::Base
   end                                                                                                                             
   
   def closed_today
-    snaps = DealSnapshot.by_date_range(Time.now - 1.days, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
+    snaps = DealSnapshot.by_date_range(0.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
     Deal.where(:id => snaps, :active => 0).count
   end                               
   
   def closed_yesterday
-    snaps = DealSnapshot.by_date_range(Time.now - 2.days, Time.now - 1.days, {:site_id => self.id}).collect(&:deal_id).uniq
+    snaps = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:deal_id).uniq
     Deal.where(:id => snaps, :active => 0).count
   end
 
   def closed_week
-    snaps = DealSnapshot.by_date_range(Time.now - 7.days, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
+    snaps = DealSnapshot.by_date_range(7.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
     Deal.where(:id => snaps, :active => 0).count
   end                                                             
   
   def purchased_today
-    DealSnapshot.by_date_range(Time.now - 1.days, Time.now, {:site_id => self.id}).collect(&:last_buyers_count).sum
+    DealSnapshot.by_date_range(0.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:last_buyers_count).sum
   end
 
   def purchased_yesterday
-    DealSnapshot.by_date_range(Time.now - 2.days, Time.now - 1.days, {:site_id => self.id}).collect(&:last_buyers_count).sum
+    DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:last_buyers_count).sum
   end
 
   def purchased_week
-    DealSnapshot.by_date_range(Time.now - 7.days, Time.now, {:site_id => self.id}).collect(&:last_buyers_count).sum
+    DealSnapshot.by_date_range(7.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:last_buyers_count).sum
   end                                           
   
   def revenue_today    
-    deal_ids = DealSnapshot.by_date_range(Time.now - 1.days, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
+    deal_ids = DealSnapshot.by_date_range(0.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
     Deal.where(:deal_id => deal_ids).collect{|deal| deal.max_sold_count * deal.sale_price}.sum
   end
 
   def revenue_yesterday
-    deal_ids = DealSnapshot.by_date_range(Time.now - 2.days, Time.now - 1.days, {:site_id => self.id}).collect(&:deal_id).uniq
+    deal_ids = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:deal_id).uniq
     Deal.where(:deal_id => deal_ids).collect{|deal| deal.max_sold_count * deal.sale_price}.sum
   end
 
   def revenue_week
-    deal_ids = DealSnapshot.by_date_range(Time.now - 7.days, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
+    deal_ids = DealSnapshot.by_date_range(7.days.ago.at_midnight, Time.now, {:site_id => self.id}).collect(&:deal_id).uniq
     Deal.where(:deal_id => deal_ids).collect{|deal| deal.max_sold_count * deal.sale_price}.sum
   end            
   

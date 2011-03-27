@@ -139,21 +139,23 @@ class ChartJob
     data.avg_revenue_yesterday = site.avg_revenue_yesterday
     
     # ###changes in %
-    # # coupons closed today-yesterday    
+    # coupons closed today-yesterday    
     unless data.closed_yesterday == 0
       data.change_today_yesterday = (data.closed_today - data.closed_yesterday) / data.closed_yesterday
     else
       data.change_today_yesterday = "No data"
     end
 
-    # # coupons closed today-yesterday
+    # coupons closed today-yesterday
     # tmp = Deal.find_by_sql("SELECT COUNT(DISTINCT(deal_id)) as closed FROM snapshots WHERE status=0 and DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site_id}").first.closed
-    # 
-    # unless tmp==0
-    #   data.change_yesterday = (data.closed_yesterday - tmp )/tmp
-    # else
-    #   data.change_yesterday = "No data"
-    # end
+    snaps = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:deal_id).uniq
+    tmp = Deal.where(:id => snaps, :active => 0).count
+       
+    unless tmp == 0
+      data.change_yesterday = (data.closed_yesterday - tmp ) / tmp
+    else
+      data.change_yesterday = "No data"
+    end
     
     # coupons change today-yesterday
     unless data.purchased_today == 0
@@ -168,13 +170,14 @@ class ChartJob
     
     # # coupons change yesterday-
     # tmp = Deal.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site_id}").first.nsold.to_i
-    # 
-    # unless tmp==0
-    #   data.change_purchased_yesterday = (data.purchased_yesterday - tmp )/tmp
-    # else
-    #   data.change_purchased_yesterday = "No data"
-    # end      
-    # 
+    tmp = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:last_buyers_count).sum
+    
+    unless tmp==0
+      data.change_purchased_yesterday = (data.purchased_yesterday - tmp )/tmp
+    else
+      data.change_purchased_yesterday = "No data"
+    end      
+    
     data.save
     
     return data     
