@@ -77,20 +77,20 @@ class Site < ActiveRecord::Base
   # =================================== Or not? ========================================
   
   def coupon_purchased
-    Deal.by_site(self.id).collect(&:max_sold_count).sum
+    Deal.by_site(self.id).sum(:max_sold_count)
   end   
                       
   def total_revenue                     
-    Deal.by_site(self.id).collect{|deal| deal.max_sold_count * deal.sale_price}.sum
+    Deal.by_site(self.id).select("max_sold_count * sale_price as rev").collect(&:rev).sum.to_i
   end 
   
   def avg_coupon
-    total_revenue / coupon_purchased unless coupon_purchased == 0
+    coupon_purchased == 0 ? 0 : total_revenue / coupon_purchased
   end
   
   def avg_deal
     deals = Deal.by_site(self.id).collect(&:max_sold_count)
-    deals.sum / deals.size unless deals.empty?
+    deals.empty? ? 0 : deals.sum / deals.size 
   end                                                                                                                             
   
   def closed_today
@@ -136,11 +136,11 @@ class Site < ActiveRecord::Base
   end            
   
   def avg_revenue_today
-    revenue_today / purchased_today unless purchased_today == 0
+    purchased_today == 0 ? 0 : revenue_today / purchased_today
   end
   
   def avg_revenue_yesterday
-    revenue_yesterday / purchased_yesterday unless purchased_yesterday == 0
+    purchased_yesterday == 0 ? 0 : revenue_yesterday / purchased_yesterday
   end  
 
   def currently_trending
@@ -154,6 +154,6 @@ class Site < ActiveRecord::Base
   def self.coupons_purchased_to_date
     # find_by_sql("select SUM(c) as purchased from (SELECT deal_id, MAX(sold_count) AS c FROM snapshots GROUP BY deal_id order by deal_id desc) x").first.purchased.to_i
     # DealSnapshot.only(:deal_id).group.collect{|group| group["group"].collect(&:buyers_count).max}.sum
-    Deal.all.collect(&:max_sold_count).sum
+    Deal.sum(:max_sold_count)
   end
 end
