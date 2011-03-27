@@ -66,31 +66,27 @@ module Snapshooter
           raw_address << @doc.search("div[@id='deal_more_left'] ul li")[3].try(:text)
           telephone = @doc.search("div[@id='deal_more_left'] ul li")[4].try(:text)
           
-          # Build attributes hash
-          attributes = {
-            :division => @division,
+          # needed attributes that are not currently available
+          # lat, lng, raw_address
+          
+          save_deal!({
             :name => link.text,
             :sale_price => sale_price,
             :actual_price => actual_price,
             :permalink => link["href"],
-            :site_id => site.id,
+            :site => site,
+            :division => @division,
             :expires_at => expires_at,
             :raw_address => raw_address,
             :telephone => telephone,
             :active => expires_at > Time.now
-          }
-          
-          log "*"*100
-          log attributes.inspect
-          log "*"*100
-          
-          save_deal!(attributes)
+          })
           
           # Other usefull stuff.
           # hash[:discount] = xpath("dl[@class='discount'] dd").first.text.gsub(/[^0-9\.]/,'').to_f
           # hash[:actual_price] = xpath("div[@id='deal_basic_left'] dl dd").first.text.gsub(/[^0-9\.]/,'').to_f
           # hash[:purchase_count] = xpath("h4").first.text.gsub(/[^0-9\.]/,'').to_i
-        }
+        } # EOF map
       end
     end
 

@@ -43,28 +43,11 @@ ActiveRecord::Schema.define(:version => 20110325170713) do
     t.string   "site_division_id"
   end
 
-  create_table "geo_codes", :force => true do |t|
-    t.integer  "deal_id"
-    t.float    "lat"
-    t.float    "lng"
-    t.string   "formatted_address"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "geocodes", :force => true do |t|
     t.integer  "deal_id"
     t.float    "lat"
     t.float    "lng"
     t.string   "formatted_address"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "hourly_revenue_by_sites", :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "order"
-    t.integer  "revenue"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

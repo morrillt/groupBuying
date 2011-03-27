@@ -15,7 +15,7 @@ module Snapshooter
     def deal_links
       @doc.search("div[@class='buy-buttons'] a").map{|link| 
         link['href'] if link['href'] =~ %r[\/deal/([-\w]+)] 
-      }.compact.map{|url| url.gsub(/\/get\?buy_button=true/,'') }.uniq!
+      }.compact.map{|url| url.gsub(/\/get\?buy_button=true/,'') }.uniq
     end
     
     # Returns the current purchase count of a given deal
@@ -27,11 +27,11 @@ module Snapshooter
     def crawl_new_deals!
       super
       # Find the site
-      site     = Site.find_by_source_name("homerun")
+      @site     = Site.find_by_source_name("homerun")
       
       divisions.map do |division_name, division_path|        
         # Find the division
-        @division = site.divisions.find_or_initialize_by_name(division_name)
+        @division = @site.divisions.find_or_initialize_by_name(division_name)
         @division.name, @division.url = division_name, division_path
         @division.save
         get(@division.url)
@@ -57,18 +57,21 @@ module Snapshooter
             next
           end
           
+          log @doc.search("div[@class='title rockwell']").first.try(:text)
           
-          attributes = {}
-          attributes[:name]                 = @doc.search("div[@class='title rockwell']").first.text
-          attributes[:sale_price]           = @doc.search("a[@class='buy-button']").first.text.gsub(/[^0-9]/,'').to_f
-          attributes[:actual_price]         = @doc.search("span[@class='econ rockwell']").first.text.gsub(/[^0-9]/,'').to_f
-          attributes[:expires_at]           = expires_at
-          attributes[:permalink]            = options[:full_path] ? deal_link : (base_url + deal_link)
-          attributes[:site_id]              = site.id
-          attributes[:division]             = @division
-          
-          save_deal!(attributes)
-          
+          save_deal!({
+            :name => @doc.search("div[@class='title rockwell']").first.try(:text),
+            :sale_price => @doc.search("a[@class='buy-button']").first.try(:text).to_s.gsub(/[^0-9]/,'').to_f,
+            :actual_price => @doc.search("span[@class='econ rockwell']").first.try(:text).to_s.gsub(/[^0-9]/,'').to_f,
+            :expires_at => expires_at,
+            :permalink => options[:full_path] ? deal_link : (base_url + deal_link),
+            :site => @site,
+            :division => @division,
+            :expires_at => 1.week.from_now,
+            :raw_address => "",
+            :telephone => "",
+            :active => true
+          })          
         end
       end
       
