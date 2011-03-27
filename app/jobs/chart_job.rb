@@ -57,9 +57,7 @@ class ChartJob
         data[division_id][:data]["%02d"%t] = revenue.to_f  # second parameter eql("preceding 1-9 with zero")
       end
     end   
-    
-    puts data.inspect
-                                                        
+                                                            
     placeholder = {}
     hours_array.each {|i| placeholder["%02d"%i] = 0}
     

@@ -69,6 +69,12 @@ class DealSnapshot
     # Store the division id from the deal for metrics
     this.division_id = deal.division_id
     this.save
+    
+    deal.max_sold_count ||= 0
+    if deal.max_sold_count < this.buyers_count
+      deal.max_sold_count = this.buyers_count
+      deal.save
+    end
   end
 end
   

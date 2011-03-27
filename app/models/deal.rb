@@ -31,6 +31,7 @@ class Deal < ActiveRecord::Base
   scope :active, where(:active => true)
   scope :inactive, where(:active => false)
   scope :expired, where("expires_at IS NOT NULL AND expires_at < NOW()")
+  scope :by_site, lambda{|site_id| where(:site_id => site_id)}
   
   # Instance Methods
 
