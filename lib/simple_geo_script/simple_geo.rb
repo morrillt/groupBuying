@@ -7,30 +7,40 @@ module SimpleGeo
     
     def search hash
       authenticate
-      address = "#{hash[:address]} #{hash[:zip_code]}"
+      address = hash[:address]
       options = {'radius' => 0.1}
       places = (SimpleGeo::Client.get_places_by_address(address,
                                                         options))
+      site = 0
+      # puts "my address #{hash[:address]}"
+      # puts "total places found: #{places[:total]}"
       if places[:total]>0
         features = places[:features]
         for f in features
-          unless hash[:phone].nil? || hash[:address].blank?
-            site = f if f[:properties][:phone].include?hash[:phone]
+          f_address = f[:properties][:address]
+          # puts "feature address #{f_address}"
+          comp = f_address <=> address
+          case comp
+            when 0
+            site += 1
+            when 1
+            site += 1 if f_address.include?address
+            when -1
+            site += 1 if address.include?f_address
           end
         end
-      else
-        return nil
-      end      
-      site
+      end
+      # puts "returning #{site}"
+      return site
     end
     
     def parsing deal
       hash = { }
       split = deal.raw_address.split ','
       hash[:address] = split.first
-      hash[:state] = split.last
-      hash[:zip_code] = deal.telephone.slice(0,5)
-      hash[:phone] = deal.telephone.slice(deal.telephone.length-5,deal.telephone.length).gsub(/[-]/,' ')
+      # hash[:state] = split.last
+      # hash[:zip_code] = deal.telephone.slice(0,5)
+      # hash[:phone] = deal.telephone.slice(deal.telephone.length-5,deal.telephone.length).gsub(/[-]/,' ')
       hash    
     end 
     

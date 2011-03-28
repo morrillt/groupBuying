@@ -1,4 +1,5 @@
 require 'lib/simple_geo_script/simple_geo'
+#10-935
 class SimpleGeoData < ActiveRecord::Base
   def test_data
     sg =  SimpleGeo::SimpleGeoCollector.new
@@ -8,16 +9,21 @@ class SimpleGeoData < ActiveRecord::Base
     fails = 0
     error = 0
     winning = 0
-    numbers = Array.new
+    number = Array.new
     for deal in deals
       begin        
         h = sg.parsing deal
         r = sg.search h
-        numbers.push r
+        puts "eql address #{r}"
+        if r.nil? 
+          number.push r
+        end
       rescue
         error +=1
       end
     end
+    puts "neaas #{number.length} errors :#{error}"
+    numbers = numbers.flatten
     zero = 0
     one = 0
     many = 0
@@ -30,7 +36,7 @@ class SimpleGeoData < ActiveRecord::Base
         many += 1
       end      
     end
-    puts "zero #{zero/numbers.length}, one: #{one/numbers.length}, many: #{many/numbers.length}"
+    puts "zero #{zero/numbers.lenght}, one: #{one/numbers.lenght}, many: #{many/numbers.length}"
   end
 
   def test_ind_data deal
