@@ -26,7 +26,7 @@ gem 'sinatra', '1.1.3'
 gem "mongoid", "2.0.0.rc.6"
 gem "bson_ext", "~> 1.2"
 gem 'rest-client'
-
+gem 'yelp'
 
 group :test do
   gem 'json'
