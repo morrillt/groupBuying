@@ -46,16 +46,29 @@ class Site < ActiveRecord::Base
     if hour.to_i < 10
       hour = "0#{hour}"
     end
-    puts "revenue_by_given_hour_and_date(#{hour},#{date})"
+    # puts "revenue_by_given_hour_and_date(#{hour},#{date})"
     #snapshots= Snapshot.find_by_sql ["SELECT snapshots.deal_id, SUM(sold_since_last_snapshot_count) AS total_count, deals.sale_price FROM snapshots, deals WHERE snapshots.site_id = ? AND YEAR(snapshots.created_at) = ? AND MONTH(snapshots.created_at) = ? AND DAY(snapshots.created_at) = ? AND HOUR(snapshots.created_at) = ? AND sold_since_last_snapshot_count NOT IN (0) AND snapshots.deal_id = deals.id GROUP BY deal_id", self.id, date.year, date.month, date.day, hour]
     start_at = Time.parse("#{date.year}-#{date.month}-#{date.day} #{hour}:00:00").utc
     end_at   = Time.parse("#{date.year}-#{date.month}-#{date.day} #{hour}:59:59").utc
     snapshots = DealSnapshot.by_date_range(start_at, end_at, :site_id => self.id)
-    puts "Snapshots: #{snapshots.count}"
-    revenue= 0
+    # puts "Snapshots: #{snapshots.count}"
+
+    # Get snapshots deals and buyers count
+    revenues= {}
     snapshots.each do |s|
-      revenue += (s.buyers_count.to_f * s.price.to_f)
-    end
+      revenues[s.deal_id] = s.buyers_count.to_i
+    end                                   
+    
+    # Get Deals prices
+    snapshot_deals = {}
+    Deal.select("id, sale_price").find(revenues.keys).map {|deal|
+      snapshot_deals[deal.id] = deal.sale_price
+    }                 
+    
+    revenue = snapshot_deals.collect {|k, v|
+      v * snapshot_deals[k]
+    }.sum        
+    
     revenue.to_f
   end
 
@@ -77,18 +90,22 @@ class Site < ActiveRecord::Base
   # =================================== Or not? ========================================
   
   def coupon_purchased
-    Deal.by_site(self.id).sum(:max_sold_count)
+    Deal.active.by_site(self.id).sum(:max_sold_count)
   end   
                       
   def total_revenue                     
-    Deal.by_site(self.id).select("SUM(max_sold_count * sale_price) as rev").first.rev.to_i
+    Deal.active.by_site(self.id).select("SUM(max_sold_count * sale_price) as rev").first.rev.to_i
   end 
   
   def avg_coupon
-    coupon_purchased == 0 ? 0 : total_revenue / coupon_purchased
+    coupon_purchased == 0 ? 0 : coupon_purchased / Deal.by_site(self.id).count
+  end    
+  
+  def avg_price_per_deal
+    Deal.by_site(self.id).average('sale_price').to_f
   end
   
-  def avg_deal                                                
+  def avg_revenue_per_deal                                                
     deals_count = Deal.by_site(self.id).count
     deals_count == 0 ? 0 : Deal.by_site(self.id).sum(:max_sold_count) / deals_count
   end                                                                                                                             

@@ -42,7 +42,7 @@ module Snapshooter
     end
     
     def save_deal!(attributes)
-      log attributes.inspect
+      log attributes[:permalink]
       begin
         # Ensure we dont duplicate deals use unique deal identifier
         if deal = @division.deals.active.create!(attributes)

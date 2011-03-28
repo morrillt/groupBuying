@@ -6,8 +6,8 @@ class SiteInfo
   field :coupon_purchased,            :type => Float
   field :total_revenue,               :type => Float
   field :avg_coupon,                  :type => Float
-  field :price_deal,                  :type => Float
-  field :avg_deal,                    :type => Float
+  field :avg_price_per_deal,          :type => Float
+  field :avg_revenue_per_deal,        :type => Float
   field :closed_today,                :type => Float
   field :closed_yesterday,            :type => Float
   field :closed_week,                 :type => Float

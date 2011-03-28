@@ -40,6 +40,7 @@ module Snapshooter
         
         # Find the division
         @division = site.divisions.find_or_initialize_by_name(dhash[:name])
+        @division.source = "travel_zoo"
         @division.url = options[:full_path] ? division_url : (base_url + division_url)
         @division.save
         
@@ -50,7 +51,7 @@ module Snapshooter
           options[:full_path] = (deal_link =~ /^http(.+)/i) ? true : false
           get(deal_link, options)
           
-          travel_zoo_deal = Snapshooter::TravelZoo::Deal.new(@doc, deal_link, options)
+          travel_zoo_deal = Snapshooter::TravelZoo::Deal.new(@doc, deal_link, site.id, options)
           
           # Skip deal if no expiration time present
           if travel_zoo_deal.sold_out?
@@ -66,9 +67,10 @@ module Snapshooter
     end
   
     class Deal
-      def initialize(doc, deal_link, options = {})
+      def initialize(doc, deal_link, site_id, options = {})
         @doc = doc
-        @deal_link = deal_link
+        @deal_link = deal_link                
+        @site_id = site_id
         @options = options
       end
     
@@ -123,11 +125,16 @@ module Snapshooter
       
       def sold_out?
         @sold_out ||= false
+      end    
+      
+      def site_id
+        @site_id || Site.find_by_source_name("travel_zoo").id
       end
       
       def to_hash
         {
           :name => name,
+          :site_id => site_id,
           :sale_price => sale_price,
           :actual_price => actual_price,
           :raw_address => raw_address,

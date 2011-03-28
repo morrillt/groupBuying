@@ -74,10 +74,10 @@ class ChartJob
     data = SiteInfo.find_or_create_by(:site_id => site_id)    
     
     #active deals
-    data.tracked_active = Deal.find(:all, :conditions => {:site_id =>  site_id, :active => true }).length
+    data.tracked_active = Deal.active.by_site(site_id).length
 
     # deals tracked to date
-    data.deals_tracked = Deal.find(:all,:conditions => {:site_id => site_id}).length
+    data.deals_tracked = Deal.by_site(site_id).length
 
     #coupones purchased to date
     # data.coupon_purchased = Deal.find_by_sql("select sum(c) as purchased from (SELECT deal_id, MAX(sold_count) AS c FROM snapshots where site_id = #{site_id} GROUP BY deal_id order by deal_id desc) x;").first.purchased.to_i
@@ -92,11 +92,11 @@ class ChartJob
     data.avg_coupon = site.avg_coupon
     
     # #average price per deal
-    data.price_deal = Deal.find_by_sql("select avg(sale_price) as price from deals where site_id = #{site_id};").first.price.to_f
+    data.avg_price_per_deal = site.avg_price_per_deal
 
     #avg revenue per deal
     # data.avg_deal = Deal.find_by_sql("select avg(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.site_id = #{site_id} GROUP BY snapshots.deal_id ) x;").first.prom.to_f
-    data.avg_deal = site.avg_deal
+    data.avg_revenue_per_deal = site.avg_revenue_per_deal
 
     # deal closed today
     # data.closed_today = Deal.find_by_sql("SELECT COUNT(DISTINCT(deals.id)) as closed FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE active=0 and deals.id = #{site_id} AND DATE(snapshots.created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) AND DATE(snapshots.created_at)<=DATE(NOW())").first.closed

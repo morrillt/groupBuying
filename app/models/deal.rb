@@ -135,7 +135,7 @@ class Deal < ActiveRecord::Base
       result = MultiGeocoder.geocode(raw_address.to_s)
       self.lat,self.lng = result.lat, result.lng
     rescue => e
-      Rails.logger.error(e.message)
+      # Rails.logger.error(e.message)
     end
   end
 end
