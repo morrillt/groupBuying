@@ -27,11 +27,6 @@ class Snapshot < ActiveRecord::Base
     (price.to_f * buyers_count.to_f)
   end
   
-  # Calls calculate_hotness! on deal to update hotness
-  def calculate_hotness
-    self.deal.has_more_than_one_snapshot? ? deal.calculate_hotness! : true
-  end
-  
   private
   
   def capture_current_revenue

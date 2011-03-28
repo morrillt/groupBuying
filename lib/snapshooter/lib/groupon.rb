@@ -30,22 +30,17 @@ module Snapshooter
         # important!
         @division = division
         
-        new_deal_attributes = {}
-
         Groupon.deals(:division => division.site_division_id).each do |groupon_deal|
-          
-          if division.url == "http://www.groupon.com/appleton"
-            puts groupon_deal.options.inspect
-            return
-          end
           
           # Build the full address
           full_address = ""
-          full_address << groupon_deal.redemptionLocations.first.try(:streetAddress1).to_s + "\n"
-          full_address << groupon_deal.redemptionLocations.first.try(:streetAddress2).to_s + "\n"
-          full_address << groupon_deal.redemptionLocations.first.try(:city).to_s + ", "
-          full_address << groupon_deal.redemptionLocations.first.try(:state).to_s + "\n"
-          full_address << groupon_deal.redemptionLocations.first.try(:postalCode).to_s
+          if groupon_deal.redemptionLocations
+            full_address << groupon_deal.redemptionLocations.first.try(:streetAddress1).to_s + "\n"
+            full_address << groupon_deal.redemptionLocations.first.try(:streetAddress2).to_s + "\n"
+            full_address << groupon_deal.redemptionLocations.first.try(:city).to_s + ", "
+            full_address << groupon_deal.redemptionLocations.first.try(:state).to_s + "\n"
+            full_address << groupon_deal.redemptionLocations.first.try(:postalCode).to_s
+          end
           
           
           # calculate full price
@@ -53,19 +48,21 @@ module Snapshooter
             groupon_deal[key] = (groupon_deal[key].gsub(/[^0-9]/,'').to_f * 0.01)
           end.sum
           
-          new_deal_attributes[:name]               = groupon_deal.title
-          new_deal_attributes[:sale_price]         = groupon_deal.price
-          new_deal_attributes[:actual_price]       = normal_price
-          new_deal_attributes[:lat]                = groupon_deal.division_lat
-          new_deal_attributes[:lng]                = groupon_deal.division_lng
-          new_deal_attributes[:expires_at]         = groupon_deal.end_date
-          new_deal_attributes[:permalink]          = groupon_deal.deal_url
-          new_deal_attributes[:deal_id]            = groupon_deal.id
-          new_deal_attributes[:site_id]            = @site.id
-          new_deal_attributes[:division]           = division
-          new_deal_attributes[:raw_address]        = full_address
-
-          save_deal!(new_deal_attributes)
+          save_deal!({
+            :name => groupon_deal.title,
+            :sale_price => groupon_deal.price,
+            :actual_price => normal_price,
+            :lat => groupon_deal.division_lat,
+            :lng => groupon_deal.division_lng,
+            :expires_at => groupon_deal.end_date,
+            :permalink => groupon_deal.deal_url,
+            :deal_id => groupon_deal.id,
+            :site => @site,
+            :division => division,
+            :raw_address => full_address,
+            :telephone => "",
+            :active => true
+          })
         end
       end
     end

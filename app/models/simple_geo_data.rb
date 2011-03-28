@@ -2,7 +2,7 @@ require 'lib/simple_geo_script/simple_geo'
 class SimpleGeoData < ActiveRecord::Base
   def test_data
     sg =  SimpleGeo::SimpleGeoCollector.new
-    deals = Deal.all
+    deals = Deal.find(:all,:limit => 50)
     puts "deals: #{deals.size}"
     init = Time.now
     fails = 0
@@ -18,19 +18,21 @@ class SimpleGeoData < ActiveRecord::Base
         error +=1
       end
     end
-    zero = 0
-    one = 0
-    many = 0
-    for i in numbers
-      if i==0
-        zero += 1
-      elsif i == 1
-        one += 1        
-      else
-        many += 1
-      end      
-    end
-    puts "zero #{zero/numbers.length}, one: #{one/numbers.length}, many: #{many/numbers.length}"
+    return numbers
+    # zero = 0
+    # one = 0
+    # many = 0
+    # puts numbers.inspect
+    # for i in numbers
+    #   if i==0
+    #     zero += 1
+    #   elsif i == 1
+    #     one += 1        
+    #   else
+    #     many += 1
+    #   end      
+    # end
+    # puts "zero #{zero/numbers.length}, one: #{one/numbers.length}, many: #{many/numbers.length}"
   end
 
   def test_ind_data deal

@@ -44,26 +44,5 @@ describe Snapshot do
       @snapshot.stub(:buyers_count).and_return(473)
       @snapshot.total_revenue.should == (@snapshot.price.to_f * @snapshot.buyers_count.to_f)
     end
-    
-    it "should calculate hotness as 80.0%" do
-      snapshot = Factory(:snapshot, :sold_count => 20)
-      Factory(:snapshot, :sold_count => 100, :deal_id => snapshot.deal.id)
-      snapshot.calculate_hotness
-      snapshot.deal.hotness.should == 80.0
-    end
-    
-    it "should calculate hotness as 65.0%" do
-      snapshot = Factory(:snapshot, :sold_count => 35)
-      Factory(:snapshot, :sold_count => 100, :deal_id => snapshot.deal.id)
-      snapshot.calculate_hotness
-      snapshot.deal.hotness.should == 65.0
-    end
-    
-    it "should calculate hotness as 15.0%" do
-      snapshot = Factory(:snapshot, :sold_count => 85)
-      Factory(:snapshot, :sold_count => 100, :deal_id => snapshot.deal.id)
-      snapshot.calculate_hotness
-      snapshot.deal.hotness.should == 15.0
-    end
   end
 end

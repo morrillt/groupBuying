@@ -26,7 +26,11 @@ module Snapshooter
     
     def get(resource, options = {})
       url = options[:full_path] ? resource : (base_url + resource)
-      @doc = Nokogiri::HTML(open(url))
+      begin
+        @doc = Nokogiri::HTML(open(url))
+      rescue OpenURI::HTTPError => e
+        log e.message
+      end
     end
            
     def xpath(path)
@@ -38,6 +42,7 @@ module Snapshooter
     end
     
     def save_deal!(attributes)
+      log attributes.inspect
       begin
         # Ensure we dont duplicate deals use unique deal identifier
         if deal = @division.deals.active.create!(attributes)

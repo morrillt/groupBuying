@@ -9,6 +9,7 @@ Groupster::Application.routes.draw do
 
   resources :divisions, :only => [:index, :show]
 
+  match '/deals/geo/geocode' => 'deals_geo#geocode' # Could be a member of resource 'deals' but want to work on a different controller for now
   match '/deals/geo' => 'deals_geo#index' # Could be a member of resource 'deals' but want to work on a different controller for now
   resources :deals, :only => [:index, :show]
 

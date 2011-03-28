@@ -2,8 +2,7 @@ class SnapshotJob
   @queue = :snapshot
   
   def self.perform(site_id = nil)
-    puts "Snapshot Run"        
-    
+    puts "Snapshot Start for #{site_id}"            
     # Divide and conquer
     unless site_id
       Site.active.each do |site|
@@ -18,6 +17,7 @@ class SnapshotJob
         puts e.message
       end
     end
+    puts "Snapshot Finish"
   end
     
 end

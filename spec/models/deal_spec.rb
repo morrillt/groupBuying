@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Deal do
-  it{ should have_many(:snapshots) }
   it{ should belong_to(:site) }
   it{ should belong_to(:division) }
   it{ should validate_uniqueness_of(:deal_id) }
@@ -17,6 +16,27 @@ describe Deal do
       @deal.should_receive(:sale_price)
       @deal.revenue
     end
+    
+    it "should calculate hotness as 80.0%" do
+      Factory(:deal_snapshot, :buyers_count => 20, :deal_id => @deal.id)
+      Factory(:deal_snapshot, :buyers_count => 100, :deal_id => @deal.id)
+      @deal.calculate_hotness!
+      @deal.hotness.should == 80.0
+    end
+    
+    it "should calculate hotness as 65.0%" do
+      Factory(:deal_snapshot, :buyers_count => 35, :deal_id => @deal.id)
+      Factory(:deal_snapshot, :buyers_count => 100, :deal_id => @deal.id)
+      @deal.calculate_hotness!
+      @deal.hotness.should == 65.0
+    end
+    
+    it "should calculate hotness as 15.0%" do
+      Factory(:deal_snapshot, :buyers_count => 85, :deal_id => @deal.id)
+      Factory(:deal_snapshot, :buyers_count => 100, :deal_id => @deal.id)
+      @deal.calculate_hotness!
+      @deal.hotness.should == 15.0
+    end
   end
   
   context "importing" do
@@ -25,6 +45,12 @@ describe Deal do
       unique_key = Digest::MD5.hexdigest(deal.name + deal.permalink + deal.expires_at.to_s)
       deal.deal_id.should == unique_key
     end
+    
+     it "should not save a duplicate" do
+        deal = Factory.create(:deal)
+        unique_key = Digest::MD5.hexdigest(deal.name + deal.permalink + deal.expires_at.to_s)
+        Deal.create(:deal_id => unique_key).errors.on(:deal_id).should == 'has already been taken'
+      end
   end  
   
   context "scopes" do

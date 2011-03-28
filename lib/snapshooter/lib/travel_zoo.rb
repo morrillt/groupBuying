@@ -44,36 +44,95 @@ module Snapshooter
           options[:full_path] = (deal_link =~ /^http(.+)/i) ? true : false
           get(deal_link, options)
           
-          # Parse time left
-          time_left = @doc.search("span[@id='ctl00_Main_TimeLeft']").text.split(",").map!{ |t|
-            t.gsub(/[^0-9]/,'').to_i
-          }
+          travel_zoo_deal = Snapshooter::TravelZoo::Deal.new(@doc, deal_link, options)
           
           # Skip deal if no expiration time present
-          if time_left.empty? || time_left.size < 3
+          if travel_zoo_deal.sold_out?
             puts "Sold out"
             next
           end
-          
-          attributes = {}
-          
-          attributes[:name]                 = @doc.search("span[@id='ctl00_Main_LabelDealTitle']").text
-          #attributes[:buyers_count]         = @doc.search("span[@id='ctl00_Main_LabelBought']").text.to_i
-          attributes[:sale_price]           = @doc.search("span[@id='ctl00_Main_OurPrice']").text.gsub(/[^0-9]/,'').to_f
-          attributes[:actual_price]         = @doc.search("span[@id='ctl00_Main_PriceValue']").text.gsub(/[^0-9]/,'').to_f
-          attributes[:raw_address]          = @doc.search("div[@class='smallMap'] p").last.text
-          attributes[:lat],attributes[:lng] = @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[1, 2]
-          attributes[:expires_at]           = time_left[0].days.from_now + time_left[1].hours +  time_left[2].minutes
-          attributes[:permalink]            = options[:full_path] ? deal_link : (base_url + deal_link)
-          attributes[:site_id]              = site.id
-          attributes[:division]             = @division
-          
-          save_deal!(attributes)
+                
+          save_deal!(travel_zoo_deal.to_hash)
           
         end
       end
       
     end
+  
+    class Deal
+      def initialize(doc, deal_link, options = {})
+        @doc = doc
+        @deal_link = deal_link
+        @options = options
+      end
+    
+      def name
+        @name ||= @doc.search("span[@id='ctl00_Main_LabelDealTitle']").try(:text)
+      end
+    
+      def sale_price
+        @sale_price ||= @doc.search("span[@id='ctl00_Main_OurPrice']").try(:text).to_s.gsub(/[^0-9]/,'').to_f
+      end
+    
+      def actual_price
+        @actual_price ||= @doc.search("span[@id='ctl00_Main_PriceValue']").text.gsub(/[^0-9]/,'').to_f
+      end
+    
+      def raw_address
+        @raw_address ||= @doc.search("div[@class='smallMap'] p").children.map{|c| c.try(:text).to_s }.join(" ")
+      end
+    
+      def lat
+        @lat ||= @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[1]
+      end
+    
+      def lng
+        @lng ||= @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[2]
+      end
+    
+      def expires_at
+        if @time_left
+          return @time_left
+        else
+          # Parse time left
+          @time_left = @doc.search("span[@id='ctl00_Main_TimeLeft']").text.split(",").map!{ |t|
+            t.gsub(/[^0-9]/,'').to_i
+          }
+          if @time_left.empty? || @time_left.size < 3
+            @sold_out = true
+            return 1.minute.ago
+          else
+            return(@time_left[0].days.from_now + @time_left[1].hours +  @time_left[2].minutes)
+          end
+        end
+      end
+    
+      def permalink
+        @permalink ||= @options[:full_path] ? @deal_link : (base_url + @deal_link)
+      end
+    
+      def telephone
+        @telephone ||= Snapshooter::Base.new.split_address_telephone(raw_address).try(:last)
+      end
+      
+      def sold_out?
+        @sold_out ||= false
+      end
+      
+      def to_hash
+        {
+          :name => name,
+          :sale_price => sale_price,
+          :actual_price => actual_price,
+          :raw_address => raw_address,
+          :lat => lat,
+          :lng => lng,
+          :expires_at => expires_at,
+          :permalink => permalink,
+          :telephone => telephone
+        }
+      end
+    end 
     
   end
 end

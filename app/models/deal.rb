@@ -13,21 +13,33 @@ class Deal < ActiveRecord::Base
   validates_presence_of :permalink
   validates_presence_of :actual_price
   validates_presence_of :sale_price
+  validates_presence_of :expires_at
   validates_uniqueness_of :deal_id, :scope => :site_id
+  validates_uniqueness_of :permalink, :scope => :site_id
   
   # Geocode lat lng if we have an address
   before_create :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? }
   
   before_create do
-    self.deal_id = Digest::MD5.hexdigest(name + permalink + expires_at.to_s)
+    self.deal_id = Digest::MD5.hexdigest(name + permalink + expires_at.to_s) unless self.deal_id.present?
+  end
+  
+  before_destroy do
+    snapshots = DealSnapshot.where(:deal_id => self.id)
+    snapshots.destroy_all
   end
   
   # Scopes
   scope :active, where(:active => true)
   scope :inactive, where(:active => false)
   scope :expired, where("expires_at IS NOT NULL AND expires_at < NOW()")
+  scope :by_site, lambda{|site_id| where(:site_id => site_id)}
   
   # Instance Methods
+
+  def snapshots
+    @snapshots ||= DealSnapshot.where(:deal_id => self.id)
+  end
 
   # returns true if more than one snapshot for deal
   def has_more_than_one_snapshot?
@@ -36,7 +48,7 @@ class Deal < ActiveRecord::Base
   
   def calculate_hotness!
     if has_more_than_one_snapshot?
-      first_snapshot_sold_count = snapshots.first.sold_count
+      first_snapshot_sold_count = snapshots.first.buyers_count
       rating = buyers_count.to_i.percent_change_from( first_snapshot_sold_count.to_i )
       update_attribute(:hotness, rating)
     else
@@ -50,7 +62,7 @@ class Deal < ActiveRecord::Base
   
   # Returns the latest snapshots sold_count value
   def buyers_count
-    @buyers_count ||= snapshots.last.try(:sold_count).to_i
+    @buyers_count ||= snapshots.last.try(:buyers_count).to_i
   end
   
   # Simply captures the snapshot data from the host
@@ -81,6 +93,7 @@ class Deal < ActiveRecord::Base
   end
 
 
+  # DEPRECIATED
   # Creates an actual mysql record
   # Captures the most recent data for a deal.
   # This is run every n hours and used to visualize the deals progress.
@@ -88,107 +101,16 @@ class Deal < ActiveRecord::Base
     snapshots.create!(:site_id => self.site_id)
   end
   
+  # replaces take_snapshot!
+  def take_mongo_snapshot!
+    DealSnapshot.create_from_deal!(self)
+  end
+  
   # Closes out the deal
   def close!
     self.active = false
     self.sold = true
     save
-  end
-
-  #Yep, I know this is not the most beatiful thing... 
-  def self.get_info(site)
-    data = Hash.new 
-    #active deals
-    data[:tracked_active] = self.find(:all, :conditions => {:site_id =>  site.id, :active => true }).length
-    
-    # deals tracked to date
-    data[:deals_tracked] = self.find(:all,:conditions => {:site_id => site.id}).length
-    
-    #coupones purchased to date
-    data[:coupon_purchased] = self.find_by_sql("select sum(c) as purchased from (SELECT deal_id, MAX(sold_count) AS c FROM snapshots where site_id = #{site.id} GROUP BY deal_id order by deal_id desc) x;").first.purchased.to_i
-
-    #total revenue to date
-    data[:total_revenue] = self.find_by_sql("select sum(c) as rev from(SELECT MAX(sold_count) * sale_price  AS c, snapshots.site_id FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.site_id = #{site.id} GROUP BY snapshots.deal_id ) x;").first.rev.to_i
-
-    #average coupon sold per deal
-    data[:avg_coupon] = self.find_by_sql("select avg(sold) as coupon_sold from (select distinct(snapshots.deal_id),max(sold_count) as sold from snapshots left join deals on deals.id = snapshots.deal_id where deals.site_id = #{site.id}) x;").first.coupon_sold.to_f
-
-    #average price per deal
-    data[:price_deal] = self.find_by_sql("select avg(sale_price) as price from deals where site_id = #{site.id};").first.price.to_f
-
-    #avg revenue per deal
-    data[:avg_deal] = self.find_by_sql("select avg(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.site_id = #{site.id} GROUP BY snapshots.deal_id ) x;").first.prom.to_f
-    
-    # deal closed today
-    data[:closed_today] = self.find_by_sql("SELECT COUNT(DISTINCT(deals.id)) as closed FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE active=0 and deals.id = #{site.id} AND DATE(snapshots.created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) AND DATE(snapshots.created_at)<=DATE(NOW())").first.closed
-    
-    #deals closed yesterday
-    data[:closed_yesterday] = self.find_by_sql("SELECT COUNT(DISTINCT(deal_id)) as closed FROM snapshots WHERE status=0 AND
-    DATE(created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site.id}").first.closed
-
-    #deals closed this week
-    data[:closed_week] = self.find_by_sql("SELECT COUNT(DISTINCT(deals.id)) as closed FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE active=0 and deals.site_id = #{site.id} AND DATE(snapshots.created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) AND DATE(snapshots.created_at)<=DATE(NOW());").first.closed
-
-    #coupons purchased today
-    data[:purchased_today] = self.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where
-    DATE(created_at)=DATE(NOW()) and site_id = #{site.id}").first.nsold.to_i
-
-    #coupons purchased yesterday
-    data[:purchased_yesterday] = self.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site.id}").first.nsold.to_i
-
-    #coupons purchased week
-    data[:purchased_week] = self.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) and DATE(created_at)<=DATE(NOW()) and site_id = #{site.id}").first.nsold.to_i
-
-    #revenue today
-    data[:revenue_today] = self.find_by_sql("select sum(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = #{site.id} and DATE(snapshots.created_at) = DATE(NOW()) GROUP BY snapshots.deal_id ) x;").first.prom.to_i
-    
-    #revenue yesterday
-    data[:revenue_yesterday] = self.find_by_sql("select sum(c) from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = #{site.id} and DATE(snapshots.created_at) = DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) GROUP BY snapshots.deal_id ) x;")
-
-    #avg revenue today
-    data[:avg_revenue_today] = self.find_by_sql("select avg(c) as avg_revenue_today from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=date(now()) GROUP BY snapshots.deal_id ) x;").first.avg_revenue_today.to_f
-
-    #avg revenue yesterday
-    data[:avg_revenue_yesterday] = self.find_by_sql("select avg(c) from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) GROUP BY snapshots.deal_id ) x;")
-
-    ###changes in %
-    # coupons closed today-yesterday    
-    unless data[:closed_yesterday]==0
-      data[:change_today_yesterday] = (data[:closed_today] - data[:closed_yesterday])/data[:closed_yesterday]
-    else
-      data[:change_today_yesterday] = "No data"
-    end
-
-    # coupons closed today-yesterday
-    tmp = self.find_by_sql("SELECT COUNT(DISTINCT(deal_id)) as closed FROM snapshots WHERE status=0 and DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site.id}").first.closed
-
-    unless tmp==0
-      data[:change_yesterday] = (data[:closed_yesterday] - tmp )/tmp
-    else
-      data[:change_yesterday] = "No data"
-    end
-
-    # coupons change today-yesterday
-    unless data[:purchased_today]==0
-      data[:purchased_change_today] = if(data[:purchased_yesterday] == 0) 
-        data[:purchased_today]
-      else
-        (data[:purchased_today].to_i - data[:purchased_yesterday].to_i) / data[:purchased_yesterday]
-      end
-    else
-      data[:purchased_change_today] = "No data"
-    end
-
-    # coupons change yesterday-
-    tmp = self.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site.id}").first.nsold.to_i
-
-    unless tmp==0
-      data[:change_purchased_yesterday] = (data[:purchased_yesterday] - tmp )/tmp
-    else
-      data[:change_purchased_yesterday] = "No data"
-    end
-
-    return data
   end
 
   def self.overall_trending(limit=5)

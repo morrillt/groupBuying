@@ -5,18 +5,18 @@
     %a{:href=>"#"} Login
     %a{:href=>"#"} Sign up
 #main
-  #left
-    .left-content
-      .deals-list-wrapper
-        .deals-list
-          %ul
-          - @deals.each do |d| 
-            %li
-              %a{:href=>"#"} 
-                %span.thumb
-                  %img{:src=>"#{sites_thumb(d.source_name)}"}
-                %span.name #{d.name}
-              %p.at Location: #{d.lat}, #{d.lng}
-  #content
-    .content
-      #map_canvas
+  #deals-list
+    %ul
+      - @deals.each do |d| 
+        %li{:id=>"#{d.id}"}
+          %a{:href=>"#{d.permalink}"} 
+            %span.thumb
+              %img{:src=>"#{sites_thumb(d.source_name)}"}
+            %span.name #{d.name}
+          %p.at
+            - latlng= random_digits_nyc
+            - puts latlng
+            %span.address Address: #{d.raw_address}
+            %span.label Location: 
+            %span.latlng #{d.lat}, #{d.lng}
+  #map_canvas

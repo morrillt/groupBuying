@@ -18,6 +18,7 @@ a
 body
   height: 100%
   font-family: "Lucida Grande",Arial,Helvetica,Verdana,sans-serif
+  overflow-x: hidden
 
 .container
   width: 99%
@@ -25,6 +26,7 @@ body
   min-height: 100%
   margin: 0px auto
   min-width: 998px
+
 
 #header
   margin-bottom: 10px
@@ -49,21 +51,28 @@ body
     float: left
     margin-left: 10px
 
-#left
-  +column(6)
-  .left-content
 #main
   clear: left
 #content
   +column(18,true)
   .content
-    height: 600px
+    // height: 600px
 #map_canvas
-  height: 100%
-.deals-list
+  position: absolute
+  top: 110px
+  left: 415px
+  right: 0
+  bottom: 0
+#deals-list
+  position: absolute
+  bottom: 0
+  top: 110px
+  width: 400px
+  overflow-y: scroll
   li
     border: 1px solid #AAA
     margin-bottom: 10px
+    margin-right: 5px
     +corner(6px)
     float: left
     .thumb

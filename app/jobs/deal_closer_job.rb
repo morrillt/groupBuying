@@ -2,7 +2,7 @@ class DealCloserJob
   @queue = :deals
 
   def self.perform()
-    puts "DealCloser Run"
+    puts "DealCloser Start"
     Deal.expired.active.each do |deal|
       begin
         deal.close!
@@ -12,6 +12,7 @@ class DealCloserJob
         puts e.message
       end
     end
+    puts "DealCloser Finish"
   end
 
 end

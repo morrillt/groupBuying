@@ -1,78 +1,39 @@
 class Chart
-  # Accepts an array of deals or sites
-  def initialize(objects = [])
-    @objects = objects
-    # wrap non array classes in an array
-    @objects = [@objects].compact unless @objects.is_a?(Array)    
-    
-    if !@objects.empty?
-      # either site_id or deal_id
-      fk = "#{@objects.first.class.to_s.downcase}_id"
-      @snapshots = Snapshot.recent.find(:all, :conditions => ["#{fk} in(?)", @objects.map(&:id)])
-    else
-      @snapshots = Snapshot.recent
-    end
-    
-    # Group data by hour created
-    @snapshots_by_hour = @snapshots.group_by{ |s| s.created_at.strftime("%H") }
-  end
-  
-  def labels
-    @labels ||= @snapshots_by_hour.map{|h,s| h }.uniq!
-  end
-  
-  def datasets
-    @snapshots.group_by(&:site).map do |site, snapshots|
-      [site.name, 
-      snapshots.group_by{|s| s.created_at.strftime("%H") }.map do |h, snapshots|
-        snapshots.map(&:total_revenue)
-      end.flatten
-      ]
-    end
-  end
-
   # Returns a hash containing the revenue for each
   # hour during the last 24 hours, for each site
   def self.hourly_revenue_by_site
-    today= Time.now
-    chart= {
-      :categories => (1..24).map { |t| "#{(today-t.hours).hour}:00" }.reverse,
-      :series => []
-    }           
-    Site.includes(:hourly_revenue_by_site).active.each do |site|
-      data = site.hourly_revenue_by_site.sort_by(&:order).reverse.collect(&:revenue)
-      chart[:series] << { :name => site.name, :data => data } 
+    chart = init_chart
+    hourly_revenues = HourlyRevenueBySite.all
+    sites = Site.active
+    
+    hourly_revenues.each do |hr|
+      site_name = sites.detect{|s| s.id == hr.site_id}.name
+      data = (0..23).to_a.reverse.collect{|k| hr.revenue["%02d"%k]} 
+      chart[:series] << { :name => site_name, :data => data } 
     end
     chart
   end
 
   def self.hourly_revenue_by_divisions(site_id)
-    site= Site.find(site_id)
-    divisions= site.divisions
-    today= Time.now
-    chart= {
-      :categories => (1..24).map { |t| "#{(today-t.hours).hour}:00" }.reverse,
-      :series => []
-    }
-    pre_data= {}
-    divisions_names= []
-    divisions.each do |d|
-      revs= (1..24).map { 0 }
-      divisions_names << d.name
-      pre_data[d.name]= {:name=> d.name, :revs => revs}
+    chart = self.init_chart
+    hourly_revenues = HourlyRevenueByDivision.where(:site_id => site_id)
+    ar_divisions = Division.where(:site_id => site_id).order('name ASC')
+    ar_divisions.each do |division|        
+      hr_division = hourly_revenues.detect{ |hr| hr.division_id == division.id }
+      data = (0..23).to_a.reverse.collect {|k| hr_division ? hr_division.revenue["%02d"%k] : 0 }
+      chart[:series] << { :name => division.name, :data => data }        
     end
+    chart
+  end
+  
+  private   
 
-    (1..24).map do |t|
-      today= Time.now-t.hours # should not be Time.now
-      revenues= site.revenue_for_all_divisions_by_given_hour_and_date(today.hour, today)
-      revenues.each do |r|
-        pre_data[r.name][:revs][t]= r.rev.to_f
-      end
-    end
-    divisions_names.sort!
-    divisions_names.each do |d|
-      chart[:series] << { :name => d, :data => pre_data[d][:revs].reverse! }
-    end
+  def self.init_chart
+    today= Time.now
+    chart = {
+      :categories => (0..23).map { |t| "#{(today-t.hours).hour}:00" }.reverse,
+      :series => []
+    }       
     chart
   end
 end
