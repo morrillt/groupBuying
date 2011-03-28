@@ -8,8 +8,9 @@ namespace :routines do
         site.divisions.each do |division|
           division.name = division.url.scan(/\/local-deals\/(.+)\/deals/i).try(:first).to_s.gsub(/\-/,' ')
           unless division.name.blank?
-            division.save
-            puts "Updating #{division.name}"
+            p = division.save
+            division.destroy unless p # Destroy equal divisions
+            puts "Updating #{division.name} #{p}"
           end
         end
       end

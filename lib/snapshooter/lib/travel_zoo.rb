@@ -8,7 +8,12 @@ module Snapshooter
     def divisions
       return @divisions unless @divisions.empty?
       get("/local-deals")
-      @doc.search("li a").map{|link| link['href'] if link['href'] =~ %r[/local-deals/(.*)/deals]  }.compact
+      @doc.search("li a").map{|link|  
+        if link['href'] =~ %r[/local-deals/(.*)/deals]
+          @divisions << { :url => link["href"], :name => link.text } 
+        end
+      }
+      @divisions
     end
     
     def deal_links
@@ -27,13 +32,14 @@ module Snapshooter
       # Find the site
       site     = Site.find_by_source_name("travel_zoo")
       
-      divisions.map do |division_url|
+      divisions.map do |dhash|
+        division_url = dhash[:url]        
         options = {}
         options[:full_path] = division_url =~ /^http(.+)/i
         
         
         # Find the division
-        @division = site.divisions.find_or_initialize_by_name(division_url)
+        @division = site.divisions.find_or_initialize_by_name(dhash[:name])
         @division.url = options[:full_path] ? division_url : (base_url + division_url)
         @division.save
         
