@@ -13,7 +13,7 @@ deal_closer:
   description: Check for sold
   
 snapshot:
-  cron: "5 * * * *"
+  cron: "* * 1 * *"
   class: SnapshotJob
   queue: snapshot
   args: 

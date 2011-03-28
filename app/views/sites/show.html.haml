@@ -19,10 +19,10 @@
       %p.value #{number_with_delimiter @data.avg_coupon}
     .calc
       %p.label Average price per deal
-      %p.value #{number_to_currency(@data.price_deal, :unit =>"$", :precision=>0)}
+      %p.value #{number_to_currency(@data.avg_price_per_deal, :unit =>"$", :precision=>0)}
     .calc
       %p.label Average revenue per deal
-      %p.value #{number_to_currency(@data.avg_coupon * @data.price_deal,:unit =>"$", :precision=>0)}
+      %p.value #{number_to_currency(@data.avg_revenue_per_deal,:unit =>"$", :precision=>0)}
     .calc
       %p.label Total locations
       %p.value #{@site.divisions.count}
