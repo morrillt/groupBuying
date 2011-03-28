@@ -80,6 +80,14 @@ describe Deal do
         Deal.expired.should_not include(deal)
       end
     end
-    
+  end
+
+  context "geocoding" do
+    describe "#geocode_lat_lng!" do
+      it "should capture all decimals for lat and lng" do
+        deal = Factory.create(:deal, :active => true, :raw_address => "Salon Roi 2602 Connecticut Ave. NW Washington, DC 20008")
+        puts deal.inspect
+      end
+    end
   end
 end

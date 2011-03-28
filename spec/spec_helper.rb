@@ -9,6 +9,13 @@ require 'resque_spec'
 require 'json'
 
 Factory.definition_file_paths = [ File.join(Rails.root, 'spec', 'factories') ]
+
+if (!Factory.factories || Factory.factories.empty?)
+  Dir.glob(File.dirname(__FILE__) + "/factories/*.rb").each do |factory|
+    require factory
+  end
+end
+
 #require Rails.root.join("spec/factories/factories.rb")
 
 # Requires supporting ruby files with custom matchers and macros, etc,
