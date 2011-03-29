@@ -14,7 +14,7 @@ snapshot:
   cron: "0 * * * *"
   class: SnapshotJob
   queue: snapshot
-  args: 3
+  args:
   description: "Update Snapshots"  
 chart:
   cron: "30 * * * *"
