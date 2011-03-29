@@ -56,7 +56,8 @@ class Site < ActiveRecord::Base
     # Get snapshots deals and buyers count
     buyers= {}
     snapshots.each do |s|
-      buyers[s.deal_id] = s.buyers_count - s.last_buyers_count
+      buyers[s.deal_id] ||= 0 
+      buyers[s.deal_id] += s.buyers_count - s.last_buyers_count
     end                                   
     
     # Get Deals prices

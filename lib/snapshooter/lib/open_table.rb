@@ -32,8 +32,8 @@ module Snapshooter
         detect_absolute_path(division_url, options)
         
         # Find the division
-        @division = site.divisions.find_or_initialize_by_name(division_url)
-        @division.url = options[:full_path] ? division_url : (base_url + division_url)
+        @division = site.divisions.find_or_initialize_by_url(division_url)
+        @division.url = division_url
         @division.save
         
         get(division_url, options)
@@ -56,12 +56,12 @@ module Snapshooter
             next
           end
           
-          raw_address = @doc.search("div[@class='smallMap'] p").last.text
+          raw_address = @doc.search("span[@class='formattedAddress']").last.try(:text) || ''
           raw_address, telephone = split_address_telephone(raw_address)
           
           # need lat and lng, geocoding address for it          
           save_deal!({
-            :name => @doc.search("h1").first.try(:text),
+            :name => @doc.search("h1").first.try(:text).gsub("Today's Deal: ", ''),
             :sale_price => @doc.search("div[@class='detailsPageDealInfoPrice']").first.text.gsub(/[^0-9]/,'').to_f,
             :actual_price => @doc.search("span[@class='origPriceValue']").first.text.gsub(/[^0-9]/,'').to_f,
             :raw_address => raw_address,
