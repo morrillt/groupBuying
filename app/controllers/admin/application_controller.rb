@@ -16,7 +16,7 @@ class Admin::ApplicationController < ApplicationController
     if model.respond_to?(:column_names)
       @table= model.paginate(:per_page => @page_limit, :page => @page, :order => "#{@order_by} #{@direction}")
     else
-      @table= model.paginate(:per_page => @page_limit, :page => @page)
+      @table= model.order_by([@order_by, @direction]).paginate(:per_page => @page_limit, :page => @page)
     end                                
     
     @count= model.count
