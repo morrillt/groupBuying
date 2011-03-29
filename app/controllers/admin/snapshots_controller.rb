@@ -2,7 +2,7 @@ class Admin::SnapshotsController < Admin::ApplicationController
   layout "admin"
   
   def index
-    @model_name= 'snapshot'
+    @model_name= 'deal_snapshot'
   end
   
   def show

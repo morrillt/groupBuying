@@ -8,10 +8,17 @@ class Admin::ApplicationController < ApplicationController
     @direction= params[:direction] == "ASC" ? "DESC" : "ASC"
     @model_name= params[:model]
 
-    model= Object.const_get(@model_name.capitalize)
-    @fields= model.column_names
-    fields_for(@model_name)
-    @table= model.paginate(:per_page => @page_limit, :page => @page, :order => "#{@order_by} #{@direction}")
+    model= @model_name.camelize.constantize
+    @fields= model.respond_to?(:column_names) ? model.column_names : model.fields.keys
+    fields_for(@model_name)                  
+                                                                                                              
+    # FIXME for mongoid models ordering
+    if model.respond_to?(:column_names)
+      @table= model.paginate(:per_page => @page_limit, :page => @page, :order => "#{@order_by} #{@direction}")
+    else
+      @table= model.paginate(:per_page => @page_limit, :page => @page)
+    end                                
+    
     @count= model.count
     @number_of_pages = @count / @page_limit
     respond_to do |format|

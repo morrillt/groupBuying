@@ -54,19 +54,19 @@ class Site < ActiveRecord::Base
     # puts "Snapshots: #{snapshots.count}"
 
     # Get snapshots deals and buyers count
-    revenues= {}
+    buyers= {}
     snapshots.each do |s|
-      revenues[s.deal_id] = s.buyers_count.to_i
+      buyers[s.deal_id] = s.buyers_count - s.last_buyers_count
     end                                   
     
     # Get Deals prices
     snapshot_deals = {}
-    Deal.select("id, sale_price").find(revenues.keys).map {|deal|
+    Deal.select("id, sale_price").find(buyers.keys).map {|deal|
       snapshot_deals[deal.id] = deal.sale_price
     }                 
     
     revenue = snapshot_deals.collect {|k, v|
-      v * snapshot_deals[k]
+      v * buyers[k]
     }.sum        
     
     revenue.to_f
@@ -80,7 +80,7 @@ class Site < ActiveRecord::Base
     revenues = {}
     snapshots.each do |s|
       revenues[s.division_id] ||= 0
-      revenues[s.division_id] += (s.buyers_count.to_f * s.price.to_f)
+      revenues[s.division_id] += ((s.buyers_count - s.last_buyers_count) * s.price.to_f)
     end
     revenues
   end      
