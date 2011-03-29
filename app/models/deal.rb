@@ -113,24 +113,21 @@ class Deal < ActiveRecord::Base
     save
   end
 
-  def self.overall_trending(limit=5)
-    # Deal.find(:all, :order => "hotness", :limit => limit)
-    # Deal.find(:all, :include => :site, :order => "hotness DESC", :limit => limit)
-    date= Time.now
-    Deal.find_by_sql ["SELECT deals.id, deals.name, sites.source_name AS source_name, deals.permalink FROM deals, sites WHERE deals.site_id = sites.id AND deals.active = 1 GROUP BY permalink ORDER BY hotness DESC LIMIT ?", limit]
+  def self.overall_trending(limit = 10)
+    count_trending_by_date_range(Time.now - 5.hours, Time.now, limit)
   end
 
-  def self.current_revenue_trending
-    now= Time.now
-    trending = Deal.revenue_trending_by_hour(now, now.hour)
-    deals = Deal.find(trending.values).map{|deal| 
-      deal.trending_order = trending.select{|k,v|
-        v == deal.id
-      }.first
-      deal
-    }
-    
-    deals.sort_by(&:trending_order)
+  def self.current_revenue_trending(limit = 10)
+    revenue_trending_by_date_range(Time.now - 5.hours, Time.now, limit)
+    # trending = Deal.revenue_trending_by_hour(now, now.hour)
+    # deals = Deal.find(trending.values).map{|deal| 
+    #   deal.trending_order = trending.select{|k,v|
+    #     v == deal.id
+    #   }.first
+    #   deal
+    # }
+    # 
+    # deals.sort_by(&:trending_order)
   end
 
   def self.revenue_trending_by_hour(date, hour, limit=25)
@@ -148,7 +145,7 @@ class Deal < ActiveRecord::Base
     
     # Get Deals prices
     snapshot_deals = {}
-    Deal.select("id, sale_price").find(buyers.keys).map {|deal|
+    Deal.select("id, sale_price").find_all_by_id(buyers.keys).map {|deal|
       snapshot_deals[deal.id] = deal.sale_price
     }                 
     
@@ -159,6 +156,45 @@ class Deal < ActiveRecord::Base
     revenue_trending_deals
   end
 
+  def self.revenue_trending_by_date_range(from, to, limit=25)
+    start_at = Time.parse("#{from.year}-#{from.month}-#{from.day} #{from.hour}:00:00").utc
+    end_at   = Time.parse("#{to.year}-#{to.month}-#{to.day} #{to.hour}:00:00").utc
+    snapshots = DealSnapshot.by_date_range(start_at, end_at)
+
+    buyers= {}
+    snapshots.each do |s|
+      buyers[s.deal_id] ||=0
+      buyers[s.deal_id] += s.buyers_count - s.last_buyers_count
+    end                                       
+    
+    # Get Deals prices
+    snapshot_deals = {}
+    deals = Deal.find_all_by_id(buyers.keys).map {|deal|
+      deal.trending_order = -(deal.sale_price * buyers[deal.id])
+      deal
+    }                 
+    
+    deals.sort_by(&:trending_order)[0..limit]
+  end   
+  
+  def self.count_trending_by_date_range(from, to, limit=25)
+    start_at = Time.parse("#{from.year}-#{from.month}-#{from.day} #{from.hour}:00:00").utc
+    end_at   = Time.parse("#{to.year}-#{to.month}-#{to.day} #{to.hour}:00:00").utc
+    snapshots = DealSnapshot.by_date_range(start_at, end_at)
+
+    buyers_count= {}
+    snapshots.each do |s|
+      buyers_count[s.deal_id] ||=0
+      buyers_count[s.deal_id] += s.buyers_count - s.last_buyers_count
+    end           
+
+    deals = Deal.find_all_by_id(buyers_count.keys).collect{|deal| 
+      deal.trending_order = - buyers_count[deal.id]
+      deal
+    }
+    deals.sort_by(&:trending_order)[0..limit]
+  end  
+  
 
   private
   def geocode_lat_lng!
