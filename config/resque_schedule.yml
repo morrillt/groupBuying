@@ -5,19 +5,19 @@ crawler:
   args: 
   description: "Deals crawler"  
 deal_closer:
-  cron: "5 * * * *"
+  cron: "0,15,30,45 * * * *"
   class: DealCloserJob
   queue: deals
   args: 
   description: Check for sold  
 snapshot:
-  cron: "0 * * * *"
+  cron: "30 * * * *"
   class: SnapshotJob
   queue: snapshot
   args:
   description: "Update Snapshots"  
 chart:
-  cron: "30 * * * *"
+  cron: "0,15,30,45 * * * *"
   class: ChartJob
   queue: chart
   args: 

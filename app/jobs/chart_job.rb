@@ -2,7 +2,7 @@ class ChartJob
    @queue = :chart
 
   def self.perform
-    puts "ChartJob Start"
+    puts "Start ChartJob[#{Time.now}]"
     hourly_revenue_by_site  
     Site.active.each do |site|
       hourly_revenue_by_divisions(site.id)

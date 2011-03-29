@@ -7,9 +7,9 @@ task "resque:setup" => :environment
 namespace :resque do 
   desc 'start all background resque daemons' 
   task :start_daemons do
-    mrake_start "resque_scheduler resque:scheduler" 
+    mrake_start "resque_scheduler resque:scheduler"
       workers_config.each do |worker, config|
-      mrake_start "resque_#{worker} resque:work QUEUE=#{config['queues']} COUNT=#{config['count']}" 
+      mrake_start "resque_#{worker} resque:work QUEUE=#{config['queues']} COUNT=#{config['count']}"
     end
   end
 
@@ -25,7 +25,8 @@ namespace :resque do
     YAML.load(File.open(ENV['WORKER_YML'] || 'config/resque_workers.yml')) 
   end                                                                    
 
-  def self.mrake_start(task) 
-    sh "nohup ./script/monit_rake start #{task} RAILS_ENV=production >> log/workers.log &"
+  def self.mrake_start(task)
+    environment = ENV['RAILS_ENV'] || 'production'
+    sh "nohup ./script/monit_rake start #{task} RAILS_ENV=#{environment} >> log/workers.log &"
   end 
 end

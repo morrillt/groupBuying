@@ -2,13 +2,14 @@ class CrawlerJob
    @queue = :crawler
 
   def self.perform(site_id = nil)   
-    puts "CrawlerJob Start for #{site_id}"        
     # Divide and conquer
     unless site_id
+      puts "Start CrawlerJob[#{Time.now}]"
       Site.active.each do |site|
         Resque.enqueue(CrawlerJob, site.id)
       end
     else
+      puts "CrawlerJob Start for #{site_id}"
       begin
         Site.find(site_id).snapshooter.crawl_new_deals!
       rescue => e

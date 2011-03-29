@@ -4,7 +4,7 @@ class SnapshotJob
   def self.perform(site_id = nil)
     # Divide and conquer
     unless site_id
-      puts "Snapshot Start queue"
+      puts "Start SnapshotJob[#{Time.now}]"
       Site.active.each do |site|
         Resque.enqueue(SnapshotJob, site.id)
       end
