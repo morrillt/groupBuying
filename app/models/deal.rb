@@ -2,6 +2,8 @@ require 'digest/md5'
 class Deal < ActiveRecord::Base
   include Geokit::Geocoders
   
+  attr_accessor :trending_order
+  
   # Associations
   belongs_to :division
   belongs_to :site
@@ -120,13 +122,41 @@ class Deal < ActiveRecord::Base
 
   def self.current_revenue_trending
     now= Time.now
-    Deal.revenue_trending_by_hour(now, now.hour)
+    trending = Deal.revenue_trending_by_hour(now, now.hour)
+    deals = Deal.find(trending.values).map{|deal| 
+      deal.trending_order = trending.select{|k,v|
+        v == deal.id
+      }.first
+      deal
+    }
+    
+    deals.sort_by(&:trending_order)
   end
 
   def self.revenue_trending_by_hour(date, hour, limit=25)
-    # FIXME !!!
-    r= Deal.find_by_sql ["SELECT deals.id, deals.name, sites.source_name AS source_name, deals.permalink, (snapshots.sold_count*deals.sale_price) AS revenue FROM snapshots, deals, sites WHERE snapshots.deal_id = deals.id AND deals.site_id = sites.id AND YEAR(snapshots.created_at) = ? AND MONTH(snapshots.created_at) = ? AND DAY(snapshots.created_at) = ? AND HOUR(snapshots.created_at) = ? GROUP BY permalink ORDER BY revenue DESC LIMIT ?", date.year, date.month, date.day, hour, limit]
-    r
+    if hour.to_i < 10
+      hour = "0#{hour}"
+    end              
+    start_at = Time.parse("#{date.year}-#{date.month}-#{date.day} #{hour}:00:00").utc
+    end_at   = Time.parse("#{date.year}-#{date.month}-#{date.day} #{hour}:59:59").utc
+    snapshots = DealSnapshot.by_date_range(start_at, end_at)
+
+    buyers= {}
+    snapshots.each do |s|
+      buyers[s.deal_id] = s.buyers_count - s.last_buyers_count
+    end                                   
+    
+    # Get Deals prices
+    snapshot_deals = {}
+    Deal.select("id, sale_price").find(buyers.keys).map {|deal|
+      snapshot_deals[deal.id] = deal.sale_price
+    }                 
+    
+    revenue_trending_deals = {}
+    snapshot_deals.collect {|deal_id, sale_price|
+      revenue_trending_deals[(deal_id * buyers[deal_id]).to_f] = deal_id
+    }
+    revenue_trending_deals
   end
 
 

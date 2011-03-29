@@ -16,5 +16,5 @@
       %p.info The 25 fastest accelerating deals across the Internet most likely to blow up
       -@by_revenue.each do |d|
         %li
-          %img.thumb{:src=>"#{sites_thumb(d.source_name)}"}
+          %img.thumb{:src=>"#{sites_thumb(d.site_id)}"}
           %a{:href=>"#{d.permalink}", :target=>"_blank"} #{d.name}
