@@ -49,11 +49,11 @@ class ChartJob
     
     # only build this once
     hours_array = (0..23).to_a   
-
     hours_array.map do |t|
       today = (Time.now - t.hours)
       revenues = site.revenue_for_all_divisions_by_given_hour_and_date(today.hour, today)            
       revenues.each do |division_id, revenue|
+        data[division_id] ||= {:data => {}}
         data[division_id][:data]["%02d"%t] = revenue.to_f  # second parameter eql("preceding 1-9 with zero")
       end
     end   

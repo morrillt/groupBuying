@@ -61,7 +61,7 @@ class Site < ActiveRecord::Base
     
     # Get Deals prices
     snapshot_deals = {}
-    Deal.select("id, sale_price").find(buyers.keys).map {|deal|
+    Deal.select("id, sale_price").find_all_by_id(buyers.keys).map {|deal|
       snapshot_deals[deal.id] = deal.sale_price
     }                 
     

@@ -9,7 +9,12 @@ module Snapshooter
       return @divisions unless @divisions.empty?
       get("/local")
        # todo returing nil added || []
-      @doc.search("li a").map{|link| [link.text, link['href']] }.compact || []
+      @divisions = {}
+      @doc.search("div[@class='vertical-list'] ul li a").map{ |link|  
+        if link['href'][0..4] != "/deal"
+          @divisions[link.text] = link['href']
+        end
+      } || {}
     end
     
     def deal_links
@@ -28,11 +33,12 @@ module Snapshooter
       super
       # Find the site
       @site     = Site.find_by_source_name("homerun")
-      
-      divisions.map do |division_name, division_path|        
+      pp divisions.inspect
+      divisions.map do |division_name, division_path|
         # Find the division
         @division = @site.divisions.find_or_initialize_by_name(division_name)
         @division.name, @division.url = division_name, division_path
+        @division.source = "homerun"
         @division.save
         get(@division.url)
         deal_links.map do |deal_link|
@@ -56,11 +62,9 @@ module Snapshooter
             log "Expired"
             next
           end
-          
-          log @doc.search("div[@class='title rockwell']").first.try(:text)
-          
+                    
           save_deal!({
-            :name => @doc.search("div[@class='title rockwell']").first.try(:text),
+            :name => @doc.search("div[@class='title rockwell']").first.try(:text).to_s.gsub("\n", ''),
             :sale_price => @doc.search("a[@class='buy-button']").first.try(:text).to_s.gsub(/[^0-9]/,'').to_f,
             :actual_price => @doc.search("span[@class='econ rockwell']").first.try(:text).to_s.gsub(/[^0-9]/,'').to_f,
             :expires_at => expires_at,
