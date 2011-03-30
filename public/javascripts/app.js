@@ -94,11 +94,18 @@ $.widget("ui.chart", {
     }
 });
 
+function show_stats(i) {
+	$(".variation-table").hide();
+	$("#stats_" + i).show();
+}
+
 $(document).ready(function() {
     $("#coupons-counter").counter();
     try {
 	$("#sites #chart").chart({data:chart_data});
 	$("#site-stats #chart").chart({data:chart_data});
     } catch (err) {
-    }
+    }	
+
+	show_stats(1)
 });

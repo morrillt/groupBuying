@@ -98,88 +98,54 @@ class ChartJob
     # data.avg_deal = Deal.find_by_sql("select avg(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.site_id = #{site_id} GROUP BY snapshots.deal_id ) x;").first.prom.to_f
     data.avg_revenue_per_deal = site.avg_revenue_per_deal
 
-    # deal closed today
-    # data.closed_today = Deal.find_by_sql("SELECT COUNT(DISTINCT(deals.id)) as closed FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE active=0 and deals.id = #{site_id} AND DATE(snapshots.created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) AND DATE(snapshots.created_at)<=DATE(NOW())").first.closed
-    data.closed_today = site.closed_today
 
-    #deals closed yesterday
-    # data.closed_yesterday = Deal.find_by_sql("SELECT COUNT(DISTINCT(deal_id)) as closed FROM snapshots WHERE status=0 AND DATE(created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site_id}").first.closed
-    data.closed_yesterday = site.closed_yesterday
-    
-    #deals closed this week
-    # data.closed_week = Deal.find_by_sql("SELECT COUNT(DISTINCT(deals.id)) as closed FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE active=0 and deals.site_id = #{site_id} AND DATE(snapshots.created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) AND DATE(snapshots.created_at)<=DATE(NOW());").first.closed
-    data.closed_week = site.closed_week
 
-    #coupons purchased today
-    # data.purchased_today = Deal.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)=DATE(NOW()) and site_id = #{site_id}").first.nsold.to_i
-    data.purchased_today = site.purchased_today
-
-    #coupons purchased yesterday
-    # data.purchased_yesterday = Deal.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site_id}").first.nsold.to_i
-    data.purchased_yesterday = site.purchased_yesterday
-    
-    #coupons purchased week
-    # data.purchased_week = Deal.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 8 DAY) and DATE(created_at)<=DATE(NOW()) and site_id = #{site_id}").first.nsold.to_i
-    data.purchased_week = site.purchased_week    
-
-    #revenue today
-    # data.revenue_today = Deal.find_by_sql("select sum(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = #{site_id} and DATE(snapshots.created_at) = DATE(NOW()) GROUP BY snapshots.deal_id ) x;").first.prom.to_i
-    data.revenue_today = site.revenue_today
-
-    # #revenue yesterday
-    # data.revenue_yesterday = Deal.find_by_sql("select sum(c) as revt from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = #{site_id} and DATE(snapshots.created_at) = DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) GROUP BY snapshots.deal_id ) x;").first.revt.to_i
-    data.revenue_yesterday = site.revenue_yesterday
-    
-    # #avg revenue today
-    # data.avg_revenue_today = Deal.find_by_sql("select avg(c) as avg_revenue_today from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=date(now()) GROUP BY snapshots.deal_id ) x;").first.avg_revenue_today.to_f
-    data.avg_revenue_today = site.avg_revenue_today
-    
-    # #avg revenue yesterday
-    # data.avg_revenue_yesterday = Deal.find_by_sql("select avg(c) as avg_rev from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id WHERE deals.site_id = 1 and DATE(snapshots.created_at)=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) GROUP BY snapshots.deal_id ) x;").first.avg_rev.to_i
-    data.avg_revenue_yesterday = site.avg_revenue_yesterday
-    
     # ###changes in %
-    # coupons closed today-yesterday    
-    unless data.closed_yesterday == 0
-      data.change_today_yesterday = (data.closed_today - data.closed_yesterday) / data.closed_yesterday
-    else
-      data.change_today_yesterday = "No data"
-    end
-
-    # coupons closed today-yesterday
-    # tmp = Deal.find_by_sql("SELECT COUNT(DISTINCT(deal_id)) as closed FROM snapshots WHERE status=0 and DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site_id}").first.closed
-    snaps = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:deal_id).uniq
-    tmp = Deal.where(:id => snaps, :active => 0).count
-       
-    unless tmp == 0
-      data.change_yesterday = (data.closed_yesterday - tmp ) / tmp
-    else
-      data.change_yesterday = "No data"
-    end
+    # # coupons closed today-yesterday    
+    # unless data.closed_yesterday == 0
+    #   data.change_today_yesterday = (data.closed_today - data.closed_yesterday) / data.closed_yesterday
+    # else
+    #   data.change_today_yesterday = "No data"
+    # end
+    # 
+    # # coupons closed today-yesterday
+    # # tmp = Deal.find_by_sql("SELECT COUNT(DISTINCT(deal_id)) as closed FROM snapshots WHERE status=0 and DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site_id}").first.closed
+    # snaps = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:deal_id).uniq
+    # tmp = Deal.where(:id => snaps, :active => 0).count
+    #    
+    # unless tmp == 0
+    #   data.change_yesterday = (data.closed_yesterday - tmp ) / tmp
+    # else
+    #   data.change_yesterday = "No data"
+    # end
+    # 
+    # # coupons change today-yesterday
+    # unless data.purchased_today == 0
+    #   data.purchased_change_today = if(data.purchased_yesterday == 0) 
+    #     data.purchased_today
+    #   else
+    #     (data.purchased_today.to_i - data.purchased_yesterday.to_i) / data.purchased_yesterday
+    #   end
+    # else
+    #   data.purchased_change_today = "No data"
+    # end
+    # 
+    # # # coupons change yesterday-
+    # # tmp = Deal.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site_id}").first.nsold.to_i
+    # tmp = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:last_buyers_count).sum
+    # 
+    # unless tmp==0
+    #   data.change_purchased_yesterday = (data.purchased_yesterday - tmp )/tmp
+    # else
+    #   data.change_purchased_yesterday = "No data"
+    # end 
     
-    # coupons change today-yesterday
-    unless data.purchased_today == 0
-      data.purchased_change_today = if(data.purchased_yesterday == 0) 
-        data.purchased_today
-      else
-        (data.purchased_today.to_i - data.purchased_yesterday.to_i) / data.purchased_yesterday
-      end
-    else
-      data.purchased_change_today = "No data"
-    end
+    data.deals_closed      = site.deals_closed_by_periods
+    data.coupons_purchased = site.coupons_purchased_by_periods 
+    data.revenue_by_periods= site.revenue_by_periods
+    data.average_revenue   = site.average_revenue_by_periods
     
-    # # coupons change yesterday-
-    # tmp = Deal.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site_id}").first.nsold.to_i
-    tmp = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:last_buyers_count).sum
-    
-    unless tmp==0
-      data.change_purchased_yesterday = (data.purchased_yesterday - tmp )/tmp
-    else
-      data.change_purchased_yesterday = "No data"
-    end      
-    
-    data.save
-    
+    data.save    
     return data     
   end   
 end

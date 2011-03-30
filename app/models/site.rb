@@ -1,4 +1,7 @@
 class Site < ActiveRecord::Base
+  
+  STATS_PERIODS = [1, 7, 30, 90]
+  
   has_many :snapshots, :dependent => :destroy
   has_many :deals, :through => :divisions
   has_many :divisions, :dependent => :destroy
@@ -10,7 +13,6 @@ class Site < ActiveRecord::Base
   # snapshots of the deal
   def update_snapshots!
     deals.active.each do |deal|
-      # record the deal into mongodb as DealSnapshot
       deal.take_mongo_snapshot!
     end
   end
@@ -172,7 +174,82 @@ class Site < ActiveRecord::Base
   def self.coupons_purchased_to_date
     # find_by_sql("select SUM(c) as purchased from (SELECT deal_id, MAX(sold_count) AS c FROM snapshots GROUP BY deal_id order by deal_id desc) x").first.purchased.to_i
     Deal.sum(:max_sold_count)
-  end     
+  end    
+  
+  # ================================== BY Periods ======================================
+  
+  def deals_closed_by_periods
+    deals_closed = {}
+    STATS_PERIODS.each {|t|
+      deals_closed[t.to_s]      = deals_closed_by_given_period(t.days.ago, Time.now)
+      deals_closed["prev_#{t}"] = deals_closed_by_given_period((2*t).days.ago, t.days.ago)
+    }    
+    deals_closed
+  end 
+  
+  def deals_closed_by_given_period(from, to)     
+    ids = DealSnapshot.by_date_range(from, to, {:site_id => self.id}).collect(&:deal_id).uniq
+    Deal.where(:active => false).find_all_by_id(ids).count    
+  end
+
+  def coupons_purchased_by_periods  
+    coupons_purchased = {}
+    STATS_PERIODS.each {|t|     
+      coupons_purchased[t.to_s]      = coupons_purchased_by_given_period(t.days.ago, Time.now)
+      coupons_purchased["prev_#{t}"] = coupons_purchased_by_given_period((2*t).days.ago, t.days.ago)
+    }       
+    coupons_purchased
+  end      
+  
+  def coupons_purchased_by_given_period(from, to)
+    purchases = DealSnapshot.coupons_purchased_by_given_period(from, to, self.id)
+    purchases.values.sum
+  end
+
+  def revenue_by_periods     
+    revenue_by_periods = {}
+    STATS_PERIODS.each {|t|      
+      revenue_by_periods[t.to_s]      = revenue_by_given_period(t.days.ago, Time.now)
+      revenue_by_periods["prev_#{t}"] = revenue_by_given_period((2*t).days.ago, t.days.ago)
+    }   
+    revenue_by_periods
+  end   
+  
+  def revenue_by_given_period(from, to)
+    purchases = DealSnapshot.coupons_purchased_by_given_period(from, to, self.id)
+    revenue = Deal.find_all_by_id(purchases.keys).collect { |deal|
+      if purchases[deal.id] and purchases[deal.id] > 0
+        deal.sale_price * purchases[deal.id]
+      else
+        0
+      end
+    }.compact.sum
+    revenue
+  end
+
+  def average_revenue_by_periods    
+    average_revenue = {}
+    STATS_PERIODS.each {|t| 
+      average_revenue[t.to_s] = average_revenue_by_given_period(t.days.ago, Time.now)
+      average_revenue["prev_#{t}"] = average_revenue_by_given_period((2*t).days.ago, t.days.ago)
+    }     
+    average_revenue
+  end                                           
+  
+  def average_revenue_by_given_period(from, to) 
+    purchases = DealSnapshot.coupons_purchased_by_given_period(from, to, self.id)
+    deals = purchases.values.sum
+    
+    revenue = Deal.find_all_by_id(purchases.keys).collect { |deal|
+      if purchases[deal.id] and purchases[deal.id] > 0
+        deal.sale_price * purchases[deal.id]
+      else
+        0
+      end
+    }.compact.sum                  
+        
+    deals > 0 ? revenue / deals : 0
+  end
   
   private 
   
