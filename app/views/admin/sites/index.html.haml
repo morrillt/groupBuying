@@ -1,2 +1,20 @@
-%h1 Admin
-#ajaxTable
+%h1 All Sites
+
+%table
+	%thead
+		%tr
+			%th Name
+			%th Status
+			%th Active Deals
+			%th Last Snapshot At
+	
+	%tbody
+		- @sites.each do |site|
+		- row_class = cycle('even','odd')
+			%tr{:class => row_class}
+				%td=link_to(site.name, admin_site_path(site))
+				%td=site.active? ? 'Active' : 'Inactive'
+				%td=site.deals.active.count
+				%td=site.last_snapshot_at
+				
+		

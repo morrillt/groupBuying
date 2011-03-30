@@ -6,12 +6,9 @@
         
   = stylesheet_link_tag 'css/screen.css', :media => 'screen, projection'
   = stylesheet_link_tag 'css/print.css', :media => 'print'
-  /[if lt IE 8]
+	/[if lt IE 8]
     = stylesheet_link_tag 'css/ie.css', :media => 'screen, projection'
   = stylesheet_link_tag 'css/styles.css', :media => 'screen'
-
-  = stylesheet_link_tag "/javascripts/thirdparty/MyAjax/reset.css"#, :cache => true
-  = stylesheet_link_tag "/javascripts/thirdparty/MyAjax/table.css"#, :cache => true
-  = stylesheet_link_tag "/javascripts/thirdparty/MyAjax/stylesheet.css"#, :cache => true
+	
  
   = yield :stylesheets
