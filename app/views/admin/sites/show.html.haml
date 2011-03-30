@@ -22,7 +22,7 @@
       %td=number_to_percentage(@site.snapshots.last.upsell_diff, :precision => 2)
 
     %tr
-      %td Last #{@site_hourly_revenue_by_site.count} Revenue Capture(s)
+      %td Last #{@site.snapshots.count} Revenue Capture(s)
       %td #{@site.last_snapshot_at} - #{Time.zone.tzinfo.name}
   
     %tr

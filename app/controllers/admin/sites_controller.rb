@@ -5,11 +5,10 @@ class Admin::SitesController < Admin::ApplicationController
   
   def show
     @site = Site.find(params[:id])
-    @site_hourly_revenue_by_site = HourlyRevenueBySite.where(:site_id => params[:id]).limit(5)
-    
+
     paginated_options = {:page => (params[:page] || 1), :per_page => 30}
-    if params[:query]
-      paginated_options.merge!(:conditions => ["deals.id = ? or deals.name like ?", params[:query], '%'+params[:query]+'%'])
+    if params[:search]
+      paginated_options.merge!(:conditions => ["deals.id = ? or deals.name like ?", params[:search], '%'+params[:search]+'%'])
     end
     
     @deals = @site.deals.paginate(paginated_options)
