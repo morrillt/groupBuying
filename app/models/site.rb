@@ -109,8 +109,7 @@ class Site < ActiveRecord::Base
   end
   
   def avg_revenue_per_deal                                                
-    deals_count = Deal.by_site(self.id).count
-    deals_count == 0 ? 0 : Deal.by_site(self.id).sum(:max_sold_count) / deals_count
+    avg_coupon * avg_price_per_deal
   end                                                                                                                             
   
   def closed_today
@@ -164,7 +163,12 @@ class Site < ActiveRecord::Base
   end  
 
   def currently_trending
-    Site.find_by_sql(["SELECT deals.name, deals.permalink, divisions.name as division, deals.hotness FROM deals, divisions WHERE deals.division_id = divisions.id AND deals.site_id = ? ORDER BY hotness DESC LIMIT 10", self.id])
+    # Site.find_by_sql(["SELECT deals.name, deals.permalink, divisions.name as division, deals.hotness FROM deals, divisions WHERE deals.division_id = divisions.id AND deals.site_id = ? ORDER BY hotness DESC LIMIT 10", self.id])
+    purchases = DealSnapshot.coupons_purchased_by_given_period(1.hours.ago, Time.now, self.id)
+    trending = Deal.find_all_by_id(purchases.keys).collect { |deal|
+      deal.trending_order = -purchases[deal.id]
+      deal
+    }.sort_by(&:trending_order)[0..10]
   end
   
   def get_info

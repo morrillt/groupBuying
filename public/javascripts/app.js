@@ -107,5 +107,5 @@ $(document).ready(function() {
     } catch (err) {
     }	
 
-	show_stats(1)
+	show_stats(1);
 });

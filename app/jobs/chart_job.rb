@@ -98,8 +98,6 @@ class ChartJob
     # data.avg_deal = Deal.find_by_sql("select avg(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.site_id = #{site_id} GROUP BY snapshots.deal_id ) x;").first.prom.to_f
     data.avg_revenue_per_deal = site.avg_revenue_per_deal
 
-
-
     # ###changes in %
     # # coupons closed today-yesterday    
     # unless data.closed_yesterday == 0
