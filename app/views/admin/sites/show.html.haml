@@ -1,20 +1,74 @@
 %h1=@site.name
 
-%table
-  %tr
-    %th id
-    %th name
-    %th base_url
-    %th source_name
-    %th active
-    %th created_at
-    %th updated_at
+%h2 Stats
 
-  %tr
-    %td=@site.id
-    %td=@site.name
-    %td=@site.base_url
-    %td=@site.source_name
-    %td=@site.active
-    %td=@site.created_at
-    %td=@site.updated_at
+%table#stats
+  %tbody
+    %tr
+      %td Active Deals
+      %td=@site.deals.active.count
+    %tr
+      %td Total Deals
+      %td=@site.deals.count
+    %tr
+      %td Snapshots Captured
+      %td=@site.snapshots.count
+    %tr
+      %td Total Divisions
+      %td=@site.divisions.count
+
+    %tr
+      %td Last Upsell Change %
+      %td=number_to_percentage(@site.snapshots.last.upsell_diff, :precision => 2)
+
+    %tr
+      %td Last #{@site_hourly_revenue_by_site.count} Revenue Capture(s)
+      %td #{@site.last_snapshot_at} - #{Time.zone.tzinfo.name}
+  
+    %tr
+      %td Last Deal Captured At
+      %td #{@site.last_deal_at} - #{Time.zone.tzinfo.name}
+
+%hr
+      
+%h2 Deals
+
+%br
+
+%form{:action => admin_site_path(@site)}
+  %fieldset 
+    %p
+      %label Search:
+      %input{:type => 'text', :name => 'search', :value => params[:search]}
+      %input{:type => 'submit', :value => 'Search'}
+    %small
+      %em
+        Search by id or name
+
+%table#deals
+  %thead
+    %th ID
+    %th Name
+    %th Division
+    %th Last Buyers Count
+    %th Buyers Count
+    %th Hotness
+    
+  %tbody
+  - @deals.each do |deal|
+    %tr
+      %td=deal.id
+      %td=truncate(deal.name)
+      %td=deal.division.try(:name)
+      %td=deal.snapshots.last.try(:last_buyers_count)
+      %td=deal.buyers_count
+      %td=deal.hotness
+
+= will_paginate @deals
+
+- content_for :javascripts do
+  :javascript
+    $(document).ready(function(){
+      $("table tr:odd").addClass('odd');
+      $("table tr:even").addClass('even');
+    });

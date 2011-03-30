@@ -105,5 +105,11 @@ class DealSnapshot
       deal.save
     end
   end
+  
+  # Returns an Float of the percent changed
+  # from last_buyers_count to sold_count
+  def upsell_diff
+    last_buyers_count.percent_change_from(buyers_count)
+  end
 end
   

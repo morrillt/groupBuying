@@ -1,6 +1,23 @@
 !!!5
 %html
-  = render "admin/shared/head"
+  %head
+    %meta{:charset => 'utf-8'}
+    %title
+      Group Buying - Admin - #{controller.controller_name.humanize}
+
+    = stylesheet_link_tag 'css/screen.css', :media => 'screen, projection'
+    = stylesheet_link_tag 'css/print.css', :media => 'print'
+    /[if lt IE 8]
+      = stylesheet_link_tag 'css/ie.css', :media => 'screen, projection'
+
+    = stylesheet_link_tag 'css/styles.css', :media => 'screen'
+    = stylesheet_link_tag 'admin/admin.css', :media => 'screen, projection'
+
+    = stylesheet_link_tag "jquery.fancybox-1.3.4.css"#, :cache => true    
+
+    = yield :stylesheets
+    
+    = javascript_include_tag 'http://code.jquery.com/jquery-1.5.1.min.js'
   %body
     .container
       .top-container
@@ -18,12 +35,5 @@
           = yield
       .bottom-container
         #bottom
-
-  = javascript_include_tag "thirdparty/jquery-1.5.1.min"
-  = javascript_include_tag "thirdparty/MyAjax/ajaxTables"
-  :javascript
-    var model= "#{@model_name}";
-    loadTable();
-    label2value();
 
   = yield :javascripts

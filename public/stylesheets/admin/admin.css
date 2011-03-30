@@ -1,0 +1,16 @@
+table{
+	border-collapse: collapse;
+	width: 100%;
+}
+
+table tr.odd{
+	background: #F8F8FA;
+}
+
+table tr.even{
+	background: #E3E3E5;
+}
+
+table tr td, table tr th{
+	padding: 0.5em 0.2em;
+}

@@ -27,6 +27,8 @@ Groupster::Application.routes.draw do
   namespace :admin do
     root :to => 'sites#index'
     
+    match '/sites/:id(/page/:page(/search/:search))' => 'sites#show'
+    
     match "/deals/export" => "deals#export"
     match "/:model/table" => "application#table"
     
