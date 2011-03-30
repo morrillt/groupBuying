@@ -4,7 +4,7 @@ class AddGrouponSite < ActiveRecord::Migration
     Division.reset_column_information
     groupon = Site.create(:name => 'Groupon', :source_name => 'groupon', :base_url => 'http://www.groupon.com/', :active => true)
     Groupon.divisions.each do |division|
-      groupon.divisions.create(:name => division.name, :division_id => division.id, :url => groupon.base_url + division.id, :source => 'groupon')
+      groupon.divisions.create(:name => division.name, :division_id => division.id, :url => groupon.base_url + division.id, :source => 'groupon', :site_division_id => division.id)
     end
   end
 
