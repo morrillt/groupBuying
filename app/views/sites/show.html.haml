@@ -1,3 +1,4 @@
+/ = debug @chart_data
 #site-stats.main-content
   %h1 #{@site.name}
   #chart
@@ -29,31 +30,32 @@
   #deals-variation.stats-block
     %ul
       %li.period
-        %a{:href=>"#"} Day
+        %a{:href=>"#", :onclick => 'show_stats(0);return false;'} Day
       %li.period
-        %a{:href=>"#"} Week
+        %a{:href=>"#", :onclick => 'show_stats(7);return false;'} Week
       %li.period
-        %a{:href=>"#"} Month
+        %a{:href=>"#", :onclick => 'show_stats(30);return false;'} Month
       %li.period
-        %a{:href=>"#"} Quarter
-    .variation-table
-      .entry
-        .calc
-          %p.label Closed Deals
-          %p.value #{number_with_delimiter @site.deals.inactive.count}
-          %p.change #{@data.change_today_yesterday}
-        .calc
-          %p.label Coupons Purchased
-          %p.value #{number_with_delimiter @data.closed_yesterday}
-          %p.change #{@data.change_yesterday}
-        .calc
-          %p.label Total Spent on Deals
-          %p.value #{number_to_currency(@data.purchased_today,:unit => "$",:precision=>0)}
-          %p.change #{@data.purchased_change_today}
-        .calc
-          %p.label Average Revenue per Deal
-          %p.value #{number_to_currency(@data.revenue_today,:unit => "$", :precision=>0)}
-          %p.change #{@data.change_purchased_yesterday}
+        %a{:href=>"#", :onclick => 'show_stats(90);return false;'} Quarter
+    - Site::STATS_PERIODS.each do |period|
+      .variation-table{:id => "stats_#{period}"}
+        .entry
+          .calc
+            %p.label Closed Deals
+            %p.value #{number_with_delimiter @data.deals_closed_for(period)}
+            %p.chang=display_percent(@data.deals_closed_percent(period))
+          .calc
+            %p.label Coupons Purchased
+            %p.value #{number_with_delimiter @data.coupons_purchased_for(period)}
+            %p.chang=display_percent(@data.coupons_purchased_percent(period))
+          .calc
+            %p.label Total Spent on Deals
+            %p.value #{number_to_currency(@data.revenue_by_periods_for(period),      :unit => "$",:precision=>0)}
+            %p.chang=display_percent(@data.revenue_by_periods_percent(period))
+          .calc
+            %p.label Average Revenue per Deal
+            %p.value #{number_to_currency(@data.average_revenue_for(period),      :unit => "$", :precision=>0)}
+            %p.chang=display_percent(@data.average_revenue_percent(period))
   #deals-trending.stats-block
     %h2 Currently Trending on #{@site.name} 
     .trending-table
@@ -64,9 +66,8 @@
       - @trending.each do |d|
         .row
           %a.deal{:href=>"#{d.permalink}", :target=>"_blank"} #{d.name}
-          %p.division #{d.division}
-          %p.hotness #{d.hotness}
-
+          %p.division #{d.division.name}
+          %p.hotness #{-d.trending_order}
 =content_for(:javascripts) do
   :javascript
     var chart_data= #{@chart_data.to_json}

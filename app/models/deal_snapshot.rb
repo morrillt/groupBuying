@@ -21,7 +21,35 @@ class DealSnapshot
   
   def self.recent
     where({:created_at.gte => 1.day.ago.at_midnight}).order(:created_at.asc).to_a
-  end
+  end   
+  
+  def self.coupons_purchased_by_given_period(from, to, site_id = nil)
+    map = 'function() { 
+      emit( this.deal_id, {min: this.last_buyers_count, max: this.buyers_count}
+    )}'
+    reduce = 'function(k, vals) {
+      r = { min: vals[0].min, max: vals[0].max }
+      for(var i=0; i < vals.length; i++) {
+        if (vals[i].min < r.min) { r.min = vals[i].min }
+        if (vals[i].max > r.max) { r.max = vals[i].max }
+      }
+      return r;
+    }'
+    finalize = 'function(key, val) {
+      val.deals = val.max - val.min;
+      return val;
+    }'                   
+    query = {:created_at => {"$gt" => from.at_midnight.utc, "$lt" => to.at_midnight.utc}}
+    query.merge!({:site_id => site_id}) if site_id
+    
+    result = DealSnapshot.collection.mapreduce(map, reduce, :finalize => finalize, :query => query)
+    
+    deals = {}    
+    result.find().to_a.each{ |d| 
+      deals[d["_id"].to_i] = d["value"]["deals"] if d["value"] 
+    }.compact
+    deals
+  end     
   
   def total_revenue
     (price.to_f * buyers_count.to_f)
