@@ -20,6 +20,35 @@ class Site < ActiveRecord::Base
     snapshooter.crawl_new_deals!
   end
   
+  # Returns a mongoid collection of DealSnapshot belonging
+  # to this site
+  def snapshots
+    @snapshots ||= DealSnapshot.where(:site_id => self.id)
+  end
+  
+  # Returns a String
+  # Returns the last snapshot timestamp as a 
+  # String for the current site instance
+  def last_snapshot_at(time_format = "%m/%d/%Y %I:%M:%S %p")
+    return @last_snapshot unless @last_snapshot.nil?
+    if @last_snapshot = snapshots.order(:created_at.desc).limit(1)[0]
+      return @last_snapshot.created_at.strftime(time_format)
+    else
+      return "None Available"
+    end
+  end
+  
+  # Returns a String
+  # Returns the last deal timestamp as a 
+  # String for the current site instance
+  def last_deal_at(time_format = "%m/%d/%Y %I:%M:%S %p")
+    if deals.empty?
+      return "None Available"
+    else
+      return @last_deal_at ||= deals.last.created_at.strftime(time_format)
+    end
+  end
+  
   # Returns a new instance of the Site Snapshooter class
   # Example:
   #  Snapshooter::KgbDeals.new
