@@ -65,7 +65,7 @@ module Snapshooter
                     
           save_deal!({
             :name => @doc.search("div[@class='title rockwell']").first.try(:text).to_s.gsub("\n", ''),
-            :sale_price => @doc.search("a[@class='buy-button']").first.try(:text).to_s.gsub(/[^0-9]/,'').to_f,
+            :sale_price => @doc.search("a[@class='buy-button']").first.try(:text).to_s.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f,
             :actual_price => @doc.search("span[@class='econ rockwell']").first.try(:text).to_s.gsub(/[^0-9]/,'').to_f,
             :expires_at => expires_at,
             :permalink => options[:full_path] ? deal_link : (base_url + deal_link),

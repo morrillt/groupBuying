@@ -4,6 +4,7 @@ module Snapshooter
     attr_reader :base_url, :doc
 
     TELEPHONE_REGEX = /[0-9]*[\-\(\)]+[0-9\-\(\)]+/
+    PRICE_REGEX = /[^0-9\.]/
     
     def initialize
       # setup a mechanize agent for crawling

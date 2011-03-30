@@ -19,7 +19,7 @@ module Snapshooter
     # Returns the current purchase count of a given deal
     def capture_deal(deal)
       get(deal.permalink, :full_path => true)
-      xpath("h4").first.text.gsub(/[^0-9\.]/,'').to_i
+      xpath("h4").first.text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
     end
 
     # deals
@@ -45,10 +45,10 @@ module Snapshooter
           get(link["href"], :full_path => true)
           
           # Capture the price
-          sale_price = xpath("div[@class='buy_link'] a").first.text.gsub(/[^0-9\.]/,'').to_f
+          sale_price = xpath("div[@class='buy_link'] a").first.text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f
           
           # Capture Actual Price
-          actual_price = xpath("div[@id='deal_basic_left'] dl dd").first.text.gsub(/[^0-9\.]/,'').to_f
+          actual_price = xpath("div[@id='deal_basic_left'] dl dd").first.text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f
           
           # Capture the merchant name
           merchant_name = ((xpath("li[@class='merchant_name']").first.text || "unknown").dasherize+link.text)
@@ -83,9 +83,9 @@ module Snapshooter
           })
           
           # Other usefull stuff.
-          # hash[:discount] = xpath("dl[@class='discount'] dd").first.text.gsub(/[^0-9\.]/,'').to_f
-          # hash[:actual_price] = xpath("div[@id='deal_basic_left'] dl dd").first.text.gsub(/[^0-9\.]/,'').to_f
-          # hash[:purchase_count] = xpath("h4").first.text.gsub(/[^0-9\.]/,'').to_i
+          # hash[:discount] = xpath("dl[@class='discount'] dd").first.text.gsub(Snapshooter::Base::Snapshooter::Base::PRICE_REGEX,'').to_f
+          # hash[:actual_price] = xpath("div[@id='deal_basic_left'] dl dd").first.text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f
+          # hash[:purchase_count] = xpath("h4").first.text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
         } # EOF map
       end
     end

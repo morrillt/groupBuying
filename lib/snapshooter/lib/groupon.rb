@@ -45,7 +45,7 @@ module Snapshooter
           
           # calculate full price
           normal_price = [:price, :discount_amount].map do |key|
-            groupon_deal[key] = (groupon_deal[key].gsub(/[^0-9]/,'').to_f * 0.01)
+            groupon_deal[key] = (groupon_deal[key].gsub(Snapshooter::Base::PRICE_REGEX,'').to_f * 0.01)
           end.sum
           
           save_deal!({
