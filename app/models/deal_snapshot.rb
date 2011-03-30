@@ -39,7 +39,7 @@ class DealSnapshot
       val.deals = val.max - val.min;
       return val;
     }'                   
-    query = {:created_at => {"$gt" => from.at_midnight.utc, "$lt" => to.at_midnight.utc}}
+    query = {:created_at => {"$gt" => from.utc, "$lt" => to.utc}}
     query.merge!({:site_id => site_id}) if site_id
     
     result = DealSnapshot.collection.mapreduce(map, reduce, :finalize => finalize, :query => query)
