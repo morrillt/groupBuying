@@ -97,46 +97,6 @@ class ChartJob
     #avg revenue per deal
     # data.avg_deal = Deal.find_by_sql("select avg(c) as prom from (SELECT MAX(sold_count) * sale_price  AS c FROM snapshots LEFT JOIN deals on snapshots.deal_id=deals.id where deals.site_id = #{site_id} GROUP BY snapshots.deal_id ) x;").first.prom.to_f
     data.avg_revenue_per_deal = site.avg_revenue_per_deal
-
-    # ###changes in %
-    # # coupons closed today-yesterday    
-    # unless data.closed_yesterday == 0
-    #   data.change_today_yesterday = (data.closed_today - data.closed_yesterday) / data.closed_yesterday
-    # else
-    #   data.change_today_yesterday = "No data"
-    # end
-    # 
-    # # coupons closed today-yesterday
-    # # tmp = Deal.find_by_sql("SELECT COUNT(DISTINCT(deal_id)) as closed FROM snapshots WHERE status=0 and DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site_id}").first.closed
-    # snaps = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:deal_id).uniq
-    # tmp = Deal.where(:id => snaps, :active => 0).count
-    #    
-    # unless tmp == 0
-    #   data.change_yesterday = (data.closed_yesterday - tmp ) / tmp
-    # else
-    #   data.change_yesterday = "No data"
-    # end
-    # 
-    # # coupons change today-yesterday
-    # unless data.purchased_today == 0
-    #   data.purchased_change_today = if(data.purchased_yesterday == 0) 
-    #     data.purchased_today
-    #   else
-    #     (data.purchased_today.to_i - data.purchased_yesterday.to_i) / data.purchased_yesterday
-    #   end
-    # else
-    #   data.purchased_change_today = "No data"
-    # end
-    # 
-    # # # coupons change yesterday-
-    # # tmp = Deal.find_by_sql("select sum(sold_since_last_snapshot_count) as nsold from snapshots where DATE(created_at)>=DATE_SUB(DATE(NOW()), INTERVAL 2 DAY) and DATE(created_at)<=DATE_SUB(DATE(NOW()), INTERVAL 1 DAY) and site_id = #{site_id}").first.nsold.to_i
-    # tmp = DealSnapshot.by_date_range(1.days.ago.at_midnight, 0.days.ago.at_midnight, {:site_id => self.id}).collect(&:last_buyers_count).sum
-    # 
-    # unless tmp==0
-    #   data.change_purchased_yesterday = (data.purchased_yesterday - tmp )/tmp
-    # else
-    #   data.change_purchased_yesterday = "No data"
-    # end 
     
     data.deals_closed      = site.deals_closed_by_periods
     data.coupons_purchased = site.coupons_purchased_by_periods 

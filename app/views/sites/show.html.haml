@@ -30,7 +30,7 @@
   #deals-variation.stats-block
     %ul
       %li.period
-        %a{:href=>"#{}", :onclick => 'show_stats(1);return false;'} Day
+        %a{:href=>"#", :onclick => 'show_stats(0);return false;'} Day
       %li.period
         %a{:href=>"#", :onclick => 'show_stats(7);return false;'} Week
       %li.period
@@ -43,19 +43,19 @@
           .calc
             %p.label Closed Deals
             %p.value #{number_with_delimiter @data.deals_closed_for(period)}
-            %p.chang= "% #{@data.deals_closed_percent(period)}"
+            %p.chang=display_percent(@data.deals_closed_percent(period))
           .calc
             %p.label Coupons Purchased
             %p.value #{number_with_delimiter @data.coupons_purchased_for(period)}
-            %p.chang= "% #{@data.coupons_purchased_percent(period)}"
+            %p.chang=display_percent(@data.coupons_purchased_percent(period))
           .calc
             %p.label Total Spent on Deals
             %p.value #{number_to_currency(@data.revenue_by_periods_for(period),      :unit => "$",:precision=>0)}
-            %p.chang= "% #{@data.revenue_by_periods_percent(period)}"
+            %p.chang=display_percent(@data.revenue_by_periods_percent(period))
           .calc
             %p.label Average Revenue per Deal
             %p.value #{number_to_currency(@data.average_revenue_for(period),      :unit => "$", :precision=>0)}
-            %p.chang= "% #{@data.average_revenue_percent(period)}"
+            %p.chang=display_percent(@data.average_revenue_percent(period))
   #deals-trending.stats-block
     %h2 Currently Trending on #{@site.name} 
     .trending-table
