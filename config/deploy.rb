@@ -42,6 +42,7 @@ after "deploy:update_code" do
   run "#{rvm_bin}/rvm rvmrc trust #{release_path}"
   # link the default database.yml
   run "ln -s #{shared_path}/config/database_groupie.yml #{release_path}/config/database.yml"
+  run "ln -s #{shared_path}/config/mongoid.yml #{release_path}/config/mongoid.yml"
 end
 
 namespace :deploy do
@@ -122,6 +123,27 @@ namespace :db do
 
     run "mkdir -p #{shared_path}/config"
     put config.result(binding), "#{shared_path}/config/database_groupie.yml"
+  end
+  task :setup_mongoid, :except => { :no_release => true } do
+    default_template = <<-EOF
+    defaults: &defaults
+      host: localhost
+      pool_size: 10
+      autocreate_indexes: true
+    development:
+      <<: *defaults
+      database: group_buying
+    test:
+      <<: *defaults
+      database: group_buying_test
+    production:
+      <<: *defaults
+      database: group_buying_staging2
+    EOF
+    config = ERB.new(default_template)
+
+    run "mkdir -p #{shared_path}/config"
+    put config.result(binding), "#{shared_path}/config/mongoid.yml"
   end
 end
 after "deploy:setup",           "db:setup"   unless fetch(:skip_db_setup, false)
