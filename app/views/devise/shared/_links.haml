@@ -5,4 +5,5 @@
 - else
   %ul
     = link_to "Login", new_session_path('user')
-    = link_to "Sign Up", new_registration_path('user')
+    - if devise_mapping.registerable?  && controller_name != 'registrations'
+      = link_to "Sign Up", new_registration_path('user')
