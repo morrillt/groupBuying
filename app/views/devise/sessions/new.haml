@@ -1,0 +1,48 @@
+%h2 Sign in
+= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => {'data-csv' => 'new_user', :class => 'styled'}) do |f|
+  .field
+    = f.label :email
+    = f.text_field :email
+  .field
+    = f.label :password
+    = f.password_field :password
+  - if devise_mapping.rememberable?
+    .field.float-right
+      - if devise_mapping.recoverable? && controller_name != 'passwords'
+        %span.float-left= link_to "Forgot your password?", new_password_path(resource_name)
+      = f.check_box :remember_me
+      = f.label :remember_me
+  .field
+    = f.submit "Sign in", {:class => 'button primary'}
+  - if devise_mapping.registerable? && controller_name != 'registrations'
+    %p.info.small
+      Don't have an account yet? 
+      = link_to "Sign up", new_registration_path(resource_name) 
+      
+      
+  -# :KLUDGE: @see http://github.com/dnclabs/client_side_validations/issues#issue/24
+  :javascript
+    var new_user_validate_options=
+    {
+       "messages":{
+          "user[email]":{
+             "required":"can't be blank",
+             "format":"is invalid"
+          },
+          "user[password]":{
+             "required":"can't be blank",
+             "maxlength":"is too long (maximum is 20 characters)",
+             "minlength":"is too short (minimum is 6 characters)",
+             "equalTo":"doesn't match confirmation"
+          }
+       },
+       "rules":{
+          "user[email]":{
+             "required":true,
+             "format":"^([\\w\\.%\\+\\-]+)@([\\w\\-]+\\.)+([\\w]{2,})$"
+          },
+          "user[password]":{
+             "required":true
+          }
+       }
+    }

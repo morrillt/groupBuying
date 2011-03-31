@@ -29,6 +29,7 @@ GEM
       activesupport (= 3.0.5)
     activesupport (3.0.5)
     arel (2.0.9)
+    bcrypt-ruby (2.1.4)
     bson (1.2.4)
     bson_ext (1.2.4)
     builder (2.1.2)
@@ -36,6 +37,10 @@ GEM
     compass (0.10.6)
       haml (>= 3.0.4)
     crack (0.1.8)
+    devise (1.2.1)
+      bcrypt-ruby (~> 2.1.2)
+      orm_adapter (~> 0.0.3)
+      warden (~> 1.0.3)
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -70,6 +75,7 @@ GEM
       will_paginate (~> 3.0.pre)
     mysql2 (0.2.6)
     nokogiri (1.4.4)
+    orm_adapter (0.0.4)
     polyglot (0.3.1)
     rack (1.2.2)
     rack-mount (0.6.13)
@@ -138,6 +144,8 @@ GEM
     tzinfo (0.3.25)
     vegas (0.1.8)
       rack (>= 1.0.0)
+    warden (1.0.3)
+      rack (>= 1.0.0)
     will_paginate (3.0.pre2)
 
 PLATFORMS
@@ -146,6 +154,7 @@ PLATFORMS
 DEPENDENCIES
   bson_ext (~> 1.2)
   compass (>= 0.10.6)
+  devise
   factory_girl
   fastercsv
   geokit

@@ -9,9 +9,13 @@
             %a{:href=>"/"}
               %img{:src=>"/images/logo-200.png"}
           .account
-            %a{:href=>"#"} Login
-            %a{:href=>"#"} Sign up
+            = render :partial => "devise/shared/links"          
+            / 
+            / %a{:href=>"/signup"} Sign up
       .main-container
+        #flash-messages
+          - flash.each do |key, value| 
+            %div{:class => key}= value
         #main
           = yield
       .right-container

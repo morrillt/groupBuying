@@ -138,7 +138,7 @@ namespace :db do
       database: group_buying_test
     production:
       <<: *defaults
-      database: group_buying_staging2
+      database: group_buying_production2
     EOF
     config = ERB.new(default_template)
 

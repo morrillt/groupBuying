@@ -14,9 +14,7 @@ module Groupster
   class Application < Rails::Application
     config.generators do |g|
       g.template_engine :haml
-    end
-
-    config.generators do |g|
+      g.orm :active_record
       g.test_framework :rspec
     end
 

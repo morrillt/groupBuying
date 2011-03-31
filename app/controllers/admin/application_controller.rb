@@ -1,4 +1,6 @@
 class Admin::ApplicationController < ApplicationController
+  before_filter :authenticate_admin_rights!
+  
   def table
     @page_limit= 25
     @start= (params[:start]||1).to_i
@@ -32,6 +34,12 @@ class Admin::ApplicationController < ApplicationController
     when 'deal'
       # Array describes what fields should be ignored/excluded
       ['id', 'deal_id', 'division_id', 'site_id', 'sold', 'updated_at'].each {|f| @fields.delete f}
+    end
+  end   
+  
+  def authenticate_admin_rights!
+    unless current_user.is_a? Admin
+      redirect_to root_path, :flash => {:notice => "Your need to be admin to access that page"}
     end
   end
 end

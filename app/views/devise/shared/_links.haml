@@ -1,0 +1,8 @@
+- if user_signed_in?
+  %ul
+    %a{:href=>"#{}"} Logged in as #{current_user.name}
+    = link_to "Sign out", destroy_user_session_path
+- else
+  %ul
+    = link_to "Login", new_session_path('user')
+    = link_to "Sign Up", new_registration_path('user')

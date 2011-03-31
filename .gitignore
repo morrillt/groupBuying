@@ -5,6 +5,7 @@ tmp/**/*
 *.sql
 *.gz
 config/database.yml
+config/mongoid.yml
 public/deals.csv
 public/stylesheets/css
 test/
