@@ -24,14 +24,13 @@ module Snapshooter
 
     # deals
     def crawl_new_deals!
-      super
+      super       
+      site     = Site.find_by_source_name("kgb_deals")
+      
       divisions.each do |division_hash|
         
         # Get the deals for this division
         get(division_hash[:href])
-        
-        # Find the site
-        site     = Site.find_by_source_name("kgb_deals")
         
         # Find the division
         @division = site.divisions.find_or_initialize_by_name(division_hash[:text])

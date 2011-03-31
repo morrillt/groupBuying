@@ -66,6 +66,8 @@ class Site < ActiveRecord::Base
       Snapshooter::OpenTable.new
     when 'groupon'
       Snapshooter::GrouponClass.new
+    when 'living_social'
+      Snapshooter::LivingSocial.new
     else
       raise Exception, "Unknown site source_name #{self.source_name}"
     end
