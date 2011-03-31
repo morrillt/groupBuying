@@ -58,8 +58,8 @@ class Site < ActiveRecord::Base
     @snapshooter ||= case self.source_name
     when 'kgb_deals'
       Snapshooter::KgbDeals.new
-    when 'travel_zoo'
-      Snapshooter::TravelZoo.new
+    when 'travel_zoo', 'travel_zoo_uk'
+      Snapshooter::TravelZoo.new(self.id)
     when 'homerun'
       Snapshooter::Homerun.new
     when 'open_table'

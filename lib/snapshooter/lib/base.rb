@@ -4,9 +4,10 @@ module Snapshooter
     attr_reader :base_url, :doc
 
     TELEPHONE_REGEX = /[0-9]*[\-\(\)]+[0-9\-\(\)]+/
+    UK_TELEPHONE_REGEX = /[0-9]{3,5}\s+[0-9]{3,5}\s+[0-9]{3,5}/
     PRICE_REGEX = /[^0-9\.]/
     
-    def initialize
+    def initialize(site_id = nil)
       # setup a mechanize agent for crawling
       # disabled for now
       # @agent = Mechanize.new { |agent| agent.user_agent_alias = 'Mac Safari' }
@@ -56,13 +57,20 @@ module Snapshooter
       end
     end
     
-    def split_address_telephone(address)
-      match_data = address.match(TELEPHONE_REGEX)
+    def split_address_telephone(address, country = :usa)
+      telephone_regex = unless country == :usa
+          self.class.const_get("#{country}_telephone_regex".upcase)
+        else
+          TELEPHONE_REGEX
+        end
+        
+      match_data = address.match(telephone_regex)
       if match_data
-        [address.gsub(TELEPHONE_REGEX, ''), match_data.to_s]
+        [address.gsub(telephone_regex, ''), match_data.to_s]
       else
         [address, nil]
       end
     end
+    
   end
 end

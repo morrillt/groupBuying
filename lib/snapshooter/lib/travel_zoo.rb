@@ -1,7 +1,9 @@
 module Snapshooter
-  class TravelZoo < Base
-    def initialize
-      @base_url = 'http://www.travelzoo.com'
+  class TravelZoo < Base   
+    def initialize(site_id)
+      site = Site.find(site_id)
+      @site_id = site_id
+      @base_url = site.base_url
       super
     end
     
@@ -14,6 +16,10 @@ module Snapshooter
         end
       }
       @divisions
+    end  
+    
+    def site
+      @site ||= Site.find(@site_id)
     end
     
     def deal_links
@@ -27,10 +33,8 @@ module Snapshooter
     end
     
     def crawl_new_deals!
-      super
-      
       # Find the site
-      site     = Site.find_by_source_name("travel_zoo")
+      puts "#{site.name} is crawling"
       
       divisions.map do |dhash|
         division_url = dhash[:url]        
@@ -40,7 +44,7 @@ module Snapshooter
         
         # Find the division
         @division = site.divisions.find_or_initialize_by_name(dhash[:name])
-        @division.source = "travel_zoo"
+        @division.source = site.source_name
         @division.url = options[:full_path] ? division_url : (base_url + division_url)
         @division.save
         
@@ -51,7 +55,7 @@ module Snapshooter
           options[:full_path] = (deal_link =~ /^http(.+)/i) ? true : false
           get(deal_link, options)
           
-          travel_zoo_deal = Snapshooter::TravelZoo::Deal.new(@doc, deal_link, site.id, options)
+          travel_zoo_deal = Snapshooter::TravelZoo::Deal.new(@doc, deal_link, @site_id, options)
           
           # Skip deal if no expiration time present
           if travel_zoo_deal.sold_out?
@@ -62,8 +66,7 @@ module Snapshooter
           save_deal!(travel_zoo_deal.to_hash)
           
         end
-      end
-      
+      end           
     end
   
     class Deal
@@ -96,7 +99,11 @@ module Snapshooter
     
       def lng
         @lng ||= @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[2]
-      end
+      end         
+      
+      def site
+        @site ||= Site.find(@site_id)
+      end      
     
       def expires_at
         if @time_left
@@ -119,8 +126,9 @@ module Snapshooter
         @permalink ||= @options[:full_path] ? @deal_link : (base_url + @deal_link)
       end
     
-      def telephone
-        @telephone ||= Snapshooter::Base.new.split_address_telephone(raw_address).try(:last)
+      def telephone   
+        country = site.source_name.scan /uk/
+        @telephone ||= Snapshooter::Base.new.split_address_telephone(raw_address, country).try(:last)
       end
       
       def sold_out?
@@ -128,7 +136,7 @@ module Snapshooter
       end    
       
       def site_id
-        @site_id || Site.find_by_source_name("travel_zoo").id
+        @site_id# || Site.find_by_source_name("travel_zoo").id
       end
       
       def to_hash
