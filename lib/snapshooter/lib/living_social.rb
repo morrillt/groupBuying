@@ -110,7 +110,7 @@ module Snapshooter
         if savings > 0 && sale_price > 0
           @actual_price ||= sale_price + sale_price * (savings * 0.01)
         end
-        @actual_price.round
+        @actual_price.try(:round)
       end
     
       def raw_address
