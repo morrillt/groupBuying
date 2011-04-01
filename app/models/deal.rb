@@ -43,13 +43,15 @@ class Deal < ActiveRecord::Base
 
   # returns true if more than one snapshot for deal
   def has_more_than_one_snapshot?
-    @has_more_than_one_snapshot ||= snapshots.count.to_i > 1
+    @has_more_than_one_snapshot ||= snapshots.to_a.count.to_i > 1
   end
   
   def calculate_hotness!
     if has_more_than_one_snapshot?
-      first_snapshot_sold_count = snapshots.first.buyers_count
-      rating = buyers_count.to_i.percent_change_from( first_snapshot_sold_count.to_i )
+      period_snapshots = snapshots.to_a[-5..-1]
+      initial_sold_count = snapshots.shift.try(:buyers_count).to_i
+      total_increases_for_period = snapshots.map{|s| s.buyers_count - initial_sold_count }.sum
+      rating = (total_increases_for_period.to_f / 5.0)
       update_attribute(:hotness, rating)
     else
       true

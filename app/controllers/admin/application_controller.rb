@@ -1,5 +1,6 @@
 class Admin::ApplicationController < ApplicationController
   # before_filter :authenticate_admin_rights!
+  layout 'admin'
   
   def table
     @page_limit= 25
