@@ -45,21 +45,4 @@ namespace :routines do
       end
     } 
   end
-  
-  namespace :deals do
-    desc "expire open_table deals"
-    task :capture_open_table_expired => :environment do
-      tt = Snapshooter::OpenTable.new
-      Deal.active.each {|deal|
-        tt.get(deal.permalink)
-        unless tt.doc.search("div[@class='dealOverBtn buyButton expiredBtn']").try(:text).empty?
-          expires_at = tt.doc.search("div[@class='gbStatusLabel']").text.gsub(/[^0-9:\/]+/, ' ').to_time            
-          if deal.expires_at != expires_at
-            deal.expires_at = expires_at 
-            deal.save
-          end
-        end
-      }
-    end
-  end
 end

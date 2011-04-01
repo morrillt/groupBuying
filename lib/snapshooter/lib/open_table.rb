@@ -65,7 +65,7 @@ module Snapshooter
             :raw_address => raw_address,
             :telephone => telephone,
             :expires_at => expires_at,
-            :permalink => options[:full_path] ? deal_link : (base_url + deal_link),
+            :permalink => deal_url,
             :site => @site,
             :division => @division,
             :max_sold_count => @doc.search("span[@class='peoplePurchasedValue']").text.to_i 
@@ -75,5 +75,19 @@ module Snapshooter
       
     end
     
-  end
-end
+    def capture_expires_at
+      site = Site.find_by_source_name('open_table')
+      site.deals.each {|deal|
+        get(deal.permalink.to_s, :full_path => true)
+        unless @doc.search("div[@class='dealOverBtn buyButton expiredBtn']").try(:text).empty?
+          expires_at = @doc.search("div[@class='gbStatusLabel']").text.gsub(/[^0-9:\/]+/, ' ').to_time            
+          if deal.expires_at != expires_at
+            deal.expires_at = expires_at 
+            deal.save
+          end
+        end
+      }      
+    end
+    
+  end # OpenTable
+end # Snapshooter
