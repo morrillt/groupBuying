@@ -26,7 +26,6 @@ module Snapshooter
       divisions.map(&:url).each do |division_url|
         options = {}
         
-        
         site = Site.find_by_source_name('open_table')
         
         detect_absolute_path(division_url, options)
@@ -46,15 +45,14 @@ module Snapshooter
           get(deal_url, :full_path => true)
           
           # Parse time left
-          time_left = @doc.search("span[@id='dealTimeLeftArea']").text.split(":").map!{ |t|
-            t.gsub(/[^0-9]/,'').to_i
-          }
-          
-          # Skip deal if no expiration time present
-          if time_left.empty? || time_left.size < 3
-            puts "Sold out"
-            next
+          unless @doc.search("div[@class='dealOverBtn buyButton expiredBtn']").try(:text).empty?
+            expires_at = @doc.search("div[@class='gbStatusLabel']").text.gsub(/[^0-9:\/]+/, ' ').to_time            
+          else
+            time_counter = @doc.search("span[@id='dealTimeLeftArea']").text.gsub(/[^0-9dhms]/,'').scan(/(\d+)(\w)/)            
+            expires_at = time_counter_to_expires_at(time_counter)
           end
+                    
+          # Skip deal if no expiration time present
           
           raw_address = @doc.search("span[@class='formattedAddress']").last.try(:text) || ''
           raw_address, telephone = split_address_telephone(raw_address)
@@ -66,10 +64,11 @@ module Snapshooter
             :actual_price => @doc.search("span[@class='origPriceValue']").first.text.gsub(/[^0-9]/,'').to_f,
             :raw_address => raw_address,
             :telephone => telephone,
-            :expires_at => 1.week.from_now,
+            :expires_at => expires_at,
             :permalink => options[:full_path] ? deal_link : (base_url + deal_link),
             :site => @site,
-            :division => @division
+            :division => @division,
+            :max_sold_count => @doc.search("span[@class='peoplePurchasedValue']").text.to_i 
           })
         end
       end

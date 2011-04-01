@@ -70,6 +70,24 @@ module Snapshooter
       else
         [address, nil]
       end
+    end  
+    
+    def time_counter_to_expires_at(counter)
+      expires = Time.now
+      counter.map{|v,k|
+        v = v.to_i
+        case k 
+          when 'd'
+            expires += v.days
+          when 'h'
+            expires += v.hours
+          when 'm'
+            expires += v.minutes
+          when 's'
+            expires += v.seconds
+        end  
+      }
+      expires
     end
     
   end
