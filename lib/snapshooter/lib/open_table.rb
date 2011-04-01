@@ -75,7 +75,7 @@ module Snapshooter
       
     end
     
-    def capture_expires_at
+    def capture_expires_at_and_max_sold_count
       site = Site.find_by_source_name('open_table')
       site.deals.each {|deal|
         get(deal.permalink.to_s, :full_path => true)
@@ -86,7 +86,10 @@ module Snapshooter
             deal.save
           end
         end
-      }      
+        
+        deal.max_sold_count = @doc.search("span[@class='peoplePurchasedValue']").text.to_i
+        deal.save
+      }
     end
     
   end # OpenTable
