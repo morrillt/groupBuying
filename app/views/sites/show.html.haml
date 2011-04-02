@@ -66,8 +66,8 @@
       - @trending.each do |d|
         .row
           %a.deal{:href=>"#{d.permalink}", :target=>"_blank"} #{d.name}
-          %p.division #{d.division.name}
-          %p.hotness #{-d.trending_order}
+          %p.division #{d.division}
+          %p.hotness #{d.hotness}
 =content_for(:javascripts) do
   :javascript
     var chart_data= #{@chart_data.to_json}
