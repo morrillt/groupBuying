@@ -19,7 +19,7 @@
 
     %tr
       %td Last Upsell Change %
-      %td=number_to_percentage(@site.snapshots.last.upsell_diff, :precision => 2)
+      %td=number_to_percentage(@site.snapshots.last.try(:upsell_diff), :precision => 2)
 
     %tr
       %td Last #{@site.snapshots.count} Revenue Capture(s)
@@ -49,7 +49,8 @@
   %thead
     %th ID
     %th Name
-    %th Division
+    %th Division  
+    %th Permalink
     %th Last Buyers Count
     %th Buyers Count
     %th Max Sold Count
@@ -61,6 +62,7 @@
       %td=deal.id
       %td=truncate(deal.name)
       %td=deal.division.try(:name)
+      %td=link_to 'url', deal.permalink
       %td=deal.snapshots.last.try(:last_buyers_count)
       %td=deal.buyers_count
       %td=deal.max_sold_count
