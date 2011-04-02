@@ -64,7 +64,7 @@ module Snapshooter
             :raw_address => full_address,
             :telephone => "",
             :active => true,
-            :max_sold_count => capture_deal(groupon_deal)
+            # :max_sold_count => capture_deal(groupon_deal)
           })
         end
       end
