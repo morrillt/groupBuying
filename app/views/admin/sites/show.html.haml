@@ -52,6 +52,7 @@
     %th Division
     %th Last Buyers Count
     %th Buyers Count
+    %th Max Sold Count
     %th Hotness
     
   %tbody
@@ -62,6 +63,7 @@
       %td=deal.division.try(:name)
       %td=deal.snapshots.last.try(:last_buyers_count)
       %td=deal.buyers_count
+      %td=deal.max_sold_count
       %td=deal.hotness
 
 = will_paginate @deals
