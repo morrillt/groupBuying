@@ -26,6 +26,11 @@ module Snapshooter
     # Returns the current purchase count of a given deal
     def capture_deal(deal)
       get(deal.permalink, :full_path => true)
+      buyers_count
+    end      
+        
+    # Capture buyers_count
+    def buyers_count
       @doc.to_s.scan(/\d+ bought\./).try(:first).to_i
     end
     
@@ -71,10 +76,11 @@ module Snapshooter
             :permalink => options[:full_path] ? deal_link : (base_url + deal_link),
             :site => @site,
             :division => @division,
-            :expires_at => 1.week.from_now,
+            :expires_at => expires_at,
             :raw_address => "",
             :telephone => "",
-            :active => true
+            :active => true,
+            :max_sold_count => buyers_count
           })          
         end
       end

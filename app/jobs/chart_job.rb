@@ -1,14 +1,29 @@
 class ChartJob
    @queue = :chart
 
-  def self.perform
-    puts "Start ChartJob[#{Time.now}]"
-    hourly_revenue_by_site  
-    Site.active.each do |site|
-      hourly_revenue_by_divisions(site.id)
-      get_site_info(site.id)
+  def self.perform(site_id = nil)
+    Mongoid.database.connection.reconnect # Clean all tmp.map_reduce collections
+    unless site_id
+      puts "Start ChartJob[#{Time.now}]"
+      hourly_revenue_by_site        
+      Site.active.each do |site|
+        Resque.enqueue(ChartJob, site.id)
+      end      
+      puts "ChartJob Finish"            
+    else
+      puts "ChartJob Start for #{site_id}"
+      begin      
+        site = Site.find(site_id)
+        hourly_revenue_by_divisions(site.id)
+        get_site_info(site.id)
+      rescue => e
+        puts "Error:"
+        puts "-"*90
+        puts e.message
+      end
+      puts "ChartJob for #{site_id} - Finish"
     end
-    puts "ChartJob Finish"            
+    Mongoid.database.connection.reconnect # Clean all tmp.map_reduce collections
   end
   
   def self.hourly_revenue_by_site

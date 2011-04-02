@@ -8,6 +8,7 @@ class Site < ActiveRecord::Base
   has_many :hourly_revenue_by_site
 
   scope :active, where(:active => true)
+  # scope :inactive, where(:active => false)
   
   # Updates all the sites active deals buy createing
   # snapshots of the deal
@@ -20,6 +21,13 @@ class Site < ActiveRecord::Base
   # Captures new deals in the database
   def crawl_new_deals
     snapshooter.crawl_new_deals!
+  end  
+                          
+  # Updates max_sold_count for expired deals
+  def update_expired_deals
+    deals.inactive.each do |deal|
+      deal.update_attribute(:max_sold_count, deal.capture_sold_count)
+    end
   end
   
   # Returns a mongoid collection of DealSnapshot belonging
@@ -194,12 +202,7 @@ class Site < ActiveRecord::Base
   end  
 
   def currently_trending
-    # Site.find_by_sql(["SELECT deals.name, deals.permalink, divisions.name as division, deals.hotness FROM deals, divisions WHERE deals.division_id = divisions.id AND deals.site_id = ? ORDER BY hotness DESC LIMIT 10", self.id])
-    purchases = DealSnapshot.coupons_purchased_by_given_period(5.hours.ago, Time.now, self.id)
-    trending = Deal.find_all_by_id(purchases.keys).collect { |deal|
-      deal.trending_order = -purchases[deal.id]
-      deal
-    }.sort_by(&:trending_order)[0..10]
+    Site.find_by_sql(["SELECT deals.name, deals.permalink, divisions.name as division, deals.hotness FROM deals, divisions WHERE deals.division_id = divisions.id AND deals.site_id = ? ORDER BY hotness DESC LIMIT 10", self.id])
   end
   
   def get_info

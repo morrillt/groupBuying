@@ -17,6 +17,10 @@ module Snapshooter
     # Returns the current purchase count of a given deal
     def capture_deal(deal)
       get(deal.permalink, :full_path => true)
+      buyers_count
+    end
+    
+    def buyers_count
       @doc.search("span[@class='peoplePurchasedValue']").text.to_i
     end
     
@@ -68,7 +72,7 @@ module Snapshooter
             :permalink => deal_url,
             :site => @site,
             :division => @division,
-            :max_sold_count => @doc.search("span[@class='peoplePurchasedValue']").text.to_i 
+            :max_sold_count => buyers_count
           })
         end
       end

@@ -29,6 +29,10 @@ module Snapshooter
     # Returns the current purchase count of a given deal
     def capture_deal(deal)
       get(deal.permalink, :full_path => true)
+      buyers_count
+    end
+    
+    def buyers_count
       @doc.search("span[@id='ctl00_Main_LabelBought']").text.to_i
     end
     
@@ -150,7 +154,8 @@ module Snapshooter
           :lng => lng,
           :expires_at => expires_at,
           :permalink => permalink,
-          :telephone => telephone
+          :telephone => telephone,
+          :max_sold_count => buyers_count
         }
       end
     end 

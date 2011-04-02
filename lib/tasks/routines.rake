@@ -44,5 +44,14 @@ namespace :routines do
         end
       end
     } 
+  end 
+  
+  namespace :deals do 
+    desc "update expired deals data"
+    task :update_expired_deals => :environment do
+      Site.all.each {|site|
+        site.update_expired_deals
+      }
+    end
   end
 end

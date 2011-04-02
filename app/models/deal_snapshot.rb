@@ -89,21 +89,17 @@ class DealSnapshot
     # Capture hotness of deal
     this.deal.calculate_hotness!
     # Capture the buyers count from the deal
-    this.buyers_count = deal.capture_sold_count# - 35 < 0) ? 0 : deal.capture_sold_count - 35
+    this.buyers_count = deal.capture_sold_count
     # Capture the last buyers_count value
     this.last_buyers_count = last_recorded_buyers_count_for_deal(this.deal)
     # Store the site id in the snapshot table for easy reference
     this.site_id = deal.site_id
     # Store the division id from the deal for metrics
     this.division_id = deal.division_id
-    # this.created_at = Time.now - 5.hours
     this.save
     
     deal.max_sold_count ||= 0
-    if deal.max_sold_count != this.buyers_count
-      deal.max_sold_count = this.buyers_count
-      deal.save
-    end
+    deal.update_attribute(:max_sold_count, this.buyers_count) if deal.max_sold_count != this.buyers_count
   end
   
   # Returns an Float of the percent changed

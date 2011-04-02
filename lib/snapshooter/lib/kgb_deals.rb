@@ -19,6 +19,10 @@ module Snapshooter
     # Returns the current purchase count of a given deal
     def capture_deal(deal)
       get(deal.permalink, :full_path => true)
+      buyers_count
+    end   
+    
+    def buyers_count
       xpath("h4").first.text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
     end
 
@@ -78,7 +82,8 @@ module Snapshooter
             :expires_at => expires_at,
             :raw_address => raw_address,
             :telephone => telephone,
-            :active => expires_at > Time.now
+            :active => expires_at > Time.now,
+            :max_sold_count => buyers_count
           })
           
           # Other usefull stuff.

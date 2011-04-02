@@ -92,6 +92,10 @@ class Deal < ActiveRecord::Base
   
   def division_name
     @division_name ||= division.try(:name)
+  end  
+  
+  def expired?
+    Time.now >= expires_at
   end
 
 

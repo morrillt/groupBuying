@@ -49,7 +49,11 @@ module Snapshooter
     # Returns the current purchase count of a given deal
     def capture_deal(deal)
       get(deal.permalink, :full_path => true)
-      @doc.parser.search("div[@class='deal-price deal-price-lg']").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
+      buyers_count
+    end
+    
+    def buyers_count    
+      @doc.parser.search("li.purchased .value").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
     end
     
     def crawl_new_deals!
@@ -103,6 +107,10 @@ module Snapshooter
     
       def sale_price
         @sale_price ||= @doc.parser.search("div[@class='deal-price deal-price-lg']").try(:text).to_s.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f
+        if @sale_price == 0
+          @sale_price = @doc.parser.search("div[@class='deal-price deal-price-sm']").try(:text).to_s.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f 
+        end    
+        @sale_price
       end
     
       def actual_price
@@ -128,6 +136,10 @@ module Snapshooter
       def lng
         # @lng ||= @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[2]
       end         
+      
+      def buyers_count      
+        @doc.parser.search("li.purchased .value").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
+      end
           
       def expires_at
         return @time_left if @time_left
@@ -161,7 +173,8 @@ module Snapshooter
         @site_id
       end
       
-      def to_hash
+      def to_hash  
+        # debugger
         {
           :name => name,
           :site_id => site_id,
@@ -172,7 +185,8 @@ module Snapshooter
           :lat => lat,
           :lng => lng,
           :expires_at => expires_at,
-          :permalink => permalink
+          :permalink => permalink,
+          :max_sold_count => buyers_count
         }
       end
     end     
