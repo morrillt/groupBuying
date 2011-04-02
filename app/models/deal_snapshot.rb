@@ -100,7 +100,7 @@ class DealSnapshot
     this.save
     
     deal.max_sold_count ||= 0
-    if deal.max_sold_count < this.buyers_count
+    if deal.max_sold_count != this.buyers_count
       deal.max_sold_count = this.buyers_count
       deal.save
     end
