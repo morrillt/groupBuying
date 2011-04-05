@@ -43,17 +43,11 @@ module Snapshooter
             full_address << groupon_deal.redemptionLocations.first.try(:state).to_s + "\n"
             full_address << groupon_deal.redemptionLocations.first.try(:postalCode).to_s
           end
-          
-          
-          # calculate full price
-          normal_price = [:price, :discount_amount].map do |key|
-            groupon_deal[key] = (groupon_deal[key].gsub(Snapshooter::Base::PRICE_REGEX,'').to_f * 0.01)
-          end.sum
-          
+                    
           save_deal!({
             :name => groupon_deal.title,
-            :sale_price => groupon_deal.price,
-            :actual_price => normal_price,
+            :sale_price => groupon_deal.price.to_f,
+            :actual_price => groupon_deal.value.to_f,
             :lat => groupon_deal.division_lat,
             :lng => groupon_deal.division_lng,
             :expires_at => groupon_deal.end_date,
