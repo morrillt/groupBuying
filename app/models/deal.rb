@@ -1,6 +1,7 @@
 require 'digest/md5'
 class Deal < ActiveRecord::Base
   include Geokit::Geocoders
+  CSV_FIELDS = %w[ id name permalink sale_price actual_price division_name site_name active hotness lat lng expires_at raw_address buyers_count ]
   
   attr_accessor :trending_order
   
@@ -204,7 +205,16 @@ class Deal < ActiveRecord::Base
       deal
     }
     deals.sort_by(&:trending_order)[0..limit]
-  end  
+  end 
+  
+  
+  class << self
+    def export(query)
+      FasterCSV.generate do |csv|
+        Deal.where(query).map { |r| CSV_FIELDS.map { |m| r.send m }  }.each { |row| csv << row }
+      end
+    end
+  end 
   
 
   private

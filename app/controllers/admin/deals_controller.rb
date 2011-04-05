@@ -11,6 +11,14 @@ class Admin::DealsController < Admin::ApplicationController
   end
   
   def export
-    redirect_to '/deals.csv'
+    respond_to do |format|
+      format.html { render :text => ''}
+      format.xml  { render :xml => @deals }
+      format.csv  { 
+        headers["Content-Type"] = 'text/csv'
+        render :text => Deal.export(:site_id => params[:site_id]), :layout => false
+      }
+    end
+    
   end
 end

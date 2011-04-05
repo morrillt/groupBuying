@@ -40,6 +40,7 @@ Groupster::Application.routes.draw do
 
     resources :sites, :only => [:index, :show] do
       resources :deals, :only => [:index, :show] do
+        get :export, :on => :collection
         resources :snapshots, :only => [:index, :show]
       end
       
