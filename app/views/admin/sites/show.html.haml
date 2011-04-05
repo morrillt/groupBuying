@@ -50,7 +50,9 @@
     %th ID
     %th Name
     %th Division  
-    %th Permalink
+    %th Permalink 
+    %th Active 
+    %th Sale (Actual)
     %th Last Buyers Count
     %th Buyers Count
     %th Max Sold Count
@@ -59,10 +61,12 @@
   %tbody
   - @deals.each do |deal|
     %tr
-      %td=deal.id
+      %td=link_to deal.id, admin_site_deal_path(deal.site.id, deal)
       %td=truncate(deal.name)
       %td=deal.division.try(:name)
       %td=link_to 'url', deal.permalink
+      %td=deal.active ? '1' : '0'
+      %td="#{price(deal, :sale_price)}(#{price(deal, :actual_price)})"
       %td=deal.snapshots.last.try(:last_buyers_count)
       %td=deal.buyers_count
       %td=deal.max_sold_count

@@ -7,6 +7,7 @@ class Admin::DealsController < Admin::ApplicationController
   
   def show
     @deal = Deal.find(params[:id], :include => [:site, :division])
+    @snapshots = DealSnapshot.where(:deal_id => @deal.id)
   end
   
   def export

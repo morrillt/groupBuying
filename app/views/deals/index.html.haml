@@ -37,7 +37,7 @@
     - for deal in @deals
       %tr{ :class => cycle(:odd, :even) }
         %td= deal.name
-        %td= deal.sale_price
+        %td= price(deal, :sale_price)
         %td= deal.division_id
         %td= deal.site_id
         %td= deal.active

@@ -11,6 +11,6 @@ class Admin::SitesController < Admin::ApplicationController
       paginated_options.merge!(:conditions => ["deals.id = ? or deals.name like ?", params[:search], '%'+params[:search]+'%'])
     end
     
-    @deals = @site.deals.paginate(paginated_options)
+    @deals = @site.deals.order('active DESC, hotness DESC').paginate(paginated_options)
   end
 end

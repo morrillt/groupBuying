@@ -14,16 +14,16 @@
       %p.value #{number_with_delimiter @data.coupon_purchased}
     .calc
       %p.label Total spent on deals to date
-      %p.value #{number_to_currency(@data.total_revenue, :unit =>"$", :precision=>0)}
+      %p.value #{p(@data.total_revenue, :unit =>"$", :precision=>0)}
     .calc
       %p.label Average coupons sold per deal
       %p.value #{number_with_delimiter @data.avg_coupon}
     .calc
       %p.label Average price per deal
-      %p.value #{number_to_currency(@data.avg_price_per_deal, :unit =>"$", :precision=>0)}
+      %p.value #{p(@data.avg_price_per_deal, :unit =>"$", :precision=>0)}
     .calc
       %p.label Average revenue per deal
-      %p.value #{number_to_currency(@data.avg_revenue_per_deal,:unit =>"$", :precision=>0)}
+      %p.value #{p(@data.avg_revenue_per_deal,:unit =>"$", :precision=>0)}
     .calc
       %p.label Total locations
       %p.value #{@site.divisions.count}
@@ -50,11 +50,11 @@
             %p.chang=display_percent(@data.coupons_purchased_percent(period))
           .calc
             %p.label Total Spent on Deals
-            %p.value #{number_to_currency(@data.revenue_by_periods_for(period),      :unit => "$",:precision=>0)}
+            %p.value #{p(@data.revenue_by_periods_for(period),      :unit => "$",:precision=>0)}
             %p.chang=display_percent(@data.revenue_by_periods_percent(period))
           .calc
             %p.label Average Revenue per Deal
-            %p.value #{number_to_currency(@data.average_revenue_for(period),      :unit => "$", :precision=>0)}
+            %p.value #{p(@data.average_revenue_for(period),      :unit => "$", :precision=>0)}
             %p.chang=display_percent(@data.average_revenue_percent(period))
   #deals-trending.stats-block
     %h2 Currently Trending on #{@site.name} 

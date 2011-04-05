@@ -19,8 +19,8 @@
     %tr
       %td= link_to deal.deal_id, deal
       %td= deal.status
-      %td #{deal.sale_price}#{deal.currency}
-      %td= deal.original_price
+      %td= price(deal, :sale_price)
+      %td= price(deal, :original_price)
       %td= deal.buyers_count
       %td= deal.hotness
       %td= link_to(deal.division.name, site_division_path(deal.site, deal.division)) if deal.division

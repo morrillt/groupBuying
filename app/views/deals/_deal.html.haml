@@ -1,8 +1,8 @@
 %tr
   %td= link_to deal.deal_id, deal
   %td= deal.active? ? 'active' : 'inactive'
-  %td= number_to_currency(deal.sale_price) + deal.currency
-  %td= number_to_currency(deal.actual_price)
+  %td= price(deal, :sale_price)
+  %td= price(deal, :actual_price)
   %td= deal.buyers_count
   %td= deal.hotness
   %td= link_to(deal.division.name, site_division_path(deal.site, deal.division)) if deal.division
