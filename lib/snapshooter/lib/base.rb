@@ -56,6 +56,7 @@ module Snapshooter
           log "Skipped #{old_deal.name}"
         else
           deal = @division.deals.active.create!(attributes)
+          deal.take_first_mongo_snapshot!
           log "Added #{deal.name}"
         end
       rescue => e     
@@ -65,7 +66,7 @@ module Snapshooter
     end
     
     def split_address_telephone(address, country = :usa)
-      telephone_regex = unless country == :usa
+      telephone_regex = unless country == :usa || country.empty?
           self.class.const_get("#{country}_telephone_regex".upcase)
         else
           TELEPHONE_REGEX

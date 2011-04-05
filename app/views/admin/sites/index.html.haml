@@ -6,6 +6,7 @@
 			%th Name
 			%th Status
 			%th Active Deals
+			%th All deals
 			%th Total Revenue
 			%th Last Snapshot At
 	
@@ -16,6 +17,7 @@
 				%td=link_to(site.name, admin_site_path(site))
 				%td=site.active? ? 'Active' : 'Inactive'
 				%td=site.deals.active.count
+				%td=site.deals.count
 				%td=price(site, :total_revenue)
 				%td=site.last_snapshot_at
 				

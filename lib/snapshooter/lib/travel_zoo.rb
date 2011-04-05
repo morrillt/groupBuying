@@ -33,7 +33,7 @@ module Snapshooter
     end
     
     def buyers_count
-      @doc.search("span[@id='ctl00_Main_LabelBought']").text.to_i
+      @doc.search("span[@id='ctl00_Main_LabelBought']").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
     end
     
     def crawl_new_deals!
@@ -61,14 +61,7 @@ module Snapshooter
           
           travel_zoo_deal = Snapshooter::TravelZoo::Deal.new(@doc, deal_link, @site_id, options)
           
-          # Skip deal if no expiration time present
-          if travel_zoo_deal.sold_out?
-            puts "Sold out"
-            next
-          end
-                
           save_deal!(travel_zoo_deal.to_hash)
-          
         end
       end           
     end
@@ -141,6 +134,10 @@ module Snapshooter
       
       def site_id
         @site_id# || Site.find_by_source_name("travel_zoo").id
+      end     
+      
+      def buyers_count
+        @doc.search("span[@id='ctl00_Main_LabelBought']").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
       end
       
       def to_hash

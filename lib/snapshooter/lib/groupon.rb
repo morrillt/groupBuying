@@ -45,7 +45,7 @@ module Snapshooter
             full_address << groupon_deal.redemptionLocations.first.try(:postalCode).to_s
           end
                     
-          res = save_deal!({
+          save_deal!({
             :name => groupon_deal.title,
             :sale_price => groupon_deal.price.to_f,
             :actual_price => groupon_deal.value.to_f,
@@ -61,9 +61,6 @@ module Snapshooter
             :active => true,
             :max_sold_count => capture_deal(groupon_deal)
           })  
-          if res
-            res.take_first_mongo_snapshot!
-          end
         end
       end
     end
