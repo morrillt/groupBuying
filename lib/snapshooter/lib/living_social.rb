@@ -130,11 +130,11 @@ module Snapshooter
       end
     
       def lat
-        # @lat ||= @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[1]
+        @lat ||= @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[1].to_f
       end
     
       def lng
-        # @lng ||= @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[2]
+        @lng ||= @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[2].to_f
       end         
       
       def buyers_count      

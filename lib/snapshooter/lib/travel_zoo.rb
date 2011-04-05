@@ -5,6 +5,16 @@ module Snapshooter
       @site_id = site_id
       @base_url = site.base_url
       super
+    end  
+    
+    def get(resource, options = {})
+      url = options[:full_path] ? resource : (base_url + resource)
+      begin                             
+        @mecha ||= Mechanize.new
+        @doc = @mecha.get(url)        
+      rescue OpenURI::HTTPError => e
+        log e.message
+      end
     end
     
     def divisions
@@ -24,6 +34,21 @@ module Snapshooter
     
     def deal_links
       @doc.search("a[@class='seeDetailsBtn']").map{|link| link['href'] if link['href'] =~ %r[/local-deals/deal/(\d+)]  }.compact
+    end    
+    
+    def pages_links   
+      @doc.search("a[@class='dealPagerPagingNumbers']").map{|link| link['href'].scan(/doPostBack\('(.*)',''\)/).flatten.first }.compact            
+    end
+    
+    def capture_paginated_deal_links
+      pages_links.collect{ |page|   
+        # Get page
+        form = @doc.form("aspnetForm")
+        form.add_field!('__EVENTARGUMENT', '')
+        form.add_field!('__EVENTTARGET', page)
+        @doc = @mecha.submit(form)
+        deal_links
+      }.flatten
     end
     
     # Returns the current purchase count of a given deal
@@ -53,8 +78,9 @@ module Snapshooter
         @division.save
         
         get(division_url, options)
-        
-        deal_links.map do |deal_link|
+        links = deal_links
+        links = links.concat capture_paginated_deal_links
+        links.map do |deal_link|
           puts "Ping: #{deal_link}"
           options[:full_path] = (deal_link =~ /^http(.+)/i) ? true : false
           get(deal_link, options)
@@ -90,12 +116,12 @@ module Snapshooter
         @raw_address ||= @doc.search("div[@class='smallMap'] p").children.map{|c| c.try(:text).to_s }.join(" ")
       end
     
-      def lat
-        @lat ||= @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[1]
+      def lat              
+        @lat ||= @doc.parser.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[1].to_f
       end
     
-      def lng
-        @lng ||= @doc.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[2]
+      def lng     
+        @lng ||= @doc.parser.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[2].to_f
       end         
       
       def site
@@ -141,6 +167,7 @@ module Snapshooter
       end
       
       def to_hash
+        # debugger
         {
           :name => name,
           :site_id => site_id,
