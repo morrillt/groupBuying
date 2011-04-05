@@ -16,7 +16,8 @@ module Snapshooter
     end
     
     # Returns the current purchase count of a given deal
-    def capture_deal(deal)
+    def capture_deal(deal)     
+      return 0 unless deal.division # new deal?
       Groupon.deals(:division => deal.division.site_division_id, :lat => deal.lat, :lng => deal.lng).detect{|d| 
         d.id == deal.deal_id
       }.try(:quantity_sold)
@@ -44,7 +45,7 @@ module Snapshooter
             full_address << groupon_deal.redemptionLocations.first.try(:postalCode).to_s
           end
                     
-          save_deal!({
+          res = save_deal!({
             :name => groupon_deal.title,
             :sale_price => groupon_deal.price.to_f,
             :actual_price => groupon_deal.value.to_f,
@@ -58,8 +59,11 @@ module Snapshooter
             :raw_address => full_address,
             :telephone => "",
             :active => true,
-            # :max_sold_count => capture_deal(groupon_deal)
-          })
+            :max_sold_count => capture_deal(groupon_deal)
+          })  
+          if res
+            res.take_first_mongo_snapshot!
+          end
         end
       end
     end

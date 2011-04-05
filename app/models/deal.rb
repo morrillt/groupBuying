@@ -111,6 +111,11 @@ class Deal < ActiveRecord::Base
   def take_mongo_snapshot!
     DealSnapshot.create_from_deal!(self)
   end
+                                             
+  # buyers_count == last_buyers_count
+  def take_first_mongo_snapshot!
+    DealSnapshot.create_from_deal!(self, true)
+  end
   
   # Closes out the deal
   def close!

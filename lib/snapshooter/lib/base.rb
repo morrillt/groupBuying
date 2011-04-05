@@ -60,7 +60,8 @@ module Snapshooter
         end
       rescue => e     
         log "Error: #{e.message}"
-      end
+      end    
+      deal  # Return deal only when create new entity
     end
     
     def split_address_telephone(address, country = :usa)
