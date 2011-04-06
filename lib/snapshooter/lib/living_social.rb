@@ -62,16 +62,12 @@ module Snapshooter
       site     = Site.find_by_source_name("living_social")
       
       divisions.map do |dhash|
-        division_url = dhash[:url]        
         options = {}
-        options[:full_path] = division_url =~ /^http(.+)/i
-                
-        # Find the division
-        @division = site.divisions.find_or_initialize_by_name(dhash[:name])
-        @division.source = site.source_name
-        @division.url = options[:full_path] ? division_url : (base_url + division_url)
-        @division.save
+        div_url, div_name = dhash[:url], dhash[:name]        
         
+        # Find the division
+        find_or_create_division(div_name, div_url)
+                
         get(division_url, options)
         
         deal_links.map do |deal_link|

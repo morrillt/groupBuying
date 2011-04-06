@@ -7,7 +7,7 @@ class Admin::DealsController < Admin::ApplicationController
   
   def show
     @deal = Deal.find(params[:id], :include => [:site, :division])
-    @snapshots = DealSnapshot.where(:deal_id => @deal.id).order('created_at ASC')
+    @snapshots = DealSnapshot.where(:deal_id => @deal.id).order_by([:created_at, :asc])
   end
   
   def export
