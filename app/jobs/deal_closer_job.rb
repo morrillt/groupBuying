@@ -5,6 +5,7 @@ class DealCloserJob
     puts "Start DealCloser[#{Time.now}]"
     Deal.expired.active.each do |deal|
       begin
+        deal.take_mongo_snapshot!
         deal.close!
       rescue => e
         puts "Error:"
