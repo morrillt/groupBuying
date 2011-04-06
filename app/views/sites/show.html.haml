@@ -14,16 +14,16 @@
       %p.value #{number_with_delimiter @data.coupon_purchased}
     .calc
       %p.label Total spent on deals to date
-      %p.value #{p(@data.total_revenue, :unit =>"$", :precision=>0)}
+      %p.value #{price(@data, :total_revenue)}
     .calc
       %p.label Average coupons sold per deal
       %p.value #{number_with_delimiter @data.avg_coupon}
     .calc
       %p.label Average price per deal
-      %p.value #{p(@data.avg_price_per_deal, :unit =>"$", :precision=>0)}
+      %p.value #{price(@data, :avg_price_per_deal)}
     .calc
       %p.label Average revenue per deal
-      %p.value #{p(@data.avg_revenue_per_deal,:unit =>"$", :precision=>0)}
+      %p.value #{price(@data, :avg_revenue_per_deal)}
     .calc
       %p.label Total locations
       %p.value #{@site.divisions.count}

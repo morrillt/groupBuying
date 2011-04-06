@@ -1,6 +1,6 @@
 class SiteInfo
   include Mongoid::Document
-  
+  field :site_id,                     :type => Integer
   field :tracked_active,              :type => Float
   field :deals_tracked,               :type => Float
   field :coupon_purchased,            :type => Float
@@ -27,6 +27,10 @@ class SiteInfo
   field :coupons_purchased, :type => Hash
   field :revenue_by_periods,:type => Hash
   field :average_revenue,   :type => Hash   
+  
+  def site
+    @site ||= Site.find(site_id)
+  end
   
   def deals_closed_for(days)
     deals_closed[days.to_s]

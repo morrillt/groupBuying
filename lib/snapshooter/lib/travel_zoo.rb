@@ -137,7 +137,7 @@ module Snapshooter
       # debugger
       base_link = deals.first.permalink.gsub(/[0-9]+/, '')
       max_deal_id = deals.collect{|d| d.permalink.scan(/[0-9]+/).first.to_i}.max
-      (20..max_deal_id).map {|i|
+      (1..max_deal_id).map {|i|
         deal_link = base_link + i.to_s
         unless deals.detect{|d| d.permalink == deal_link}
           crawl_deal(deal_link, options)
