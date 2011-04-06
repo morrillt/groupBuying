@@ -6,26 +6,27 @@ module Snapshooter
       super
     end       
     
-    
+
     def get(resource, options = {})
       url = options[:full_path] ? resource : (base_url + resource)
-      begin                             
-        @mecha ||= Mechanize.new
-        get_resp = @mecha.get(url)        
+      begin
+        # @doc = Nokogiri::HTML(open(url))
+        @doc = @mecha.get(url)
         
         # Clicking through first box with city select
-        if get_resp.links.first.href == '/?msc_id=1' 
-          get_resp = get_resp.links.first.click
-          get_resp = @mecha.get(url)
-        end                                          
+        if @doc.links.first.href == '/?msc_id=1' 
+          @doc = @doc.links.first.click
+          @doc = @mecha.get(url)
+        end
         
-        # @doc = Nokogiri::HTML(open(url))
-        @doc = get_resp
+        yield if block_given?
       rescue OpenURI::HTTPError => e
+        log e.message
+      rescue Mechanize::ResponseCodeError => e
         log e.message
       end
     end
-    
+
     
     def divisions
       return @divisions unless @divisions.empty?
@@ -45,13 +46,7 @@ module Snapshooter
           end
        }.flatten.compact
     end
-    
-    # Returns the current purchase count of a given deal
-    def capture_deal(deal)
-      get(deal.permalink, :full_path => true)
-      buyers_count
-    end
-    
+        
     def buyers_count    
       @doc.parser.search("li.purchased .value").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
     end
