@@ -1,100 +1,107 @@
 module Snapshooter
   class OpenTable < Base
     def initialize
-      @base_url = 'http://spotlight.opentable.com/deal'
       @site     = Site.find_by_source_name('open_table')
+      @site_id  = @site.id
+      @base_url = site.base_url
       super
     end
     
     def divisions
-      @site.divisions
+      @site.divisions.collect{|d| {:url => d.url, :name => d.name}}
+    end   
+    
+    def site
+      @site ||= Site.find(@site_id)
     end
     
     def deal_links
-      @doc.search("a[@class='link']").map{|link| link['href'] if link['href'] =~ %r[\/deal\/(.+)\/(\w+|\d+)]  }.compact
+      @doc.links.collect{|l|
+        if l.href =~ /comment\/coupon\/\d+/
+          l.href.gsub('comment/', '')
+        elsif l.href =~ /coupon\/d+/
+          l.href.to_s
+        end
+      }.compact.uniq   
+    end              
+    
+    def pages_links   
+      @doc.links.detect{|l| l.text == 'Recent Deals'}.href
     end
     
-    # Returns the current purchase count of a given deal
-    def capture_deal(deal)
-      get(deal.permalink, :full_path => true)
-      buyers_count
-    end
+    def capture_paginated_deal_links
+      get(pages_links)
+      @doc.links.collect{|link| link.href if link.href =~ /^\/coupon\/\d+$/}.compact.uniq
+    end         
     
+    def error_page?(url)
+      super || url =~ /.com\/$/
+    end
+        
     def buyers_count
-      @doc.search("span[@class='peoplePurchasedValue']").text.to_i
+      @doc.search("div[@id='dealTotalBought']").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
+    end                                                                                                   
+    
+    def detect_deal_division                                 
+      link = @doc.search("a[@class='country_selected']").text.downcase
+      find_or_create_division(link)
     end
     
-    def crawl_new_deals!
-      super
-      
-      divisions.map(&:url).each do |division_url|
-        options = {}
-        
+    class Deal < Snapshooter::Base::Deal
+      def initialize(doc, deal_link, site_id, options = {})
+        @doc = doc                 
+        @deal_link = deal_link                
         site = Site.find_by_source_name('open_table')
-        
-        detect_absolute_path(division_url, options)
-        
-        # Find the division
-        @division = site.divisions.find_or_initialize_by_url(division_url)
-        @division.url = division_url
-        @division.save
-        
-        get(division_url, options)
-                
-        deal_links.map do |deal_link|
-          log "Ping: #{deal_link}"
-          
-          deal_url = 'http://spotlight.opentable.com' + deal_link
-          
-          get(deal_url, :full_path => true)
-          
-          # Parse time left
-          unless @doc.search("div[@class='dealOverBtn buyButton expiredBtn']").try(:text).empty?
-            expires_at = @doc.search("div[@class='gbStatusLabel']").text.gsub(/[^0-9:\/]+/, ' ').to_time            
-          else
-            time_counter = @doc.search("span[@id='dealTimeLeftArea']").text.gsub(/[^0-9dhms]/,'').scan(/(\d+)(\w)/)            
-            expires_at = time_counter_to_expires_at(time_counter)
-          end
-                    
-          # Skip deal if no expiration time present
-          
-          raw_address = @doc.search("span[@class='formattedAddress']").last.try(:text) || ''
-          raw_address, telephone = split_address_telephone(raw_address)
-          
-          # need lat and lng, geocoding address for it          
-          save_deal!({
-            :name => @doc.search("h1").first.try(:text).gsub("Today's Deal: ", ''),
-            :sale_price => @doc.search("div[@class='detailsPageDealInfoPrice']").first.text.gsub(/[^0-9]/,'').to_f,
-            :actual_price => @doc.search("span[@class='origPriceValue']").first.text.gsub(/[^0-9]/,'').to_f,
-            :raw_address => raw_address,
-            :telephone => telephone,
-            :expires_at => expires_at,
-            :permalink => deal_url,
-            :site => @site,
-            :division => @division,
-            :max_sold_count => buyers_count
-          })
-        end
+        @site_id = site.id
+        @options = options
       end
-      
-    end
     
-    def capture_expires_at_and_max_sold_count
-      site = Site.find_by_source_name('open_table')
-      site.deals.each {|deal|
-        get(deal.permalink.to_s, :full_path => true)
-        unless @doc.search("div[@class='dealOverBtn buyButton expiredBtn']").try(:text).empty?
-          expires_at = @doc.search("div[@class='gbStatusLabel']").text.gsub(/[^0-9:\/]+/, ' ').to_time            
-          if deal.expires_at != expires_at
-            deal.expires_at = expires_at 
-            deal.save
-          end
+      def name
+        @doc.search("h1").first.try(:text).gsub("Today's Deal: ", '')
+      end
+    
+      def sale_price
+        @doc.search("div[@class='container-purchaseprice-buybtn']").first.text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f
+      end
+    
+      def actual_price
+        @doc.search("div[@class='deal-value']").first.text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f
+      end             
+      
+      def buyers_count
+        bc = @doc.search("div[@id='dealTotalBought']").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
+        bc = @doc.parser.to_s.scan(/totalSold\: (\d+)/).flatten.first.to_i if bc == 0
+        bc
+      end
+    
+      def raw_address    
+        @raw_address ||= @doc.parser.to_s.scan(%r[\{ 'address': '(.*)'\}]).flatten.first
+      end                      
+          
+      def lat              
+        # @lat ||= @doc.parser.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[1].to_f
+      end
+    
+      def lng     
+        # @lng ||= @doc.parser.to_s.match(%r[addMarker\(([-\d\.]+), ([-\d\.]+)])[2].to_f
+      end   
+      
+      def base_url
+        @base_url ||= Site.find(@site_id).base_url
+      end
+          
+      def expires_at   
+        stats_box = @doc.parser.css("div.container-countdown div div")
+        if stats_box.size > 1
+          expires_at = (stats_box[0].to_s + ' ' + stats_box[2].to_s).to_time
+        elsif 
+          timer = @doc.search('script').to_s.gsub(/\s+/, '').scan(/timer:[a-z0-9\,\:\{\}]*/).first.scan(/\{(.*)\}/).flatten.first
+          time_counter = timer.split(',').map{|d| d.split(':')}
+          expires_at = Snapshooter::Base.new.time_counter_to_expires_at(time_counter)
         end
-        
-        deal.max_sold_count = @doc.search("span[@class='peoplePurchasedValue']").text.to_i
-        deal.save
-      }
-    end
+        expires_at
+      end
+    end # OpenTable::Deal
     
   end # OpenTable
 end # Snapshooter

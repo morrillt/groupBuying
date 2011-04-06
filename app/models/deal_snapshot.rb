@@ -97,7 +97,7 @@ class DealSnapshot
     this.save
     
     deal.max_sold_count ||= 0
-    deal.update_attribute(:max_sold_count, this.buyers_count) if deal.max_sold_count != this.buyers_count
+    deal.update_attribute(:max_sold_count, this.buyers_count) if deal.max_sold_count != this.buyers_count && this.buyers_count > 0
   end
   
   # Returns an Float of the percent changed

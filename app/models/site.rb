@@ -21,7 +21,12 @@ class Site < ActiveRecord::Base
   # Captures new deals in the database
   def crawl_new_deals
     snapshooter.crawl_new_deals!
-  end  
+  end             
+                                    
+  # Trying to capture more deals with bruteforce
+  def crawl_old_deals_with_bruteforce          
+    snapshooter.crawl_old_deals_with_bruteforce
+  end
                           
   # Updates max_sold_count for expired deals
   def update_expired_deals
