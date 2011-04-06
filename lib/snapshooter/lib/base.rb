@@ -20,13 +20,15 @@ module Snapshooter
       options[:full_path] = (url =~ /^http(.+)/i) ? true : false
     end
     
-    def find_or_create_division(name, url)
+    def find_or_create_division(name, url = nil)
       options = {}
       detect_absolute_path(url, options)
       # Find the division
       @division = site.divisions.find_or_initialize_by_name(name)
       @division.source = site.source_name
-      @division.url = options[:full_path] ? url : (base_url + url)
+      if url
+        @division.url = options[:full_path] ? url : (base_url + url)
+      end
       @division.save
     end 
                  
@@ -69,7 +71,8 @@ module Snapshooter
       puts "Ping: #{url}"
       detect_absolute_path(url, options)
 
-      get(url, options) do
+      get(url, options) do  
+        # debugger
         unless error_page? @doc.uri.to_s
           detect_deal_division if options[:old_deals]
           deal = self.class::Deal.new(@doc, url, @site_id, options)

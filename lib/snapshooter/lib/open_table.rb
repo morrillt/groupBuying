@@ -32,15 +32,19 @@ module Snapshooter
     def capture_paginated_deal_links
       get(pages_links)
       @doc.links.collect{|link| link.href if link.href =~ /^\/coupon\/\d+$/}.compact.uniq
+    end         
+    
+    def error_page?(url)
+      super || url =~ /.com\/$/
     end
         
     def buyers_count
       @doc.search("div[@id='dealTotalBought']").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
     end                                                                                                   
     
-    def detect_deal_division
-      # link = @doc.search("img[@alt='*']").first.previous_element
-      # find_or_create_division(link.text, link['href'])
+    def detect_deal_division                                 
+      link = @doc.search("a[@class='country_selected']").text.downcase
+      find_or_create_division(link)
     end
     
     class Deal < Snapshooter::Base::Deal
