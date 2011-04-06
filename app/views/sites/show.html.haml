@@ -50,11 +50,11 @@
             %p.chang=display_percent(@data.coupons_purchased_percent(period))
           .calc
             %p.label Total Spent on Deals
-            %p.value #{p(@data.revenue_by_periods_for(period),      :unit => "$",:precision=>0)}
+            %p.value #{price(@data, :revenue_by_periods_for, period)}
             %p.chang=display_percent(@data.revenue_by_periods_percent(period))
           .calc
             %p.label Average Revenue per Deal
-            %p.value #{p(@data.average_revenue_for(period),      :unit => "$", :precision=>0)}
+            %p.value #{price(@data, :average_revenue_for, period)}
             %p.chang=display_percent(@data.average_revenue_percent(period))
   #deals-trending.stats-block
     %h2 Currently Trending on #{@site.name} 

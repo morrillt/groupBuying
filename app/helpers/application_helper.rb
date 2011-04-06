@@ -42,13 +42,13 @@ module ApplicationHelper
     return [40.to_f+lat,-73.to_f-lng]
   end   
   
-  def price(entity, method)
+  def price(entity, method, *args)
     currency = if entity.respond_to? :site
       entity.site.currency 
       else
         entity.try(:currency)
       end                 
-    p = entity.send(method)
+    p = entity.send(method, args)
     p = p.to_i if p.to_i == p
     number_to_currency(p, :unit => currency_symbol(currency))
   end               
