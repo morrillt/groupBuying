@@ -132,11 +132,11 @@ class Site < ActiveRecord::Base
   # =================================== Or not? ========================================
   
   def coupon_purchased
-    Deal.active.by_site(self.id).sum(:max_sold_count)
+    Deal.by_site(self.id).sum(:max_sold_count)
   end   
                       
   def total_revenue                     
-    Deal.active.by_site(self.id).select("SUM(max_sold_count * sale_price) as rev").first.rev.to_i
+    Deal.by_site(self.id).select("SUM(max_sold_count * sale_price) as rev").first.rev.to_i
   end 
   
   def avg_coupon
