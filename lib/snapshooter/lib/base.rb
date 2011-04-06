@@ -48,7 +48,6 @@ module Snapshooter
       begin
         # Ensure we dont duplicate deals use unique deal identifier
         if old_deal = @division.deals.find_by_permalink(attributes[:permalink])
-          log "OLD: #{old_deal.max_sold_count}, NEW: #{attributes[:max_sold_count]}" if old_deal.expired? 
           if old_deal.expired? && old_deal.max_sold_count != attributes[:max_sold_count]
             old_deal.update_attribute(:max_sold_count, attributes[:max_sold_count])
             log "max_sold_count have been updated for expired_deal #{old_deal.name}"
