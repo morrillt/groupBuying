@@ -48,7 +48,7 @@ module ApplicationHelper
       else
         entity.try(:currency)
       end                 
-    p = entity.send(method, args)
+    p = entity.send(method, *args)
     p = p.to_i if p.to_i == p
     number_to_currency(p, :unit => currency_symbol(currency))
   end               
