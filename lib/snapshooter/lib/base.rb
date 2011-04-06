@@ -14,6 +14,10 @@ module Snapshooter
       @deals     = []
       @divisions = []
       @doc       = @mecha
+    end    
+    
+    def site
+      @site ||= Site.find(@site_id)
     end
     
     def detect_absolute_path(url, options)

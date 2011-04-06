@@ -2,6 +2,8 @@ module Snapshooter
   class KgbDeals < Base
     def initialize
       @base_url = 'http://www.kgbdeals.com'
+      @site     = Site.find_by_source_name('kgb_deals')
+      @site_id  = @site.id      
       super
     end
 
@@ -28,8 +30,7 @@ module Snapshooter
 
     # deals
     def crawl_new_deals!
-      super       
-      site     = Site.find_by_source_name("kgb_deals")
+      site = Site.find_by_source_name("kgb_deals")
       
       divisions.each do |division_hash|
         

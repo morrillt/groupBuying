@@ -1,6 +1,6 @@
 class AddOpenTable < ActiveRecord::Migration
   def self.up
-    site = Site.create(:name => "Open Table", :source_name => 'open_table', :base_url => 'http://spotlight.opentable.com/deal')
+    site = Site.create(:name => "Open Table", :source_name => 'open_table', :base_url => 'http://spotlight.opentable.com')
     
     # create divisions
     %w(atlanta boston chicago denver los-angeles minneapolis-st-paul 

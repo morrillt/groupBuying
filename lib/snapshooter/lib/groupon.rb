@@ -24,8 +24,6 @@ module Snapshooter
     end
     
     def crawl_new_deals!
-      super      
-      
       divisions.map do |division|
         
         log "Processing Division: #{division.name}"

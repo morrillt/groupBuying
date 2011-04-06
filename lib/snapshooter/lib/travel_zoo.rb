@@ -18,9 +18,6 @@ module Snapshooter
       @divisions
     end  
     
-    def site
-      @site ||= Site.find(@site_id)
-    end
                         
     # Captures deal links from current page
     def deal_links

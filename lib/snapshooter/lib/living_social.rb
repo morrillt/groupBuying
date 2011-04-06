@@ -1,7 +1,9 @@
 module Snapshooter
   class LivingSocial < Base   
     def initialize
-      site = Site.find_by_source_name('living_social')
+      @site     = Site.find_by_source_name('living_social')
+      @site_id  = @site.id
+      
       @base_url = site.base_url
       super
     end       
@@ -44,7 +46,7 @@ module Snapshooter
         if link.href =~ %r[/deals/\d+(.*)]
           link.href.scan(%r[(/deals/\d+.*)/purchases/new]).first
           end
-       }.flatten.compact
+       }.flatten.compact.uniq
     end
         
     def buyers_count    
@@ -52,7 +54,6 @@ module Snapshooter
     end
     
     def crawl_new_deals!
-      super 
       # Find the site
       site     = Site.find_by_source_name("living_social")
       

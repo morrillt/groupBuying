@@ -2,6 +2,8 @@ module Snapshooter
   class Homerun < Base
     def initialize
       @base_url = "http://homerun.com"
+      @site     = Site.find_by_source_name('homerun')
+      @site_id  = @site.id
       super
     end
     
@@ -35,7 +37,6 @@ module Snapshooter
     end
     
     def crawl_new_deals!
-      super
       # Find the site
       @site     = Site.find_by_source_name("homerun")
       pp divisions.inspect
