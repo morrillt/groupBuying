@@ -8,6 +8,9 @@
       %td ID
       %td=@deal.id
     %tr
+      %td Permalink
+      %td=link_to @deal.permalink, @deal.permalink
+    %tr
       %td Sale price / Actual price
       %td="#{price(@deal, :sale_price)} / #{price(@deal, :actual_price)}" 
     %tr
@@ -15,7 +18,7 @@
       %td=link_to @deal.division.name, admin_division_path(@deal.division)
     %tr
       %td Active ? / Expires
-      %td= "#{@deal.active?.to_s} / #{d(@deal.expires_at)}"
+      %td= "#{@deal.active?.to_s} / #{d(@deal.expires_at)}(#{distance_of_time_in_words_to_now(@deal.expires_at)})"
     / %tr
     /   %td Raw address
     /   %td= @deal.raw_address
