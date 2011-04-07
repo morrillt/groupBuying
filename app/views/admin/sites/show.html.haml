@@ -104,7 +104,7 @@
       %td=price(@site.deals.inactive.revenue_by_max_sold_count.first, :revenue_ms)
     %tr
       %td Average Revenue per Deal
-      %td=number_to_currency(@closed_avg_rev, :unit => currency_symbol(@site.currency))
+      %td=sprice(@closed_avg_rev, @site.currency)
     %tr
       %td Expired from/to
       %td="#{d(@closed_from)} / #{d(@closed_to)}" 

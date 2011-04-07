@@ -54,7 +54,7 @@ module Snapshooter
     
     # Captures deal links on current and paginated links  
     def full_deal_links
-      deal_links.concat capture_paginated_deal_links    
+      deal_links.concat(capture_paginated_deal_links).uniq
     end
     
     # Returns the current purchase count of a given deal
@@ -92,7 +92,7 @@ module Snapshooter
       detect_absolute_path(url, options)
       get(url, options)
                     
-      # debugger            
+      # debugger    
       full_deal_links.map do |deal_link|  
         crawl_deal(deal_link, options)
       end
@@ -168,18 +168,19 @@ module Snapshooter
       (doc/path) || []
     end
     
-    def save_deal!(attributes)
+    def save_deal!(attributes, division = nil)
+      division ||= @division
       log attributes[:permalink]
       begin
         # Ensure we dont duplicate deals use unique deal identifier
-        if old_deal = @division.deals.find_by_permalink(attributes[:permalink])
+        if old_deal = division.deals.find_by_permalink(attributes[:permalink])
           if old_deal.expired? && old_deal.max_sold_count != attributes[:max_sold_count]
             old_deal.update_attribute(:max_sold_count, attributes[:max_sold_count])
             log "max_sold_count have been updated for expired_deal #{old_deal.name}"
           end
           log "Skipped #{old_deal.name}"
         else
-          deal = @division.deals.active.create!(attributes)
+          deal = division.deals.active.create!(attributes)
           deal.take_first_mongo_snapshot!
           log "Added #{deal.name}"
         end
@@ -273,7 +274,11 @@ module Snapshooter
       
       def site
         @site ||= Site.find(@site_id)
-      end      
+      end   
+      
+      def base_url
+        site.base_url
+      end   
       
       def sold_out?
         @sold_out ||= false

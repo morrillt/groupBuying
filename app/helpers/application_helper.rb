@@ -51,7 +51,11 @@ module ApplicationHelper
     p = entity.send(method, *args)
     p = p.to_i if p.to_i == p
     number_to_currency(p, :unit => currency_symbol(currency))
-  end               
+  end                                                        
+  
+  def sprice(price, currency = 0)
+    number_to_currency(price, :unit => currency_symbol(currency))
+  end
   
   def d(date)
     date.to_s(:short) if date
