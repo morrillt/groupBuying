@@ -83,7 +83,7 @@ module Snapshooter
     end 
     
     
-    def detect_deal_division
+    def detect_deal_division(old_deals = false)
       # Detect deal if escapes division
       if @doc.uri.to_s =~ /escapes\.livingsocial\.com/
         div = site.divisions.find_or_initialize_by_name("Escapes")
@@ -95,7 +95,11 @@ module Snapshooter
         else
           return div
         end
-      end
+      elsif old_deals
+        div_name = @doc.search("a[@class='market']").first.text
+        find_or_create_division(div_name)
+        @division
+      end  
     end
              
     def crawl_deal(url, options)
@@ -104,7 +108,7 @@ module Snapshooter
       get(url, options) do  
         unless error_page? @doc.uri.to_s
           deal = self.class::Deal.new(@doc, url, @site_id, options)
-          save_deal!(deal.to_hash, detect_deal_division )
+          save_deal!(deal.to_hash, detect_deal_division(options[:old_deals]) )
         else
           puts "Failed to get #{url}. Error page"
         end
