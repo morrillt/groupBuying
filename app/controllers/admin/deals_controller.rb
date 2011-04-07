@@ -18,8 +18,8 @@ class Admin::DealsController < Admin::ApplicationController
       format.xml  { render :xml => @deals }
       format.csv  { 
         headers["Content-Type"] = 'text/csv'
-        headers['Content-Disposition'] = "attachment; filename=\"#{closed_deals}-#{Time.now.strftime("%m-%d-%Y")}\"" 
-        render :text => Deal.export(opts).order('expires_at ASC'), :layout => false
+        headers['Content-Disposition'] = "attachment; filename=\"closed_deals-#{Time.now.strftime("%m-%d-%Y")}\"" 
+        render :text => Deal.order('expires_at ASC').export(opts), :layout => false
       }
     end
     
