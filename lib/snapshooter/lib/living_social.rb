@@ -14,11 +14,10 @@ module Snapshooter
         @doc = @mecha.get(url)
         
         # Clicking through first box with city select
-        if @doc.links.first.href == '/?msc_id=1' 
+        if @doc.links.first.text == "I'm already a subscriber, skip"
           @doc = @doc.links.first.click
           @doc = @mecha.get(url)
         end
-        
         yield if block_given?
       rescue OpenURI::HTTPError => e
         log e.message
