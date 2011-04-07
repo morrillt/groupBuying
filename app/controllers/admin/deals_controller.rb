@@ -10,13 +10,16 @@ class Admin::DealsController < Admin::ApplicationController
     @snapshots = DealSnapshot.where(:deal_id => @deal.id).order_by([:created_at, :asc])
   end
   
-  def export
+  def export              
+    opts = {:site_id => params[:site_id]}       
+    opts.merge!({:active => params[:active]}) if params[:active]
     respond_to do |format|
       format.html { render :text => ''}
       format.xml  { render :xml => @deals }
       format.csv  { 
         headers["Content-Type"] = 'text/csv'
-        render :text => Deal.export(:site_id => params[:site_id]), :layout => false
+        headers['Content-Disposition'] = "attachment; filename=\"#{closed_deals}-#{Time.now.strftime("%m-%d-%Y")}\"" 
+        render :text => Deal.export(opts).order('expires_at ASC'), :layout => false
       }
     end
     

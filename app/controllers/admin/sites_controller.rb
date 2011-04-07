@@ -12,5 +12,12 @@ class Admin::SitesController < Admin::ApplicationController
     end
     
     @deals = @site.deals.order('active DESC, hotness DESC').paginate(paginated_options)
+    @closed_from = Deal.inactive.where(:site_id => @site.id).minimum('expires_at')
+    @closed_to = Deal.inactive.where(:site_id => @site.id).maximum('expires_at')
+    @closed_avg_rev = if @site.deals.inactive.count == 0
+      0 
+    else
+      @site.deals.inactive.revenue_by_max_sold_count.first.revenue_ms / @site.deals.inactive.count
+    end
   end
 end

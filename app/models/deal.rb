@@ -35,6 +35,7 @@ class Deal < ActiveRecord::Base
   scope :inactive, where(:active => false)
   scope :expired, where("expires_at IS NOT NULL AND expires_at < NOW()")
   scope :by_site, lambda{|site_id| where(:site_id => site_id)}
+  scope :revenue_by_max_sold_count, select("sum(sale_price * max_sold_count) as revenue_ms")
   
   # Instance Methods
 
@@ -211,6 +212,7 @@ class Deal < ActiveRecord::Base
   class << self
     def export(query)
       FasterCSV.generate do |csv|
+        csv << CSV_FIELDS.join(',')
         Deal.where(query).map { |r| CSV_FIELDS.map { |m| r.send m }  }.each { |row| csv << row }
       end
     end

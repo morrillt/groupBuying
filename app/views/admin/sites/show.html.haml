@@ -1,5 +1,5 @@
 - content_for :top_nav do
-  = link_to 'Deals CSV Export', export_admin_site_deals_path(:site_id => @site.id, :format => :csv)
+  / = link_to 'Deals CSV Export', export_admin_site_deals_path(:site_id => @site.id, :format => :csv)
 
 %h1=@site.name
 
@@ -31,6 +31,13 @@
     %tr
       %td Last Deal Captured At
       %td #{@site.last_deal_at} - #{Time.zone.tzinfo.name}
+    %tr
+      %td Export
+      %td
+        = link_to 'All' , export_admin_site_deals_path(:site_id => @site.id, :format => :csv)
+        |
+        = link_to 'Expired' , export_admin_site_deals_path(:site_id => @site.id, :active => 0, :format => :csv)
+        
 
 %hr
       
@@ -75,8 +82,38 @@
       %td=deal.max_sold_count
       %td=deal.hotness
 
-= will_paginate @deals
+= will_paginate @deals    
+%br
 
+%hr
+      
+%h2 Closed Deals
+
+%br
+
+%table#stats
+  %tbody
+    %tr
+      %td Closed Deals
+      %td=@site.deals.inactive.count
+    %tr
+      %td Coupons puchased
+      %td=@site.deals.inactive.sum(:max_sold_count)
+    %tr
+      %td Total Spent on Deals
+      %td=price(@site.deals.inactive.revenue_by_max_sold_count.first, :revenue_ms)
+    %tr
+      %td Average Revenue per Deal
+      %td=number_to_currency(@closed_avg_rev, :unit => currency_symbol(@site.currency))
+    %tr
+      %td Expired from/to
+      %td="#{d(@closed_from)} / #{d(@closed_to)}" 
+    %tr
+      %td Export
+      %td= link_to 'Expired' , export_admin_site_deals_path(:site_id => @site.id, :active => 0, :format => :csv)      
+      
+
+%br
 - content_for :javascripts do
   :javascript
     $(document).ready(function(){
