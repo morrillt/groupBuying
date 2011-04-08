@@ -70,17 +70,17 @@ class Site < ActiveRecord::Base
   def snapshooter
     @snapshooter ||= case self.source_name
     when 'kgb_deals'
-      Snapshooter::KgbDeals.new
+      Snapshooter::KgbDeals.new(self.source_name)
     when 'travel_zoo', 'travel_zoo_uk'
-      Snapshooter::TravelZoo.new(self.id)
+      Snapshooter::TravelZoo.new(self.source_name)
     when 'homerun'
-      Snapshooter::Homerun.new
+      Snapshooter::Homerun.new(self.source_name)
     when 'open_table'
-      Snapshooter::OpenTable.new
+      Snapshooter::OpenTable.new(self.source_name)
     when 'groupon'
-      Snapshooter::GrouponClass.new
+      Snapshooter::GrouponClass.new(self.source_name)
     when 'living_social'
-      Snapshooter::LivingSocial.new
+      Snapshooter::LivingSocial.new(self.source_name)
     else
       raise Exception, "Unknown site source_name #{self.source_name}"
     end
@@ -132,9 +132,7 @@ class Site < ActiveRecord::Base
     revenues
   end      
    
-  # ================================== TODO FIXME ======================================
-  # ========================== Change to map-reduce functions ==========================
-  # =================================== Or not? ========================================
+  # ================================== Statistics ======================================
   
   def coupon_purchased
     Deal.by_site(self.id).sum(:max_sold_count)

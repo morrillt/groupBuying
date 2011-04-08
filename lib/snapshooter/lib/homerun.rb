@@ -1,12 +1,5 @@
 module Snapshooter
-  class Homerun < Base
-    def initialize
-      @base_url = "http://homerun.com"
-      @site     = Site.find_by_source_name('homerun')
-      @site_id  = @site.id
-      super
-    end
-    
+  class Homerun < Crawler
     def divisions
       return @divisions unless @divisions.empty?
       get("/local")
@@ -39,7 +32,6 @@ module Snapshooter
     def crawl_new_deals!
       # Find the site
       @site     = Site.find_by_source_name("homerun")
-      pp divisions.inspect
       divisions.map do |division_name, division_path|
         # Find the division
         @division = @site.divisions.find_or_initialize_by_name(division_name)

@@ -15,7 +15,6 @@ class Admin::ApplicationController < ApplicationController
     @fields= model.respond_to?(:column_names) ? model.column_names : model.fields.keys
     fields_for(@model_name)                  
                                                                                                               
-    # FIXME for mongoid models ordering
     if model.respond_to?(:column_names)
       @table= model.paginate(:per_page => @page_limit, :page => @page, :order => "#{@order_by} #{@direction}")
     else

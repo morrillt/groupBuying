@@ -1,10 +1,9 @@
 module Snapshooter
   # named GrouponClass to prevent conflicts with groupon gem
-  class GrouponClass < Base
-    def initialize
+  class GrouponClass < Crawler
+    def initialize(source_name)
+      super(source_name)
       @base_url = 'http://api.groupon.com/v2'
-      @site     = Site.find_by_source_name('groupon')
-      super
     end
     
     def divisions
