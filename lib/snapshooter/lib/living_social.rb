@@ -45,7 +45,7 @@ module Snapshooter
     end      
     
     def error_page?(url)       
-      @doc.search("ul[@class='deal-info']").first.nil? && @doc.search("ul[@class='clear-fix deal-info']").first.nil?
+      @doc.search("ul[@class='deal-info']").first.nil? && @doc.search("ul[@class='clearfix deal-info']").first.nil?
     end    
     
     
