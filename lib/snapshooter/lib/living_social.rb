@@ -1,23 +1,50 @@
 module Snapshooter
   class LivingSocial < Crawler   
 
-    def get(resource, options = {})
-      url = options[:full_path] ? resource : (@base_url + resource)
-      begin
-        @doc = @mecha.get(url)
-        
-        # Clicking through first box with city select
-        if @doc.links.first.text == "I'm already a subscriber, skip"
-          @doc = @doc.links.first.click
-          @doc = @mecha.get(url)
-        end
-        yield if block_given?
-      rescue OpenURI::HTTPError => e
-        log e.message
-      rescue Mechanize::ResponseCodeError => e
-        log e.message
-      end
+    def crawl_new_deals!   
+      puts "#{self.class.to_s} is crawling"
+      division_links = divisions
+      deals = division_links[0..10].collect do |dhash|
+        puts "Division: #{dhash[:url]}"
+        options = {}
+        div_url, div_name = dhash[:url], dhash[:name]        
+                                                     
+        find_or_create_division(div_name, div_url)
+        crawl_division(div_url)        
+      end  
+
+      site_deal_permalinks = site.deals.collect{|d| d.permalink[23..-1]}
+      deals = deals.flatten.uniq - site_deal_permalinks
+      
+      deals.map do |deal_link|  
+        crawl_deal(deal_link, options)
+      end         
     end
+              
+    def crawl_division(url)   
+      options = {}
+      detect_absolute_path(url, options)
+      get(url, options)
+      full_deal_links
+    end
+    
+    def crawl_deal(url, options)
+      puts "Ping: #{url}"
+      detect_absolute_path(url, options)
+      get(url, options) do  
+        unless error_page? @doc.uri.to_s
+          deal = self.class::Deal.new(@doc, url, @site_id, options)
+          save_deal!(deal.to_hash, detect_deal_division(options[:old_deals]))
+        else
+          puts "Failed to get #{url}. Error page"
+        end
+      end
+    end      
+    
+    def error_page?(url)
+      @doc.search("ul[@class='deal-info']").first.nil?
+    end    
+    
     
     def divisions
       return @divisions unless @divisions.empty?
@@ -89,44 +116,24 @@ module Snapshooter
       end  
     end
              
-    def crawl_deal(url, options)
-      puts "Ping: #{url}"
-      detect_absolute_path(url, options)
-      get(url, options) do  
-        unless error_page? @doc.uri.to_s
-          deal = self.class::Deal.new(@doc, url, @site_id, options)
-          save_deal!(deal.to_hash, detect_deal_division(options[:old_deals]))
-        else
-          puts "Failed to get #{url}. Error page"
+
+    # Overwrite to click through first box
+    def get(resource, options = {})
+      url = options[:full_path] ? resource : (@base_url + resource)
+      begin
+        @doc = @mecha.get(url)
+        
+        # Clicking through first box with city select
+        if @doc.links.first.text == "I'm already a subscriber, skip"
+          @doc = @doc.links.first.click
+          @doc = @mecha.get(url)
         end
+        yield if block_given?
+      rescue OpenURI::HTTPError => e
+        log e.message
+      rescue Mechanize::ResponseCodeError => e
+        log e.message
       end
-    end     
-    
-    def crawl_division(url)   
-      options = {}
-      detect_absolute_path(url, options)
-      get(url, options)
-                    
-      # debugger    
-      full_deal_links.map do |deal_link|  
-        crawl_deal(deal_link, options)
-      end
-    end      
-    
-    def crawl_new_deals!   
-      puts "#{self.class.to_s} is crawling"
-      # Find the site
-      puts "#{site.name} is crawling"
-      division_links = divisions
-      division_links.map do |dhash|
-        puts "Division: #{dhash[:url]}"
-        options = {}
-        div_url, div_name = dhash[:url], dhash[:name]        
-                                                     
-        # debugger
-        find_or_create_division(div_name, div_url)
-        crawl_division(div_url)        
-      end           
     end
 
   end # LivingSocial
