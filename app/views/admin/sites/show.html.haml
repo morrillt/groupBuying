@@ -101,7 +101,7 @@
       %td=@site.deals.inactive.sum(:max_sold_count)
     %tr
       %td Total Spent on Deals
-      %td=price(@site.deals.inactive.revenue_by_max_sold_count.first, :revenue_ms)
+      %td=sprice(@site.deals.inactive.revenue_by_max_sold_count.first.revenue_ms, @site.currency)
     %tr
       %td Average Revenue per Deal
       %td=sprice(@closed_avg_rev, @site.currency)
