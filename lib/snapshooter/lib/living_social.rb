@@ -4,7 +4,7 @@ module Snapshooter
     def crawl_new_deals!   
       puts "#{self.class.to_s} is crawling"
       division_links = divisions
-      deals = division_links[0..10].collect do |dhash|
+      deals = division_links.collect do |dhash|
         puts "Division: #{dhash[:url]}"
         options = {}
         div_url, div_name = dhash[:url], dhash[:name]        
@@ -15,6 +15,9 @@ module Snapshooter
 
       site_deal_permalinks = site.deals.collect{|d| d.permalink[23..-1]}
       deals = deals.flatten.uniq - site_deal_permalinks
+      
+      options = {}
+      detect_absolute_path(deals.first, options)
       
       deals.map do |deal_link|  
         crawl_deal(deal_link, options)
@@ -41,8 +44,8 @@ module Snapshooter
       end
     end      
     
-    def error_page?(url)
-      @doc.search("ul[@class='deal-info']").first.nil?
+    def error_page?(url)       
+      @doc.search("ul[@class='deal-info']").first.nil? && @doc.search("ul[@class='clear-fix deal-info']").first.nil?
     end    
     
     

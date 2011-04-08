@@ -1,6 +1,6 @@
 module Snapshooter
   class LivingSocial
-    class Deal < Snapshooter::Base::Deal
+    class Deal < BaseDeal
       def initialize(doc, deal_link, site_id, options = {})
         @doc = doc
         @deal_link = deal_link                
