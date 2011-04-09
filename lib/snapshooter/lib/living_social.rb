@@ -6,6 +6,7 @@ module Snapshooter
       puts "#{self.class.to_s} is crawling"
       division_links = divisions    
       division_range = range ? division_links[range[0]..range[1]] : division_links
+
       deals = division_range.collect do |dhash|
         puts "Division: #{dhash[:url]}"
         options = {}
@@ -13,11 +14,7 @@ module Snapshooter
                                                      
         find_or_create_division(div_name, div_url)
         crawl_division(div_url)        
-      end  
-
-      site_deal_permalinks = site.deals.collect{|d| d.permalink[23..-1]}
-      deals = deals.flatten.uniq - site_deal_permalinks
-      
+      end.flatten  
       options = {}
       detect_absolute_path(deals.first, options)
       
@@ -26,7 +23,6 @@ module Snapshooter
         crawl_deal(deal_link, options)
         # Profiler__::stop_profile
         # Profiler__::print_profile($stderr)
-        break;
       end         
     end
               

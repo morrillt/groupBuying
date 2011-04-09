@@ -23,6 +23,7 @@ module Snapshooter
     end
     
     def crawl_new_deals!
+      deals_permalinks = site.deals.active.collect(&:permalink)
       divisions.map do |division|
         
         log "Processing Division: #{division.name}"
@@ -31,6 +32,7 @@ module Snapshooter
         @division = division
         
         Groupon.deals(:division => division.site_division_id).each do |groupon_deal|
+          next if deals_permalinks.include? groupon_deal.deal_url
           
           # Build the full address
           full_address = ""
