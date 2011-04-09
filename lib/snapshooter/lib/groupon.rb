@@ -17,9 +17,9 @@ module Snapshooter
     # Returns the current purchase count of a given deal
     def capture_deal(deal)     
       return 0 unless deal.division # new deal?
-      Groupon.deals(:division => deal.division.site_division_id, :lat => deal.lat, :lng => deal.lng).detect{|d| 
+      g = Groupon.deals(:division => deal.division.site_division_id, :lat => deal.lat, :lng => deal.lng).detect{|d| 
         d.id == deal.deal_id
-      }.try(:quantity_sold)
+      }.try(:quantity_sold) || 0
     end
     
     def crawl_new_deals!
