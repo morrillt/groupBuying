@@ -1,10 +1,12 @@
 module Snapshooter
   class LivingSocial < Crawler   
-
-    def crawl_new_deals!   
+    DIVISION_LIMIT = 20
+    
+    def crawl_new_deals!(range = nil)
       puts "#{self.class.to_s} is crawling"
-      division_links = divisions
-      deals = division_links.collect do |dhash|
+      division_links = divisions    
+      division_range = range ? division_links[range[0]..range[1]] : division_links
+      deals = division_range.collect do |dhash|
         puts "Division: #{dhash[:url]}"
         options = {}
         div_url, div_name = dhash[:url], dhash[:name]        
@@ -20,7 +22,11 @@ module Snapshooter
       detect_absolute_path(deals.first, options)
       
       deals.map do |deal_link|  
+        # Profiler__::start_profile
         crawl_deal(deal_link, options)
+        # Profiler__::stop_profile
+        # Profiler__::print_profile($stderr)
+        break;
       end         
     end
               
@@ -42,7 +48,17 @@ module Snapshooter
           puts "Failed to get #{url}. Error page"
         end
       end
-    end      
+    end    
+    
+    
+    def enqueue_by_divisions                          
+      groups = site.divisions.count / DIVISION_LIMIT
+      groups.times{ |i|
+        from = i*DIVISION_LIMIT
+        to = (i == groups-1 ? site.divisions.count : (i+1)*DIVISION_LIMIT)
+        Resque.enqueue(CrawlerJob, @site_id, [from, to])
+      }
+    end  
     
     def error_page?(url)       
       @doc.search("ul[@class='deal-info']").first.nil? && @doc.search("ul[@class='clearfix deal-info']").first.nil?

@@ -1,5 +1,5 @@
 crawler:
-  cron: "0,15,30,45 * * * *"
+  cron: "5,45 * * * *"
   class: CrawlerJob  
   queue: crawler
   args: 
