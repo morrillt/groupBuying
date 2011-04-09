@@ -1,6 +1,9 @@
-primary: 
-  queues: "crawler,snapshot"
-  count: 3
-secondary: 
+crawler: 
+  queues: "crawler"
+  count: 2
+snapshot:
+  queues: "snapshot"
+  count: 1
+others: 
   queues: "deals,chart"
   count: 1
