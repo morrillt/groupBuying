@@ -100,7 +100,6 @@ class Deal < ActiveRecord::Base
     Time.now >= expires_at
   end
 
-
   # DEPRECIATED
   # Creates an actual mysql record
   # Captures the most recent data for a deal.
@@ -124,7 +123,31 @@ class Deal < ActiveRecord::Base
     self.active = false
     self.sold = true
     save
+  end      
+       
+  # Update snapshots data for deal
+  #   params:
+  #     <tt>data</tt>: array of snapshot datas
+  def update_snapshots(data)
+    return if data.empty?
+    created_snapshots = 0
+    deal_snapshots = snapshots                   
+    last_buyers_count = data.first[:buyers_count]
+    data.each {|snap|
+      start_of_hour = created - created.min - d.sec
+      end_of_hour   = start_of_hour + 1.hours
+      if deal_snapshots.detect{|ds| ds.created_at >= start_of_hour && ds.created_at <= end_of_hour}
+         # Update?
+      else
+        created_snapshots += 1
+        DealSnapshot.create_from_data(self, data.merge({:last_buyers_count => last_buyers_count}))
+      end
+      last_buyers_count = data[:buyers_count]
+    }
+    created_snapshots
   end
+  
+  # ================================== Statistics ======================================
 
   def self.overall_trending(limit = 10)
     count_trending_by_date_range(Time.now - 5.hours, Time.now, limit)
@@ -207,6 +230,8 @@ class Deal < ActiveRecord::Base
     }
     deals.sort_by(&:trending_order)[0..limit]
   end 
+  
+  # ================================== END: Statistics ==================================
   
   
   class << self

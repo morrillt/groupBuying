@@ -1,7 +1,8 @@
 module Snapshooter
   class BaseDeal
-    def initialize(doc, site_id, options = {})
+    def initialize(doc, deal_link, site_id, options = {})
       @doc = doc
+      @deal_link = deal_link
       @site_id = site_id
       @options = options
     end
