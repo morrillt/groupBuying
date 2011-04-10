@@ -12,16 +12,35 @@ class Site < ActiveRecord::Base
   
   # Updates all the sites active deals buy createing
   # snapshots of the deal
-  def update_snapshots!
-    deals.active.each do |deal|
+  def update_snapshots!(range = nil)
+    deals_to_snapshot = deals.active 
+    deals.limit(range[1] - range[0]).offset(range[0]) if range
+    
+    deals_to_snapshot.each do |deal|
       deal.take_mongo_snapshot!
     end
   end
   
   # Captures new deals in the database
-  def crawl_new_deals
-    snapshooter.crawl_new_deals!
-  end             
+  def crawl_new_deals!(range = nil)
+    snapshooter.crawl_new_deals!(range)
+  end                 
+  
+  # Divide work by divisions 
+  #   params:
+  #     <tt>job_class</tt> - job class to enqueue
+  #     <tt>count</tt> - overall of elements
+  def enqueue_by_divisions(job_class, count)
+    snapshooter.enqueue_by_divisions(job_class, count)
+  end
+                                                 
+  # Divide work by deals
+  #   params:
+  #     <tt>job_class</tt> - job class to enqueue
+  #     <tt>count</tt> - overall of elements
+  def enqueue_by_deals(job_class, count)
+    snapshooter.enqueue_by_deals(job_class, count)
+  end
                                     
   # Trying to capture more deals with bruteforce
   def crawl_old_deals_with_bruteforce          

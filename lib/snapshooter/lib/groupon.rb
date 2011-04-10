@@ -1,6 +1,9 @@
 module Snapshooter
   # named GrouponClass to prevent conflicts with groupon gem
   class GrouponClass < Crawler
+    DIVISION_LIMIT = 50 # For the future
+    DEAL_LIMIT = 200
+    
     def initialize(source_name)
       super(source_name)
       @base_url = 'http://api.groupon.com/v2'
@@ -22,7 +25,7 @@ module Snapshooter
       }.try(:quantity_sold) || 0
     end
     
-    def crawl_new_deals!
+    def crawl_new_deals!(range = nil) # FIXME: range is not implemented yet
       deals_permalinks = site.deals.active.collect(&:permalink)
       divisions.map do |division|
         
@@ -63,5 +66,7 @@ module Snapshooter
         end
       end
     end
+    
+    
   end
 end

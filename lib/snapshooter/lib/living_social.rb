@@ -1,6 +1,7 @@
 module Snapshooter
   class LivingSocial < Crawler   
     DIVISION_LIMIT = 20
+    DEAL_LIMIT = 200 # For the future
     
     def crawl_new_deals!(range = nil)
       puts "#{self.class.to_s} is crawling"
@@ -45,16 +46,6 @@ module Snapshooter
         end
       end
     end    
-    
-    
-    def enqueue_by_divisions                          
-      groups = site.divisions.count / DIVISION_LIMIT
-      groups.times{ |i|
-        from = i*DIVISION_LIMIT
-        to = (i == groups-1 ? site.divisions.count : (i+1)*DIVISION_LIMIT)
-        Resque.enqueue(CrawlerJob, @site_id, [from, to])
-      }
-    end  
     
     def error_page?(url)       
       @doc.search("ul[@class='deal-info']").first.nil? && @doc.search("ul[@class='clearfix deal-info']").first.nil?

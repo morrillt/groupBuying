@@ -1,7 +1,9 @@
 class SnapshotJob
+  SPLIT_SNAPSHOTS_FOR = ['groupon']   
+  
   @queue = :snapshot
   
-  def self.perform(site_id = nil)
+  def self.perform(site_id = nil, deal_range = nil)
     # Divide and conquer
     unless site_id
       puts "Start SnapshotJob[#{Time.now}]"
@@ -10,8 +12,17 @@ class SnapshotJob
       end
     else      
       puts "Snapshot Start for #{site_id}"
-      begin
-        Site.find(site_id).update_snapshots!
+      begin       
+        site = Site.find(site_id)
+        if SPLIT_SNAPSHOTS_FOR.include? site.source_name
+          if deal_range
+            site.update_snapshots!(deal_range)
+          else
+            site.enqueue_by_deals(SnapshotJob, site.deals.active.count)
+          end
+        else
+          site.update_snapshots!
+        end
       rescue => e
         puts "Error:"
         puts "-"*90

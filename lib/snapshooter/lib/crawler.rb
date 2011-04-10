@@ -13,7 +13,7 @@ module Snapshooter
       super
     end    
     
-    def crawl_new_deals!   
+    def crawl_new_deals!(range = nil)   
       puts "#{self.class.to_s} is crawling, source: #{@site.source_name}"
       division_links = divisions
       division_links.map do |dhash|
@@ -49,7 +49,45 @@ module Snapshooter
           puts "Failed to get #{url}. Error page"
         end
       end
-    end
+    end    
+    
+    def enqueue_by_divisions(job_class, count)
+      limit = self.class::DIVISION_LIMIT  
+      
+      if limit == 0
+        Resque.enqueue(job_class, @site_id, [0, site.divisions.count])
+        return
+      end     
+      
+      groups = count / limit
+      
+      Resque.enqueue(job_class, @site_id, [0, count]) and return if groups == 0
+      
+      groups.times{ |i|
+        from = i*limit
+        to = (i == groups-1 ? count : (i+1)*limit)
+        Resque.enqueue(job_class, @site_id, [from, to])
+      }
+    end  
+
+    def enqueue_by_deals(job_class, count)  
+      limit = self.class::DEAL_LIMIT    
+      
+      if limit == 0
+        Resque.enqueue(job_class, @site_id, [0, site.deals.count])
+        return
+      end                                                 
+      
+      groups = count / limit
+      
+      Resque.enqueue(job_class, @site_id, [0, count]) and return if groups == 0
+      
+      groups.times{ |i|
+        from = i*limit
+        to = (i == groups-1 ? count : (i+1)*limit)
+        Resque.enqueue(job_class, @site_id, [from, to])
+      }
+    end  
     
     # Initialize Division
     # TODO: - @division as class variable is bad move
@@ -122,7 +160,7 @@ module Snapshooter
     def brute_deals_links(deals, &block)
       base_link = base_deals_link_from_permalink(deals.first.try(:permalink)) # PLACEHOLDER?
       max_deal_id = deals.collect{|d| d.permalink.scan(/[0-9]+/).first.to_i}.max
-      brute_links = (1..max_deal_id).collect {|i| deal_link = base_link + i.to_s}
+      brute_links = (1..max_deal_id).collect {|i| base_link + i.to_s }
       brute_links = brute_links - deals.collect(&:permalink) 
       brute_links.map {|deal_link|
         yield deal_link

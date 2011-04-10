@@ -1,5 +1,6 @@
 class CrawlerJob
-  DIVISION_LIMIT = 10
+  SPLIT_CRAWL_FOR = ['living_social']
+  
   @queue = :crawler
 
   def self.perform(site_id = nil, division_range = nil)
@@ -13,14 +14,14 @@ class CrawlerJob
       puts "CrawlerJob Start for #{site_id}"
       begin
         site = Site.find(site_id)
-        if site.source_name == 'living_social'
+        if SPLIT_CRAWL_FOR.include? site.source_name
           if division_range
-            site.snapshooter.crawl_new_deals!(division_range)
+            site.crawl_new_deals!(division_range)
           else
-            site.snapshooter.enqueue_by_divisions
+            site.enqueue_by_divisions(CrawlerJob, site.divisions.count)
           end
         else
-          Site.find(site_id).snapshooter.crawl_new_deals!
+          site.crawl_new_deals!
         end
       rescue => e
         puts "Error:"
