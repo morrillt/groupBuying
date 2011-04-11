@@ -1,7 +1,7 @@
 require 'digest/md5'
 class Deal < ActiveRecord::Base
   include Geokit::Geocoders
-  CSV_FIELDS = %w[ id name permalink sale_price actual_price division_name site_name active hotness lat lng expires_at raw_address buyers_count ]
+  CSV_FIELDS = %w[ id name permalink sale_price actual_price division_name site_name active hotness lat lng expires_at raw_address buyers_count max_sold_count ]
   
   attr_accessor :trending_order
   
