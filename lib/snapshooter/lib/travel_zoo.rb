@@ -68,7 +68,7 @@ module Snapshooter
           return ex
         end
       else
-        return(@time_left[0].days.from_now + @time_left[1].hours +  @time_left[2].minutes)
+        return(time_left[0].days.from_now + time_left[1].hours +  time_left[2].minutes)
       end
     end
     
