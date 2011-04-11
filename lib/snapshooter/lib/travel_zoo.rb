@@ -45,7 +45,33 @@ module Snapshooter
     def detect_deal_division
       link = @doc.search("img[@alt='*']").first.previous_element
       find_or_create_division(link.text, link['href'])
+    end 
+       
+    def update_expires_at
+      site.deals.inactive.all.each{|d|
+        get(d.permalink, :full_path => true)
+        d.expires_at = expires_at
+        d.save
+      }
     end
+    
+    def expires_at
+      # Parse time left      
+      time_left = @doc.search("span[@id='ctl00_Main_TimeLeft']").text.split(",").map!{ |t|
+        t.gsub(/[^0-9]/,'').to_i
+      }
+      if time_left.empty? || time_left.size < 3                 
+        expired_text = @doc.search("span[@id='ctl00_Main_ExpiredText']").first
+        if expired_text    
+          ex = Time.parse(expired_text.text)
+          ex = ex - 1.years if ex > Time.now
+          return ex
+        end
+      else
+        return(@time_left[0].days.from_now + @time_left[1].hours +  @time_left[2].minutes)
+      end
+    end
+    
     
 
   end # TravelZoo
