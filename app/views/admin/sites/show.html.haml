@@ -107,7 +107,7 @@
       %td=sprice(@closed_avg_rev, @site.currency)
     %tr
       %td Expired from/to
-      %td="#{d(@closed_from)} / #{d(@closed_to)}" 
+      %td="#{@closed_from} / #{@closed_to}" 
     %tr
       %td Export
       %td= link_to 'Expired' , export_admin_site_deals_path(:site_id => @site.id, :active => 0, :format => :csv)      
