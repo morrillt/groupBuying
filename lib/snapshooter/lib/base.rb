@@ -45,7 +45,8 @@ module Snapshooter
         else
           TELEPHONE_REGEX
         end
-        
+      
+      address ||= ''
       match_data = address.match(telephone_regex)
       if match_data
         [address.gsub(telephone_regex, ''), match_data.to_s]

@@ -40,19 +40,22 @@ module Snapshooter
       puts "Ping: #{url}"
       detect_absolute_path(url, options)
       
-      new_deals, new_snapshots = 0
-
+      new_deals, new_snapshots = 0, 0
+              
       get(url, options) do  
         deal = self.class::Deal.new(@doc, url, @site_id, options)
-        deal_hash = deal.to_hash
-        if d = Deal.find_by_permalink(deal_hash[:permalink])
-          
+        # debugger
+        deal_snapshots = deal.snapshots
+        deal_hash = deal.to_hash(@division.name, deal.permalink)
+
+        if d = ::Deal.find_by_permalink(deal_hash[:permalink])
+          # Update???
         else
           new_deals += 1
           d = save_deal!(deal_hash)
         end
-        
-        new_snapshots += d.update_snapshots(deal_hash[:snapshots])
+        # debugger
+        new_snapshots += d.update_snapshots(deal_snapshots)
       end
     end    
     

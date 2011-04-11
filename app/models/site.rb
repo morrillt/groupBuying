@@ -125,7 +125,7 @@ class Site < ActiveRecord::Base
     when 'open_table'
       Snapshooter::OpenTable.new(self.source_name)
     when 'groupon'
-      Snapshooter::GrouponClass.new(self.source_name)
+      Snapshooter::GrouponApi.new(self.source_name)
     when 'living_social'
       Snapshooter::LivingSocial.new(self.source_name)
     else
