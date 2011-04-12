@@ -32,7 +32,7 @@
             %ul
             - @overall_trending.each do |t|
               %li
-                %a{:href=>""} #{t.name}
+                %a{:href=>"#{t.permalink}", :target => "_blank"} #{t.name}
             %a.see-chart-btn{:href=>"/trends"} See chart
       .bottom-container
         #bottom

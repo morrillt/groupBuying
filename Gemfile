@@ -22,6 +22,7 @@ gem "mongoid", "2.0.0.rc.6"
 gem "bson_ext", "~> 1.2"
 gem 'rest-client'
 gem 'devise'
+gem 'simplegeo'
 
 group :test do
   gem 'json'
