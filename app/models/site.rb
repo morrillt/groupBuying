@@ -30,16 +30,18 @@ class Site < ActiveRecord::Base
   #   params:
   #     <tt>job_class</tt> - job class to enqueue
   #     <tt>count</tt> - overall of elements
-  def enqueue_by_divisions(job_class, count)
-    snapshooter.enqueue_by_divisions(job_class, count)
+  def enqueue_by_divisions(job_class, options={})
+    options[:count] ||= divisions.count
+    snapshooter.enqueue_by_divisions(job_class, options)
   end
                                                  
   # Divide work by deals
   #   params:
   #     <tt>job_class</tt> - job class to enqueue
-  #     <tt>count</tt> - overall of elements
-  def enqueue_by_deals(job_class, count)
-    snapshooter.enqueue_by_deals(job_class, count)
+  #     <tt>count</tt> - range of elements
+  def enqueue_by_deals(job_class, options = {})
+    options[:count] ||= deals.count
+    snapshooter.enqueue_by_deals(job_class, options)
   end
                                     
   # Trying to capture more deals with bruteforce
@@ -51,6 +53,32 @@ class Site < ActiveRecord::Base
   def update_expired_deals
     deals.inactive.each do |deal|
       deal.update_attribute(:max_sold_count, deal.capture_sold_count)
+    end
+  end
+
+  # Updates deals info
+  #   params:
+  #     <tt>options</tt>: {:range => } - range of elements
+  #                       {:active => 1} - update active deals only?
+  #                       {:attributes => 'max_sold_count expires_at'} - which attributes to update
+  def crawl_and_update_deals_info(options)
+    range = options.delete(:range) || options.delete("range")
+    active = options.delete(:active) || options.delete("active")
+    attributes = options.delete(:attributes) || options.delete("attributes")
+
+    if deals.count > snapshooter.class::DEAL_LIMIT && range.nil?
+      enqueue_by_deals(UpdateDealsJob)
+    else
+      update_deals = deals
+
+      update_deals.where(options) unless options.empty?
+      update_deals.active if active && active == 1
+
+      update_deals.limit(range[1] - range[0]).offset(range[0]) if range
+
+      update_deals.each{|deal|
+        snapshooter.update_deal_info(deal, attributes)
+      }
     end
   end
   
