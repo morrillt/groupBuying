@@ -5,8 +5,8 @@ module Snapshooter
         @site.divisions
       end
 
-      def name
-        @doc.parser.search("div[@id='value_variant_c'] h2").text.gsub(/\s+/, ' ').strip
+      def name  
+        @doc.search("div[@class='control_title'] h2 a").text.gsub(/\s+/, ' ').strip
       end
 
       def sale_price
@@ -17,8 +17,11 @@ module Snapshooter
         @doc.search("div[@id='deal_discount']").children[1].children[2].text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f
       end
 
-      def raw_address                                               
-        (@doc.parser.css("div.address p").children[0].text + @doc.parser.css("div.address p").children[2].text).gsub(/\s+/, ' ').strip
+      def raw_address                  
+        address = @doc.parser.css("div.address p")
+        if address.children[0] and address.children[2]
+          (address.children[0].text + address.children[2].text).gsub(/\s+/, ' ').strip
+        end
       end
 
       def expires_at

@@ -139,6 +139,7 @@ module Snapshooter
         end
       rescue => e     
         log "Error: #{e.message}"
+        log "Error: #{e.backtrace.join("\n")}"
       end    
       deal  # Return deal only when create new entity
     end

@@ -31,7 +31,7 @@ module Snapshooter
         Groupon.deals(:division => division.site_division_id).each do |groupon_deal|
           next if deals_permalinks.include? groupon_deal.deal_url
           
-          save_deal!(Deal.new.to_hash(groupon_deal, @site_id, division))
+          save_deal!(Deal.new(groupon_deal).to_hash(@site_id, division))
         end
       end
     end
@@ -41,11 +41,11 @@ module Snapshooter
     end
   
     def find_existing_by_options(deal_id, options = {})
-      Groupon.deals(options).detect{|d| d.id == deal.deal_id }
+      Groupon.deals(options).detect{|d| d.id == deal_id }
     end
 
     def self.find_at_groupon_by_division_and_permalink(division, permalink)
-      Groupon.deals(:division => division).detect{|d| d.deal_url == permalink }
+      Groupon.deals(:division => division).detect{|d| d.deal_url == permalink }#.try(:first)
     end
     
   end

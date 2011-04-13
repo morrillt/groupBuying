@@ -1,8 +1,16 @@
 module Snapshooter
   class GrouponApi
     class Deal < BaseDeal
+      
+      def initialize(groupon_deal_object)
+        @groupon_deal = groupon_deal_object
+      end      
+      
+      def groupon_deal
+        @groupon_deal
+      end
 
-      def full_address(groupon_deal)
+      def full_address
         full_address = ""
         if groupon_deal.redemptionLocations
           full_address << groupon_deal.redemptionLocations.first.try(:streetAddress1).to_s + "\n"
@@ -14,7 +22,7 @@ module Snapshooter
         full_address
       end
       
-      def to_hash(groupon_deal, site_id, division) 
+      def to_hash(site_id, division) 
         {
           :name           => groupon_deal.title,
           :sale_price     => groupon_deal.price.to_f,
@@ -26,7 +34,7 @@ module Snapshooter
           :deal_id        => groupon_deal.id,
           :site_id        => site_id,
           :division       => division,
-          :raw_address    => full_address(groupon_deal),
+          :raw_address    => full_address,
           :telephone      => "",
           :active         => true,
           :max_sold_count => groupon_deal.quantity_sold

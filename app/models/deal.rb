@@ -136,14 +136,16 @@ class Deal < ActiveRecord::Base
     deal_snapshots = snapshots.to_a
     last_buyers_count = data.first[:buyers_count]
     data.each {|snap|
-      created = snap[:created_at].to_time + Date.today.year.years
+      created = Time.zone.parse(snap[:created_at])
       start_of_hour = created - created.min - created.sec
       end_of_hour   = start_of_hour + 1.hours
-      if deal_snapshots.detect{|ds| ds.created_at >= start_of_hour && ds.created_at <= end_of_hour}
+      if deal_snapshots.detect{|ds| ds.created_at.between?(start_of_hour, end_of_hour)}
          # Update?
       else
         created_snapshots += 1
-        DealSnapshot.create_from_data(self, snap.merge({:last_buyers_count => last_buyers_count}))
+        new_snapshot = DealSnapshot.create_from_data(self, snap.merge({:last_buyers_count => last_buyers_count}))
+        new_snapshot.created_at = created
+        new_snapshot.save
       end
       last_buyers_count = snap[:buyers_count]
     }
