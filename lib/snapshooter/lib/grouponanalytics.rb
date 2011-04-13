@@ -4,6 +4,7 @@ module Snapshooter
     def initialize
       super('groupon')
       @base_url = 'http://www.grouponanalytics.com'
+      @new_deals, @new_snapshots = 0, 0
     end
      
     def divisions
@@ -40,21 +41,36 @@ module Snapshooter
       puts "Ping: #{url}"
       detect_absolute_path(url, options)
       
-      new_deals, new_snapshots = 0
-
+      new_deals, new_snapshots = 0, 0
+              
       get(url, options) do  
         deal = self.class::Deal.new(@doc, url, @site_id, options)
-        deal_hash = deal.to_hash
-        if d = Deal.find_by_permalink(deal_hash[:permalink])
-          
-        else
-          new_deals += 1
+        deal_snapshots = deal.snapshots
+        d = ::Deal.find_by_permalink(deal.permalink)
+        if d # found
+
+        else # not found in db
+          deal_hash = deal.to_hash(@division.name, deal.permalink)
+          @new_deals += 1
           d = save_deal!(deal_hash)
         end
         
-        new_snapshots += d.update_snapshots(deal_hash[:snapshots])
+      @new_snapshots += d.update_snapshots(deal_snapshots) if d
       end
     end    
+    
+    def crawl_division(url)   
+      options = {}
+      detect_absolute_path(url, options)
+      get(url, options)
+                    
+      full_deal_links.map do |deal_link|  
+        crawl_deal(deal_link, options)
+      end
+      pp "New deals: #{@new_deals}"
+      pp "New snapshots: #{@new_snapshots}"
+    end  
+    
     
   
 

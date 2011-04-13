@@ -18,7 +18,7 @@ class SnapshotJob
           if deal_range
             site.update_snapshots!(deal_range)
           else
-            site.enqueue_by_deals(SnapshotJob, site.deals.active.count)
+            site.enqueue_by_deals(SnapshotJob, :count => site.deals.active.count)
           end
         else
           site.update_snapshots!

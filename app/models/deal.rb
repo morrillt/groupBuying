@@ -20,6 +20,7 @@ class Deal < ActiveRecord::Base
   
   # Geocode lat lng if we have an address
   before_create :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? || (d.lat && d.lng)}
+  before_update :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? || (d.lat && d.lng)}
   
   before_create do
     self.deal_id = Digest::MD5.hexdigest(name + permalink + expires_at.to_s) unless self.deal_id.present?
@@ -131,18 +132,22 @@ class Deal < ActiveRecord::Base
   def update_snapshots(data)
     return if data.empty?
     created_snapshots = 0
-    deal_snapshots = snapshots                   
+    # debugger
+    deal_snapshots = snapshots.to_a
     last_buyers_count = data.first[:buyers_count]
     data.each {|snap|
-      start_of_hour = created - created.min - d.sec
+      created = Time.zone.parse(snap[:created_at])
+      start_of_hour = created - created.min - created.sec
       end_of_hour   = start_of_hour + 1.hours
-      if deal_snapshots.detect{|ds| ds.created_at >= start_of_hour && ds.created_at <= end_of_hour}
+      if deal_snapshots.detect{|ds| ds.created_at.between?(start_of_hour, end_of_hour)}
          # Update?
       else
         created_snapshots += 1
-        DealSnapshot.create_from_data(self, data.merge({:last_buyers_count => last_buyers_count}))
+        new_snapshot = DealSnapshot.create_from_data(self, snap.merge({:last_buyers_count => last_buyers_count}))
+        new_snapshot.created_at = created
+        new_snapshot.save
       end
-      last_buyers_count = data[:buyers_count]
+      last_buyers_count = snap[:buyers_count]
     }
     created_snapshots
   end

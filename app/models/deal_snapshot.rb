@@ -111,6 +111,7 @@ class DealSnapshot
     this.last_buyers_count = data[:last_buyers_count]
     
     this.save
+    this
   end
   
   # Returns an Float of the percent changed

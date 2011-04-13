@@ -3,6 +3,9 @@ module Snapshooter
   # Class handle basic crawling logic
   # Rewrite methods in subclasses if custom behavior needed
   class Crawler < Base
+    DIVISION_LIMIT = 50
+    DEAL_LIMIT = 500
+
     attr_reader :base_url
 
     def initialize(source_name)
@@ -51,7 +54,8 @@ module Snapshooter
       end
     end    
     
-    def enqueue_by_divisions(job_class, count)
+    def enqueue_by_divisions(job_class, options = {})
+      count = options.delete(:count)
       limit = self.class::DIVISION_LIMIT  
       
       if limit == 0
@@ -70,11 +74,13 @@ module Snapshooter
       }
     end  
 
-    def enqueue_by_deals(job_class, count)  
+    def enqueue_by_deals(job_class, options = {})
+      count = options.delete(:count)
+
       limit = self.class::DEAL_LIMIT    
       
       if limit == 0
-        Resque.enqueue(job_class, @site_id, [0, site.deals.count])
+        Resque.enqueue(job_class, @site_id, {:range => [0, site.deals.count]})
         return
       end                                                 
       
@@ -85,7 +91,7 @@ module Snapshooter
       groups.times{ |i|
         from = i*limit
         to = (i == groups-1 ? count : (i+1)*limit)
-        Resque.enqueue(job_class, @site_id, [from, to])
+        Resque.enqueue(job_class, @site_id, {:range => [from, to]})
       }
     end  
     
@@ -133,9 +139,37 @@ module Snapshooter
         end
       rescue => e     
         log "Error: #{e.message}"
+        log "Error: #{e.backtrace.join("\n")}"
       end    
       deal  # Return deal only when create new entity
-    end       
+    end
+
+    # Crawl and update deal attributes
+    #   params:
+    #     <tt>attributes</tt>: array or string of attributes
+    def update_deal_info(deal, attributes = nil)
+      attributes ||= '*'
+
+      if attributes.is_a? String and attributes != '*'
+        attributes = attributes.split(' ')
+      end
+      get(deal.permalink, :full_path => true)
+      crawler_deal = self.class::Deal.new(@doc, deal.permalink, @site_id, :full_path => true)
+      update_attributes = {}
+      if attributes.to_s == '*'
+        update_attributes = crawler_deal.to_hash
+      else
+        attributes.map {|ab|
+          field = ab.to_sym
+          new_value = crawler_deal.send(field)
+          if new_value
+            update_attributes[field] = new_value
+          end
+        }
+      end
+      deal.update_attributes(update_attributes)
+      deal.save!
+    end
     
     def site
       @site ||= Site.find(@site_id)

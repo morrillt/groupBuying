@@ -1,5 +1,5 @@
 crawler:
-  cron: "5 * * * *"
+  cron: "35 * * * *"
   class: CrawlerJob  
   queue: crawler
   args: 
@@ -11,7 +11,7 @@ deal_closer:
   args: 
   description: Check for sold  
 snapshot:
-  cron: "15 * * * *"
+  cron: "5 * * * *"
   class: SnapshotJob
   queue: snapshot
   args:
