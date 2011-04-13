@@ -51,4 +51,13 @@ class SimplegeoCollector
     end
     puts "Deals matching simplegeo #{deals_matching.size}"
   end
+
+  def self.export
+    data= ""
+    self.all.each do |d|
+      classifiers= d.classifiers.collect{ |c| c["category"] }.join("; ")
+      data << "\"#{d.deal_id}\",\"#{d.title}\",\"#{d.permalink}\",\"#{d.business}\",\"#{classifiers}\",\"#{d.phone}\",\"#{d.address}\",\"#{d.tags ? d.tags.join("; ") : nil}\"\r\n"
+    end
+    File.open("/Users/santiago/Documents/groupBuying/simplegeo_categories.csv", 'w') {|f| f.write(data) }
+  end
 end
