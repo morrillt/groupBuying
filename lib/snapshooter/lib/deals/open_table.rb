@@ -51,7 +51,7 @@ module Snapshooter
         elsif 
           timer = @doc.search('script').to_s.gsub(/\s+/, '').scan(/timer:[a-z0-9\,\:\{\}]*/).first.scan(/\{(.*)\}/).flatten.first
           time_counter = timer.split(',').map{|d| d.split(':')}
-          expires_at = Snapshooter::Base.new.time_counter_to_expires_at(time_counter)
+          expires_at = Snapshooter::Base.time_counter_to_expires_at(time_counter)
         end
         expires_at
       end

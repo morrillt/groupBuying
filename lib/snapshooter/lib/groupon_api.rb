@@ -15,9 +15,12 @@ module Snapshooter
     # Returns the current purchase count of a given deal
     def capture_deal(deal)     
       return 0 unless deal.division # new deal?
-      find_existing_by_options(:division => deal.division.site_division_id, 
+      find_existing_by_options(deal.deal_id, :division => deal.division.site_division_id, 
         :lat => deal.lat, 
         :lng => deal.lng).try(:quantity_sold) || 0
+    end    
+    
+    def update_snapshots!(range = nil)
     end
     
     def crawl_new_deals!(range = nil) # FIXME: range is not implemented yet
