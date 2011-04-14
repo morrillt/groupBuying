@@ -51,11 +51,13 @@ class Deal < ActiveRecord::Base
   
   def calculate_hotness!
     if has_more_than_one_snapshot?
-      period_snapshots = snapshots.to_a[-5..-1]
+      period_snapshots = snapshots.to_a.last(5)
       # initial_sold_count = snapshots.shift.try(:buyers_count).to_i
       # total_increases_for_period = snapshots.map{|s| s.buyers_count - initial_sold_count }.sum
       # rating = (total_increases_for_period.to_f / 5.0)
-      rating= (period_snapshots[4]-period_snapshots[0]).to_f/5.0
+      period_first = period_snapshots.size == 5 ? period_snapshots.first.last_buyers_count : 0
+      period_last = period_snapshots.last.last_buyers_count
+      rating = (period_last - period_first).to_f / 5.0
       update_attribute(:hotness, rating)
     else
       true
