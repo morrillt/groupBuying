@@ -17,6 +17,31 @@ class SimplegeoCollector
     SimpleGeo::Client.set_credentials(tokens['token'],tokens['secret_token'])
   end
   
+  def self.match_deal(d)
+    if d.lat
+      authenticate
+      places= SimpleGeo::Client.get_places(d.lat, d.lng, {'radius' => 0.1})
+      deal_phone= d.telephone ? d.telephone.gsub!(/\+1|\s|-|\.|\(|\)/,'') : 0
+      places[:features].each do |p|
+        simplegeo_phone= p[:properties][:phone] ? p[:properties][:phone].gsub!(/\+1|\s|-|\.|\(|\)/,'') : 1
+        if simplegeo_phone == deal_phone
+          create({
+                   :deal_id => d.id,
+                   :title => d.name,
+                   :permalink => d.permalink,
+                   :business => p[:properties][:name],
+                   :classifiers => p[:properties][:classifiers],
+                   :phone => p[:properties][:phone],
+                   :address => p[:properties][:address],
+                   :tags => p[:properties][:tags]
+                 })
+        end
+      end
+    else
+      # Try phone lookup in Yipit
+    end
+  end
+
   def self.collect
     authenticate
     start_date= Time.now.prev_month.beginning_of_month.to_date

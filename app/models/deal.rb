@@ -21,7 +21,12 @@ class Deal < ActiveRecord::Base
   # Geocode lat lng if we have an address
   before_create :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? || (d.lat && d.lng)}
   before_update :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? || (d.lat && d.lng)}
-  
+
+  # Add categorization from Yipit
+  after_create :yipit_category_lookup
+  # Add categorization from SimpleGeo
+  after_create :simplegeo_category_lookup
+
   before_create do
     self.deal_id = Digest::MD5.hexdigest(name + permalink + expires_at.to_s) unless self.deal_id.present?
   end
@@ -154,22 +159,6 @@ class Deal < ActiveRecord::Base
     }
     created_snapshots
   end
-
-  def yipit_category_lookup
-    return false if !self.telephone
-    phone= self.telephone.gsub(/\+1|\s|-|\.|\(|\)/,'')
-    begin
-      json= RestClient.get "http://api.yipit.com/v1/deals/?key=aFvhQsjkqLfjqwhH&phone=#{phone}"
-      data= JSON.parse json
-      return false unless data['response']['deals']
-      unless data['response']['deals'].empty?
-        return true
-      end
-      return false
-    rescue
-      "Something happened"
-    end
-  end
   
   # ================================== Statistics ======================================
 
@@ -276,6 +265,36 @@ class Deal < ActiveRecord::Base
       self.lat,self.lng = result.lat, result.lng
     rescue => e
       # Rails.logger.error(e.message)
+    end
+  end
+
+  def yipit_category_lookup
+    return false if !self.telephone
+    phone= self.telephone.gsub(/\+1|\s|-|\.|\(|\)/,'')
+    begin
+      # The Yipit API key should be taken to config file
+      json= RestClient.get "http://api.yipit.com/v1/deals/?key=aFvhQsjkqLfjqwhH&phone=#{phone}"
+      data= JSON.parse json
+      return false unless data['response']['deals']
+      unless data['response']['deals'].empty?
+        unless data['response']['deals']['tags'].empty?
+          self.yipit_categories= data['response']['deals']['tags'].collect do |t|
+            t['name']
+          end.join(";")
+        end
+        return true
+      end
+      return false
+    rescue
+      "Something happened"
+    end
+  end
+
+  def simplegeo_category_lookup
+    begin
+      SimplegeoCollector.match_deal(self)
+    rescue
+      "Something happened"
     end
   end
 end
