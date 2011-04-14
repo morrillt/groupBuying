@@ -55,7 +55,7 @@ module Snapshooter
       end
     end  
     
-    def time_counter_to_expires_at(counter)
+    def self.time_counter_to_expires_at(counter)
       expires = Time.now
       counter.map{|k,v|
         v = v.to_i
