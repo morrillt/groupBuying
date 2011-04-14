@@ -219,6 +219,7 @@ class Deal < ActiveRecord::Base
   def self.revenue_trending_by_date_range(from, to, limit=25)
     start_at = Time.parse("#{from.year}-#{from.month}-#{from.day} #{from.hour}:00:00").utc
     end_at   = Time.parse("#{to.year}-#{to.month}-#{to.day} #{to.hour}:00:00").utc
+
     snapshots = DealSnapshot.by_date_range(start_at, end_at)
 
     buyers= {}
