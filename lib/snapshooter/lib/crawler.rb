@@ -7,12 +7,14 @@ module Snapshooter
     DEAL_LIMIT = 500
 
     attr_reader :base_url
+    attr_accessor :strategy
 
     def initialize(source_name)
       @site     = Site.find_by_source_name(source_name)
       @site_id  = @site.id
       @base_url = @site.base_url
       @deals, @divisions = [], []
+      @strategy = :crawler # :api, #rss
       super
     end    
     
