@@ -152,6 +152,22 @@ class Deal < ActiveRecord::Base
     }
     created_snapshots
   end
+
+  def yipit_category_lookup
+    return false if !self.telephone
+    phone= self.telephone.gsub(/\+1|\s|-|\.|\(|\)/,'')
+    begin
+      json= RestClient.get "http://api.yipit.com/v1/deals/?key=aFvhQsjkqLfjqwhH&phone=#{phone}"
+      data= JSON.parse json
+      return false unless data['response']['deals']
+      unless data['response']['deals'].empty?
+        return true
+      end
+      return false
+    rescue
+      "Something happened"
+    end
+  end
   
   # ================================== Statistics ======================================
 
