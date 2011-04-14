@@ -6,6 +6,7 @@ module Snapshooter
     def initialize(source_name)
       super(source_name)
       @base_url = 'http://api.groupon.com/v2'
+      @strategy = :api
     end
     
     def divisions
@@ -21,6 +22,15 @@ module Snapshooter
     end    
     
     def update_snapshots!(range = nil)
+      divisions.each{|div|                                    
+        division_deals = div.deals.active
+        Groupon.deals(:division => div.site_division_id).each {|groupon_deal|
+          deal = division_deals.detect{|dd| groupon_deal.id == dd.deal_id }
+          if deal
+            DealSnapshot.create_from_deal!(deal, nil, groupon_deal.quantity_sold)
+          end
+        }
+      }
     end
     
     def crawl_new_deals!(range = nil) # FIXME: range is not implemented yet
