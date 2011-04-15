@@ -20,14 +20,19 @@ module Snapshooter
         :lat => deal.lat, 
         :lng => deal.lng).try(:quantity_sold) || 0
     end    
-    
+             
     def update_snapshots!(range = nil)
+      log "Update snapshots"
       divisions.each{|div|                                    
         division_deals = div.deals.active
+        log "Division: #{div.site_division_id}"
+        # log "Deals: #{deals.count}"
         Groupon.deals(:division => div.site_division_id).each {|groupon_deal|
+          # log "Deal: #{groupon_deal.id}"
           deal = division_deals.detect{|dd| groupon_deal.id == dd.deal_id }
+          # log "Found: #{deal.permalink}" if deal
           if deal
-            DealSnapshot.create_from_deal!(deal, nil, groupon_deal.quantity_sold)
+            deal.take_mongo_snapshot!(groupon_deal.try(:quantity_sold) || nil)
           end
         }
       }

@@ -118,8 +118,8 @@ class Deal < ActiveRecord::Base
   end
   
   # replaces take_snapshot!
-  def take_mongo_snapshot!
-    DealSnapshot.create_from_deal!(self)
+  def take_mongo_snapshot!(buyers_count = nil)
+    DealSnapshot.create_from_deal!(self, nil, buyers_count)
   end
                                              
   # buyers_count == last_buyers_count
