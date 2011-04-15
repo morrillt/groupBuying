@@ -10,3 +10,4 @@ public/deals.csv
 public/stylesheets/css
 test/
 db/schema.rb
+dump.rdb

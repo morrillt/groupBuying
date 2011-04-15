@@ -132,6 +132,8 @@ class Site < ActiveRecord::Base
       Snapshooter::GrouponApi.new(self.source_name)
     when 'living_social'
       Snapshooter::LivingSocial.new(self.source_name)
+    when 'ideal_golfer'
+      Snapshooter::IdealGolfer.new(self.source_name)
     else
       raise Exception, "Unknown site source_name #{self.source_name}"
     end

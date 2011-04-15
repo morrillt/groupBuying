@@ -45,7 +45,7 @@ module Snapshooter
       puts "Ping: #{url}"
       detect_absolute_path(url, options)
 
-      get(url, options) do  
+      get(url, options) do
         unless error_page? @doc.uri.to_s
           detect_deal_division if options[:old_deals]
           deal = self.class::Deal.new(@doc, url, @site_id, options)
@@ -54,8 +54,8 @@ module Snapshooter
           puts "Failed to get #{url}. Error page"
         end
       end
-    end    
-    
+    end
+
     def enqueue_by_divisions(job_class, options = {})
       count = options.delete(:count)
       limit = self.class::DIVISION_LIMIT  
