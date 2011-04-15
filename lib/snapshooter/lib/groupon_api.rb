@@ -24,7 +24,7 @@ module Snapshooter
     def update_snapshots!(range = nil)
       log "Update snapshots"
       timeouted_divisions = divisions.collect{|div|
-        div.site_division_id if update_snapshots_for_division(div)
+        div if update_snapshots_for_division(div)
       }
 
       log "Timeouted divisions: #{timeouted_divisions.join(',')}"
