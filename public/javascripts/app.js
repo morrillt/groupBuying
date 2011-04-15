@@ -101,11 +101,14 @@ function show_stats(i) {
 
 $(document).ready(function() {
     $("#coupons-counter").counter();
-    chart_data.series= chart_data.series.slice(0,5);
+		if (window.location.pathname != '/') {
+	    chart_data.series= chart_data.series.slice(0,5);
+		}
     try {
-	$("#sites #chart").chart({data:chart_data});
-	$("#site-stats #chart").chart({data:chart_data});
+			$("#sites #chart").chart({data:chart_data});
+			$("#site-stats #chart").chart({data:chart_data});
     } catch (err) {
+			
     }	
 
     show_stats(0);
