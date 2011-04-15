@@ -79,8 +79,10 @@ class DealSnapshot
     where({:deal_id => deal.id}).order(:created_at.asc).last.try(:buyers_count).to_i
   end
   
-  def self.create_from_deal!(deal, first = nil, buyers_count = nil)
-    deal.close! if deal.expires_at <= Time.now
+  def self.create_from_deal!(deal, *args)
+    options = args.extract_options!
+    
+    deal.close! if deal.expires_at <= Time.now && !options[:last]
     this = new
     this.deal_id = deal.id
     this.site_id = deal.site_id
@@ -89,10 +91,10 @@ class DealSnapshot
     # Capture hotness of deal
     this.deal.calculate_hotness!
     # Capture the buyers count from the deal
-    this.buyers_count = buyers_count || deal.capture_sold_count
+    this.buyers_count = options[:buyers_count] || deal.capture_sold_count
     # Capture the last buyers_count value
     # If first snapshot, then last_buyesr_count will be equal to buyers_count
-    this.last_buyers_count = first ? this.buyers_count : last_recorded_buyers_count_for_deal(this.deal)
+    this.last_buyers_count = options[:first] ? this.buyers_count : last_recorded_buyers_count_for_deal(this.deal)
     this.save
     
     deal.max_sold_count ||= 0

@@ -119,16 +119,23 @@ class Deal < ActiveRecord::Base
   
   # replaces take_snapshot!
   def take_mongo_snapshot!(buyers_count = nil)
-    DealSnapshot.create_from_deal!(self, nil, buyers_count)
+    DealSnapshot.create_from_deal!(self, :buyers_count => buyers_count)
   end
                                              
   # buyers_count == last_buyers_count
   def take_first_mongo_snapshot!
-    DealSnapshot.create_from_deal!(self, true)
+    DealSnapshot.create_from_deal!(self, :first => true)
+  end
+
+  def take_last_mongo_snapshot!
+    DealSnapshot.create_from_deal!(self, :last => true)
   end
   
   # Closes out the deal
   def close!
+    # Take last snapshot before deal is closed
+    self.take_last_mongo_snapshot!
+    
     self.active = false
     self.sold = true
     save
