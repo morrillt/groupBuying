@@ -1,5 +1,5 @@
 class SnapshotJob
-  # SPLIT_SNAPSHOTS_FOR = ['groupon']   
+  SPLIT_SNAPSHOTS_FOR = []#['groupon']   
   
   @queue = :snapshot
   
@@ -27,6 +27,7 @@ class SnapshotJob
         puts "Error:"
         puts "-"*90
         puts e.message
+        puts e.backtrace.join("\n")
       end
     end
     puts "Snapshot Finish"

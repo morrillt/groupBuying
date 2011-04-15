@@ -20,6 +20,7 @@ class ChartJob
         puts "Error:"
         puts "-"*90
         puts e.message
+        puts e.backtrace.join("\n")
       end
       puts "ChartJob for #{site_id} - Finish"
     end

@@ -11,6 +11,7 @@ class DealCloserJob
         puts "Error:"
         puts "-"*90
         puts e.message
+        puts e.backtrace.join("\n")
       end
     end
     puts "DealCloser Finish"
