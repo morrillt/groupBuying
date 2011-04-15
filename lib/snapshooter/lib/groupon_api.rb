@@ -23,11 +23,23 @@ module Snapshooter
              
     def update_snapshots!(range = nil)
       log "Update snapshots"
-      divisions.each{|div|                                    
-        division_deals = div.deals.active
-        log "Division: #{div.site_division_id}"
-        # log "Deals: #{deals.count}"
-        Groupon.deals(:division => div.site_division_id).each {|groupon_deal|
+      timeouted_divisions = divisions.collect{|div|
+        div.site_division_id if update_snapshots_for_division(div)
+      }
+
+      log "Timeouted divisions: #{timeouted_divisions.join(',')}"
+      timeouted_divisions.map {|div|
+        update_snapshots_for_division(div)
+      }
+    end
+    
+    def update_snapshots_for_division(division)
+      success = true
+      division_deals = division.deals.active
+      log "Division: #{division.site_division_id}"
+      # log "Deals: #{deals.count}"
+      begin
+        Groupon.deals(:division => division.site_division_id).each {|groupon_deal|
           # log "Deal: #{groupon_deal.id}"
           deal = division_deals.detect{|dd| groupon_deal.id == dd.deal_id }
           # log "Found: #{deal.permalink}" if deal
@@ -35,9 +47,13 @@ module Snapshooter
             deal.take_mongo_snapshot!(groupon_deal.try(:quantity_sold) || nil)
           end
         }
-      }
+      rescue Timeout::Error => e
+        log "GrouponAPI Error: #{e.message}"
+        success = false
+      end
+      success
     end
-    
+
     def crawl_new_deals!(range = nil) # FIXME: range is not implemented yet
       deals_permalinks = site.deals.active.collect(&:permalink)
       divisions.map do |division|
