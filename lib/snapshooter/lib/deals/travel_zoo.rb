@@ -35,6 +35,7 @@ module Snapshooter
           }
           if @time_left.empty? || @time_left.size < 3                 
             expired_text = @doc.search("span[@id='ctl00_Main_ExpiredText']").first
+            expired_text ||= @doc.search("div[@class='capReachedSecondLine']").first
             if expired_text    
               return Time.parse(expired_text.text)
             end

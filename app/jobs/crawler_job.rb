@@ -18,7 +18,7 @@ class CrawlerJob
           if division_range
             site.crawl_new_deals!(division_range)
           else
-            site.enqueue_by_divisions(CrawlerJob, site.divisions.count)
+            site.enqueue_by_divisions(CrawlerJob, :count => site.divisions.count)
           end
         else
           site.crawl_new_deals!
@@ -27,6 +27,7 @@ class CrawlerJob
         puts "Error:"
         puts "-"*90
         puts e.message
+        puts e.backtrace.join("\n")
       end
     end  
     puts "CrawlerJob Finish"

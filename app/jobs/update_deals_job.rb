@@ -22,8 +22,8 @@ class UpdateDealsJob
       rescue => e
         puts "Error:"
         puts "-"*90    
-        puts e.backtrace.join("\n")
         puts e.message
+        puts e.backtrace.join("\n")
       end
       puts "UpdateDealsJob for #{site_id} - Finish"
     end

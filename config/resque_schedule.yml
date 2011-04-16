@@ -5,7 +5,7 @@ crawler:
   args: 
   description: "Deals crawler"  
 deal_closer:
-  cron: "0,15,30,45 * * * *"
+  cron: "10,40 * * * *"
   class: DealCloserJob
   queue: deals
   args: 
@@ -22,3 +22,9 @@ chart:
   queue: chart
   args: 
   description: "Recalculate charts"
+statistics:
+  cron: "0 4,10,20 * * *"
+  class: StatisticsJob
+  queue: statistics
+  args: 
+  description: "Recalculate statistics"
