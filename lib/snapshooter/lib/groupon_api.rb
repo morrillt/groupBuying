@@ -48,6 +48,7 @@ module Snapshooter
           end
         }
       rescue Timeout::Error => e
+        HoptoadNotifier.notify(e)
         log "GrouponAPI Error: #{e.message}"
         success = false
       end

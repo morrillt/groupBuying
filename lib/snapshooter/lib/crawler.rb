@@ -140,6 +140,7 @@ module Snapshooter
           log "Added #{deal.name}"
         end
       rescue => e     
+        HoptoadNotifier.notify(e)
         log "Error: #{e.message}"
         log "Error: " + e.backtrace.join("\n")
       end    
