@@ -119,21 +119,25 @@ class Site < ActiveRecord::Base
   # Example:
   #  Snapshooter::KgbDeals.new
   def snapshooter
-    @snapshooter ||= case self.source_name
+    @snapshooter ||= snapshooter_class.new(self.source_name)
+  end
+
+  def snapshooter_class
+    case self.source_name
     when 'kgb_deals'
-      Snapshooter::KgbDeals.new(self.source_name)
+      Snapshooter::KgbDeals
     when 'travel_zoo', 'travel_zoo_uk'
-      Snapshooter::TravelZoo.new(self.source_name)
+      Snapshooter::TravelZoo
     when 'homerun'
-      Snapshooter::Homerun.new(self.source_name)
+      Snapshooter::Homerun
     when 'open_table'
-      Snapshooter::OpenTable.new(self.source_name)
+      Snapshooter::OpenTable
     when 'groupon'
-      Snapshooter::GrouponApi.new(self.source_name)
+      Snapshooter::GrouponApi
     when 'living_social'
-      Snapshooter::LivingSocial.new(self.source_name)
+      Snapshooter::LivingSocial
     when 'ideal_golfer'
-      Snapshooter::IdealGolfer.new(self.source_name)
+      Snapshooter::IdealGolfer
     else
       raise Exception, "Unknown site source_name #{self.source_name}"
     end

@@ -1,32 +1,35 @@
-class ChartJob
+class ChartJob < BaseJob
    @queue = :chart
 
-  def self.perform(site_id = nil)
+  def perform(options={})
+    site_id = options['site_id']
+    
     Mongoid.database.connection.reconnect # Clean all tmp.map_reduce collections
     unless site_id
       puts "Start ChartJob[#{Time.now}]"
-      hourly_revenue_by_site        
-      Site.active.each do |site|
-        Resque.enqueue(ChartJob, site.id)
-      end      
-      puts "ChartJob Finish"            
+      hourly_revenue_by_site    
+      enqueue_by_site
     else
       puts "ChartJob Start for #{site_id}"
-      begin      
-        site = Site.find(site_id)
-        hourly_revenue_by_divisions(site.id)
-      rescue => e
-        puts "Error:"
-        puts "-"*90
-        puts e.message
-        puts e.backtrace.join("\n")
-      end
-      puts "ChartJob for #{site_id} - Finish"
-    end
+      pefrorm_for_site(site_id)
+    end      
     Mongoid.database.connection.reconnect # Clean all tmp.map_reduce collections
+    puts "ChartJob Finish"            
+  end      
+  
+  def pefrorm_for_site(site_id)
+    begin      
+      site = Site.find(site_id)
+      hourly_revenue_by_divisions(site.id)
+    rescue => e
+      puts "Error:"
+      puts "-"*90
+      puts e.message
+      puts e.backtrace.join("\n")
+    end
   end
   
-  def self.hourly_revenue_by_site
+  def hourly_revenue_by_site
     today= Time.now
     
     data = {}
@@ -51,7 +54,7 @@ class ChartJob
     end    
   end
   
-  def self.hourly_revenue_by_divisions(site_id)
+  def hourly_revenue_by_divisions(site_id)
     return unless site_id   
     site= Site.active.find(site_id)
     divisions = site.divisions.order('name ASC')
@@ -64,7 +67,9 @@ class ChartJob
     
     # only build this once
     hours_array = (0..23).to_a   
-    hours_array.map do |t|
+    hours_array.map do |t|            
+      report_status(t, 23)
+
       today = (Time.now - t.hours)
       revenues = site.revenue_for_all_divisions_by_given_hour_and_date(today.hour, today)            
       revenues.each do |division_id, revenue|
@@ -81,5 +86,5 @@ class ChartJob
       hr.revenue = data[div_id][:data].empty? ? placeholder : data[div_id][:data]
       hr.save
     }
-  end  
+  end     
 end

@@ -1,5 +1,5 @@
 class SnapshotJob
-  SPLIT_SNAPSHOTS_FOR = []#['groupon']   
+  
   
   @queue = :snapshot
   
