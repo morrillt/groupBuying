@@ -22,7 +22,7 @@ module Snapshooter
     end
 
     # deals
-    def crawl_new_deals!
+    def crawl_new_deals!(range = nil)
       site = Site.find_by_source_name("kgb_deals")
       
       divisions.each do |division_hash|

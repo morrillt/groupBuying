@@ -26,8 +26,15 @@ class Site < ActiveRecord::Base
   end
   
   # Captures new deals in the database
-  def crawl_new_deals!(range = nil)
-    snapshooter.crawl_new_deals!(range)
+  def crawl_new_deals!(range = nil, crawler_job = nil)
+    begin                                      
+      snapshooter.crawler_job = crawler_job
+      snapshooter.crawl_new_deals!(range)
+    rescue => e
+      puts "Error: #{e}"
+      puts "-"*90
+      puts e.backtrace.join("\n")
+    end
   end                 
   
   # Divide work by divisions 

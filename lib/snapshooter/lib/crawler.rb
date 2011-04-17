@@ -7,18 +7,20 @@ module Snapshooter
     DEAL_LIMIT = 500
 
     attr_reader :base_url
-    attr_accessor :strategy
+    attr_accessor :strategy, :crawler_job
 
     def initialize(source_name)
       @site     = Site.find_by_source_name(source_name)
       @site_id  = @site.id
       @base_url = @site.base_url
       @deals, @divisions = [], []
+      @crawler_job = nil
       @strategy = :crawler # :api, #rss
       super
     end    
     
-    def crawl_new_deals!(range = nil)   
+    def crawl_new_deals!(range = nil)
+      @crawler_job = crawler_job
       puts "#{self.class.to_s} is crawling, source: #{@site.source_name}"
       division_links = divisions
       division_links.map do |dhash|

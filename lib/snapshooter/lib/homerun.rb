@@ -29,7 +29,7 @@ module Snapshooter
       @doc.to_s.scan(/\d+ bought\./).try(:first).to_i
     end
     
-    def crawl_new_deals!
+    def crawl_new_deals!(range = nil)
       # Find the site
       @site     = Site.find_by_source_name("homerun")
       divisions.map do |division_name, division_path|

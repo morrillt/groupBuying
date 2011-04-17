@@ -19,7 +19,11 @@ module Snapshooter
       options = {}
       detect_absolute_path(deals.first, options)
       
+      total = deals.count
+      num = 0
       deals.map do |deal_link|  
+        @crawler_job.at(num, total) if @crawler_job
+        num += 1
         # Profiler__::start_profile
         crawl_deal(deal_link, options)
         # Profiler__::stop_profile
