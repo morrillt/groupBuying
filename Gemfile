@@ -22,7 +22,8 @@ gem "mongoid", "2.0.0.rc.6"
 gem "bson_ext", "~> 1.2"
 gem 'rest-client'
 gem 'devise'
-gem 'simplegeo'
+gem 'simplegeo'    
+gem 'hoptoad_notifier'
 
 group :test do
   gem 'json'
