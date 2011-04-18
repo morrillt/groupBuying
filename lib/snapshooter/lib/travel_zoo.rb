@@ -1,6 +1,5 @@
 module Snapshooter
   class TravelZoo < Crawler   
-    DEAL_LIMIT = 10
     
     def divisions
       return @divisions unless @divisions.empty?

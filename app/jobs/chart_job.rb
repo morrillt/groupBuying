@@ -1,7 +1,7 @@
 class ChartJob < BaseJob
    @queue = :chart
 
-  def perform(options={})
+  def perform
     site_id = options['site_id']
     
     Mongoid.database.connection.reconnect # Clean all tmp.map_reduce collections

@@ -25,9 +25,9 @@ module Snapshooter
       log "Update snapshots"
       timeouted_divisions = divisions.collect{|div|
         div if update_snapshots_for_division(div)
-      }
+      }.compact
 
-      log "Timeouted divisions: #{timeouted_divisions.join(',')}"
+      log "Timeouted divisions: #{timeouted_divisions.collect(&:name).join(',')}"
       timeouted_divisions.map {|div|
         update_snapshots_for_division(div)
       }
