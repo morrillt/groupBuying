@@ -1,32 +1,35 @@
-class StatisticsJob
+class StatisticsJob < BaseJob
    @queue = :statistics
 
-  def self.perform(site_id = nil)
-    Mongoid.database.connection.reconnect # Clean all tmp.map_reduce collections
+  def perform
+    site_id        = options['site_id']
+    
     unless site_id
       puts "Start StatisticsJob[#{Time.now}]"
-      Site.active.each do |site|
-        Resque.enqueue(StatisticsJob, site.id)
-      end      
-      puts "StatisticsJob Finish"            
+      enqueue_by_site
     else
       puts "StatisticsJob Start for #{site_id}"
-      begin      
-        site = Site.find(site_id)
-        get_site_info(site.id)
-      rescue => e
-        puts "Error:"
-        puts "-"*90
-        puts e.message
-        puts e.backtrace.join("\n")
-      end
-      puts "StatisticsJob for #{site_id} - Finish"
+      perform_for_site(site_id)
+    end
+    puts "StatisticsJob Finish"    
+  end        
+  
+  def perform_for_site(site_id)
+    Mongoid.database.connection.reconnect # Clean all tmp.map_reduce collections
+    begin      
+      site = Site.find(site_id)
+      get_site_info(site.id)
+    rescue => e
+      puts "Error:"
+      puts "-"*90
+      puts e.message
+      puts e.backtrace.join("\n")
     end
     Mongoid.database.connection.reconnect # Clean all tmp.map_reduce collections
   end
   
   #Yep, I know this is not the most beatiful thing... 
-  def self.get_site_info(site_id)                            
+  def get_site_info(site_id)                            
     site = Site.active.find(site_id)
     data = SiteInfo.find_or_create_by(:site_id => site_id)    
     

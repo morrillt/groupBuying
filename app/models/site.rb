@@ -12,16 +12,22 @@ class Site < ActiveRecord::Base
   
   # Updates all the sites active deals buy createing
   # snapshots of the deal
-  def update_snapshots!(range = nil)
+  def update_snapshots!(range = nil, snapshot_job = nil)
     if snapshooter.strategy == :crawler
       deals_to_snapshot = deals.active 
-      deals.limit(range[1] - range[0]).offset(range[0]) if range
-    
+      deals_to_snapshot = deals_to_snapshot.limit(range[1] - range[0]).offset(range[0]) if range
+      
+      total = deals_to_snapshot.count
+      num = 0        
+      
       deals_to_snapshot.each do |deal|
+        snapshot_job.report_status(num, total) if snapshot_job
         deal.take_mongo_snapshot!
+        num +=1 
       end
+      
     elsif snapshooter.strategy == :api
-      snapshooter.update_snapshots!
+      snapshooter.update_snapshots! # Delegate to snapshooter class
     end
   end
   

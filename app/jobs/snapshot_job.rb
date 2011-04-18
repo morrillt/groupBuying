@@ -1,36 +1,28 @@
-class SnapshotJob
-  
-  
+class SnapshotJob < BaseJob
   @queue = :snapshot
   
-  def self.perform(site_id = nil, options = {})
+  def perform
+    site_id        = options['site_id']
+    
     # Divide and conquer
     unless site_id
       puts "Start SnapshotJob[#{Time.now}]"
-      Site.active.each do |site|
-        Resque.enqueue(SnapshotJob, site.id)
-      end
+      enqueue_by_site
     else      
       puts "Snapshot Start for #{site_id}"
-      begin       
-        site = Site.find(site_id)
-        if SPLIT_SNAPSHOTS_FOR.include? site.source_name
-          unless options.empty?
-            site.update_snapshots!(options)
-          else
-            site.enqueue_by_deals(SnapshotJob, :count => site.deals.active.count)
-          end
-        else
-          site.update_snapshots!
-        end
-      rescue => e
-        puts "Error:"
-        puts "-"*90
-        puts e.message
-        puts e.backtrace.join("\n")
-      end
+      perform_for_site(site_id)
     end
     puts "Snapshot Finish"
+  end
+  
+  def perform_for_site(site_id)
+    deals_range = options['deals_range']
+    site = Site.find(site_id)
+
+    execute_or_enqueue(site) do |range, snapshot_job|
+      puts "Deals: [#{range.join('-')}]" if range
+      site.update_snapshots!(range, snapshot_job)
+    end
   end
     
 end

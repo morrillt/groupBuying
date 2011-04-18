@@ -1,27 +1,31 @@
-class DealCloserJob
+class DealCloserJob < BaseJob
   @queue = :deals
 
-  def self.perform(site_id = nil)
+  def perform
+    site_id        = options['site_id']
+    
     # Divide and conquer
     unless site_id
       puts "Start DealCloserJob[#{Time.now}]"
-      Site.active.each do |site|
-        Resque.enqueue(DealCloserJob, site.id)
-      end
+      enqueue_by_site
     else
-      site = Site.find(site_id)
-      puts "Start DealCloserJob for [#{site.source_name}]"
-      site.deals.expired.active.map do |deal|
-        begin
-          deal.close!
-        rescue => e
-          puts "Error:"
-          puts "-"*90
-          puts e.message
-          puts e.backtrace.join("\n")
-        end
+      puts "DealCloserJob Start for [#{site.source_name}]"
+      perform_for_site(site_id)
+    end
+    puts "DealCloser Finish"
+  end       
+  
+  def perform_for_site(site_id)
+    site = Site.find(site_id)
+    site.deals.expired.active.map do |deal|
+      begin
+        deal.close!
+      rescue => e
+        puts "Error:"
+        puts "-"*90
+        puts e.message
+        puts e.backtrace.join("\n")
       end
-      puts "DealCloser Finish"
     end
   end
 

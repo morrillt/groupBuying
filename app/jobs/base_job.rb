@@ -1,7 +1,7 @@
 require 'resque/job_with_status'
 class BaseJob < Resque::JobWithStatus
   SPLIT_CRAWL_FOR     = ['living_social']
-  SPLIT_SNAPSHOTS_FOR = ['groupon']   
+  SPLIT_SNAPSHOTS_FOR = []#['travel_zoo']   
 
   def enqueue_by_site(*args)                 
     total = Site.active.count
@@ -31,12 +31,12 @@ class BaseJob < Resque::JobWithStatus
       if deals_range
         yield deals_range, self
       else
-        enqueue_by_divisions(site, :count => site.deals.count)
+        enqueue_by_deals(site, :count => site.deals.active.count)
       end 
       return 
     end
     
-    yield self
+    yield nil, self
   end  
   
   def enqueue_by_divisions(site, options = {})
@@ -61,7 +61,7 @@ class BaseJob < Resque::JobWithStatus
     }
   end  
 
-  def enqueue_by_deals(job_class, options = {})
+  def enqueue_by_deals(site, options = {})
     count = options.delete(:count)
     limit = site.snapshooter_class::DEAL_LIMIT  
     
@@ -81,7 +81,7 @@ class BaseJob < Resque::JobWithStatus
     }
   end  
   
-  private 
+  # private 
     def enqueue_self(options={})
       self.class.create(options)
     end
