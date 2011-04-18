@@ -84,7 +84,9 @@ module Snapshooter
     end
 
     def deal_links
-      @doc.links_with(:text=>/Today's Deal/).collect{|link| link.uri.to_s}.flatten.compact.uniq
+      links = @doc.links_with(:text=>/Today's Deal/).collect{|link| link.uri.to_s}.reject{|link| link == "/"}.flatten.compact.uniq
+      puts "Deal links: #{links.inspect}"
+      links
     end
     
     def pages_links
