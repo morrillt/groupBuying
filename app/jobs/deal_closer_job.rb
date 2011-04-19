@@ -9,7 +9,7 @@ class DealCloserJob < BaseJob
       puts "Start DealCloserJob[#{Time.now}]"
       enqueue_by_site
     else
-      puts "DealCloserJob Start for [#{site.source_name}]"
+      puts "DealCloserJob Start for [#{site_id}]"
       perform_for_site(site_id)
     end
     puts "DealCloser Finish"
