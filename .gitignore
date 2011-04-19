@@ -11,3 +11,4 @@ public/stylesheets/css
 test/
 db/schema.rb
 dump.rdb
+Gemfile.lock
