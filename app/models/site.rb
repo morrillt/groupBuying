@@ -27,7 +27,7 @@ class Site < ActiveRecord::Base
       end
       
     elsif snapshooter.strategy == :api
-      snapshooter.update_snapshots! # Delegate to snapshooter class
+      snapshooter.update_snapshots!(range, snapshot_job) # Delegate to snapshooter class
     end
   end
   

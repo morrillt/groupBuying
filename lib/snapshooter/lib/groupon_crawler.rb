@@ -1,6 +1,6 @@
 module Snapshooter
   class GrouponCrawler < Crawler
-    DIVISION_LIMIT = 50 # For the future
+    DIVISION_LIMIT = 20 # For the future
     DEAL_LIMIT = 200           
     
     def doc

@@ -1,6 +1,6 @@
 module Snapshooter
   class GrouponApi < Crawler
-    DIVISION_LIMIT = 50 # For the future
+    DIVISION_LIMIT = 40 # For the future
     DEAL_LIMIT = 200
     
     def initialize(source_name)
@@ -21,16 +21,24 @@ module Snapshooter
         :lng => deal.lng).try(:quantity_sold) || 0
     end    
              
-    def update_snapshots!(range = nil)
-      log "Update snapshots"
-      timeouted_divisions = divisions.collect{|div|
-        div if update_snapshots_for_division(div)
-      }.compact
-
-      log "Timeouted divisions: #{timeouted_divisions.collect(&:name).join(',')}"
-      timeouted_divisions.map {|div|
+    def update_snapshots!(range = nil, snapshot_job = nil)
+      log "Update snapshots: [#{range.join(',')}]"
+      divisions_to_process = divisions
+      divisions_to_process = divisions_to_process[range[0]..range[1]] if range
+      
+      # timeouted_divisions = divisions_to_process.map{|div|
+      total = divisions_to_process.count
+      num = 0
+      divisions_to_process.map{|div|
         update_snapshots_for_division(div)
+        snapshot_job.report_status(num, total) if snapshot_job
+        num += 1
       }
+
+      # log "Timeouted divisions: #{timeouted_divisions.collect(&:name).join(',')} (#{timeouted_divisions.count})"
+      # timeouted_divisions.map {|div|
+      #   update_snapshots_for_division(div)
+      # }
     end
     
     def update_snapshots_for_division(division)
