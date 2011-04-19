@@ -6,7 +6,7 @@ module Snapshooter
     DIVISION_LIMIT = 50
     DEAL_LIMIT = 500
 
-    attr_reader :base_url
+    attr_reader :base_url, :doc
     attr_accessor :strategy, :crawler_job
 
     def initialize(source_name)
@@ -29,7 +29,7 @@ module Snapshooter
         div_url, div_name = dhash[:url], dhash[:name]        
                                                      
         find_or_create_division(div_name, div_url)
-        crawl_division(div_url)        
+        crawl_division(div_url)
       end           
     end              
     
