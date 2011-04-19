@@ -1,5 +1,7 @@
 module Snapshooter
   class BaseDeal
+    attr_reader :doc
+    
     def initialize(doc, deal_link, site_id, options = {})
       @doc = doc
       @deal_link = deal_link
@@ -59,6 +61,10 @@ module Snapshooter
     def sold_out?
       @sold_out ||= false
     end    
+    
+    def xpath(path)
+      (doc/path) || []
+    end
       
     def to_hash
       # debugger

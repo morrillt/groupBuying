@@ -39,7 +39,6 @@ class Site < ActiveRecord::Base
     rescue => e
       puts "Error: #{e}"
       puts "-"*90
-      puts e.backtrace.join("\n")
     end
   end                 
   
