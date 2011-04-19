@@ -38,3 +38,20 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 end
 
+class Snapshooter::Base
+  HTML_DIR = File.join(File.dirname(__FILE__),'crawlers','html')
+
+  def get(resource, options = {})
+    @url_map = {'/' => "index.html", '/deal/boston-ma/' => 'boston_division_home.html', '/deal/boston-ma/groupBuysList.action'=> 'boston_more_deals.html', '/deal' => 'deal.html'}
+    url = options[:full_path] ? resource : (base_url + resource)
+    url = File.join("file://#{HTML_DIR}/#{self.class.name.downcase.split("::").last}", @url_map[url.gsub("#{base_url}", "")])
+    begin
+      @doc = @mecha.get(url)
+      yield if block_given?
+    rescue OpenURI::HTTPError => e
+      log e.message
+    rescue Mechanize::ResponseCodeError => e
+      log e.message
+    end
+  end
+end

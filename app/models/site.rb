@@ -151,6 +151,8 @@ class Site < ActiveRecord::Base
       Snapshooter::LivingSocial
     when 'ideal_golfer'
       Snapshooter::IdealGolfer
+    when 'weforia'
+      Snapshooter::Weforia
     else
       raise Exception, "Unknown site source_name #{self.source_name}"
     end

@@ -8,10 +8,14 @@ module Snapshooter
     PRICE_REGEX = /[^0-9\.]/
    
     def initialize(source)
-      @mecha = Mechanize.new { |agent| agent.user_agent_alias = 'Mac Safari' }
+      mechanize()
       @doc = @mecha
     end    
     
+    def mechanize
+      @mecha ||= Mechanize.new { |agent| agent.user_agent_alias = 'Mac Safari' }
+    end
+
     def get(resource, options = {})
       url = options[:full_path] ? resource : (base_url + resource)
       begin
