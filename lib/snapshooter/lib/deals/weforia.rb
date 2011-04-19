@@ -37,11 +37,12 @@ module Snapshooter
 
       def buyers_count
         @buyers_count ||= @doc.parser.css(".peoplePurchasedValue").text.to_i
+        @buyers_count
       end
 
       def expires_at
         return @time_left if @time_left
-        time_left_pattern = @doc.parser.text.scan(%r[(((\d)d)?:(\d+)h:(\d+)m(:(\d+)s)?)]).flatten
+        time_left_pattern = @doc.parser.text.scan(%r[(((\d)d:)?(\d+)h:(\d+)m(:(\d+)s)?)]).flatten
         return nil if time_left_pattern.size < 7
         time_array = time_left_pattern[2..4] + [time_left_pattern[6]]
         time_array = time_array.collect{|f| f || 0}

@@ -11,13 +11,13 @@ module Snapshooter
     end
 
     def deal_links
-      @deal_links ||= @doc.parser.css('.gbItem').collect do |deal|
+      links = @doc.parser.css('.gbItem').collect do |deal|
         if deal.css('.listViewGbStatus').count == 0
           link = deal.xpath(".//span[@class='text']/a[@class='link']")[0].attributes["href"].value
           link
         end
       end.flatten.compact
-      @deal_links
+      links
     end    
 
     def pages_links
@@ -34,6 +34,11 @@ module Snapshooter
         get(page, :full_path=>true)
         deal_links
       }.flatten
+    end
+
+    def buyers_count
+      count = @doc.parser.css(".peoplePurchasedValue").text.to_i
+      count
     end
   end
 end
