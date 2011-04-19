@@ -39,6 +39,7 @@ module Snapshooter
         xpath("div[@id=sitemap_body] a").map{|link| 
           
           # Follow the links
+          puts "Ping: #{link['href']}"
           get(link["href"], :full_path => true)
           
           # Capture the price
