@@ -1,4 +1,5 @@
 #require 'bundler/capistrano'
+require 'hoptoad_notifier/capistrano'
 
 set :domain, 'group-buying.pogodan.com'
 set :application, domain
@@ -197,3 +198,6 @@ namespace :monit do
   end
 end    
 
+
+require './config/boot'
+require 'hoptoad_notifier/capistrano'

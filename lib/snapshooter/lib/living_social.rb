@@ -136,8 +136,10 @@ module Snapshooter
         end
         yield if block_given?
       rescue OpenURI::HTTPError => e
+        HoptoadNotifier.notify(e)
         log e.message
       rescue Mechanize::ResponseCodeError => e
+        HoptoadNotifier.notify(e)
         log e.message
       end
     end

@@ -292,7 +292,8 @@ class Deal < ActiveRecord::Base
         return true
       end
       return false
-    rescue
+    rescue => e
+      HoptoadNotifier.notify(e)
       "Something happened"
     end
   end
@@ -300,7 +301,8 @@ class Deal < ActiveRecord::Base
   def simplegeo_category_lookup
     begin
       SimplegeoCollector.match_deal(self)
-    rescue
+    rescue => e
+      HoptoadNotifier.notify(e)
       "Something happened"
     end
   end
