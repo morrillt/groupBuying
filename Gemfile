@@ -14,8 +14,6 @@ gem 'fastercsv'
 gem 'will_paginate'
 gem "compass", ">= 0.10.6"
 gem "groupon"
-gem 'resque'
-gem 'resque-scheduler'
 gem 'system_timer'
 gem 'sinatra', '1.1.3'
 gem "mongoid", "2.0.0.rc.6"
@@ -24,6 +22,11 @@ gem 'rest-client'
 gem 'devise'
 gem 'simplegeo'    
 gem 'hoptoad_notifier'
+
+gem 'resque'
+gem 'resque-scheduler'
+gem 'resque-meta'
+gem 'resque-status'
 
 group :test do
   gem 'json'

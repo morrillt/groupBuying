@@ -7,18 +7,20 @@ module Snapshooter
     DEAL_LIMIT = 500
 
     attr_reader :base_url
-    attr_accessor :strategy
+    attr_accessor :strategy, :crawler_job
 
     def initialize(source_name)
       @site     = Site.find_by_source_name(source_name)
       @site_id  = @site.id
       @base_url = @site.base_url
       @deals, @divisions = [], []
+      @crawler_job = nil
       @strategy = :crawler # :api, #rss
       super
     end    
     
-    def crawl_new_deals!(range = nil)   
+    def crawl_new_deals!(range = nil)
+      @crawler_job = crawler_job
       puts "#{self.class.to_s} is crawling, source: #{@site.source_name}"
       division_links = divisions
       division_links.map do |dhash|
@@ -56,47 +58,6 @@ module Snapshooter
       end
     end
 
-    def enqueue_by_divisions(job_class, options = {})
-      count = options.delete(:count)
-      limit = self.class::DIVISION_LIMIT  
-      
-      if limit == 0
-        Resque.enqueue(job_class, @site_id, [0, site.divisions.count])
-        return
-      end     
-      
-      groups = count / limit
-      
-      Resque.enqueue(job_class, @site_id, [0, count]) and return if groups == 0
-      
-      groups.times{ |i|
-        from = i*limit
-        to = (i == groups-1 ? count : (i+1)*limit)
-        Resque.enqueue(job_class, @site_id, [from, to])
-      }
-    end  
-
-    def enqueue_by_deals(job_class, options = {})
-      count = options.delete(:count)
-
-      limit = self.class::DEAL_LIMIT    
-      
-      if limit == 0
-        Resque.enqueue(job_class, @site_id, {:range => [0, site.deals.count]})
-        return
-      end                                                 
-      
-      groups = count / limit
-      
-      Resque.enqueue(job_class, @site_id, [0, count]) and return if groups == 0
-      
-      groups.times{ |i|
-        from = i*limit
-        to = (i == groups-1 ? count : (i+1)*limit)
-        Resque.enqueue(job_class, @site_id, {:range => [from, to]})
-      }
-    end  
-    
     # Initialize Division
     # TODO: - @division as class variable is bad move
     def find_or_create_division(name, url = nil)

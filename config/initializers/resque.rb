@@ -9,6 +9,15 @@ Resque.redis = $redis
 # Scheduler tasks
 require 'resque_scheduler'
 Resque.schedule = YAML.load_file("#{Rails.root}/config/resque_schedule.yml")
+
+# Resque Plugins                
+require 'resque-meta'
+require 'resque/status_server'
+require 'resque/job_with_status'
+
+# Resque status
+Resque::Status.expire_in = (24 * 60 * 60) # 24hrs in seconds
+     
      
 # Hack for vegas
 module Vegas
