@@ -19,12 +19,11 @@ module Snapshooter
 
       def actual_price
         @actual_price ||= @doc.parser.css(".discountBlock .origPriceValue").text.gsub(Snapshooter::Base::PRICE_REGEX, '').to_f
-        original_price = @doc.parser.css("p.original-price del").first
         @actual_price.try(:round)
       end
 
       def raw_address
-        @raw_address ||= @doc.parser.search(".locationAddress formattedAddress").text
+        @raw_address ||= @doc.parser.search(".locationAddress .formattedAddress").text
       end
 
       def telephone   
@@ -38,16 +37,17 @@ module Snapshooter
 
       def buyers_count
         @buyers_count ||= @doc.parser.css(".peoplePurchasedValue").text.to_i
+        @buyers_count
       end
 
       def expires_at
         return @time_left if @time_left
-        time_left_pattern = @doc.parser.text.scan(%r[(((\d)d)?:(\d+)h:(\d+)m:((\d+)s)?)]).flatten
+        time_left_pattern = @doc.parser.text.scan(%r[(((\d)d:)?(\d+)h:(\d+)m(:(\d+)s)?)]).flatten
         return nil if time_left_pattern.size < 7
         time_array = time_left_pattern[2..4] + [time_left_pattern[6]]
         time_array = time_array.collect{|f| f || 0}
         @time_left = Time.now
-        @time_left = @time_left.add(time_left_pattern[0].to_i * 24*60*60 + time_left_pattern[1].to_i * 60 * 60 + time_left_pattern[2].to_i * 60 + time_left_pattern[3])
+        @time_left = @time_left + (time_left_pattern[2].to_i * 24*60*60 + time_left_pattern[3].to_i * 60 * 60 + time_left_pattern[4].to_i * 60 + time_left_pattern[6].to_i)
         @time_left
       end
     end

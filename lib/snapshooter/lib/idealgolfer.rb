@@ -10,83 +10,16 @@ module Snapshooter
       @divisions
     end
 
-    def crawl_new_deals!(range=nil)
-      division_links = divisions    
-      division_range = range ? division_links[range[0]..range[1]] : division_links
-
-      deals = division_range.collect do |dhash|
-        puts "Division: #{dhash[:url]}"
-        options = {}
-        div_url, div_name = dhash[:url], dhash[:name]        
-
-        find_or_create_division(div_name, div_url)
-        crawl_division(div_url)
-      end.flatten
-      options = {}
-      detect_absolute_path(deals.first, options)
-      
-      deals.map do |deal_link|
-        # Profiler__::start_profile
-        crawl_deal(deal_link, options)
-        # Profiler__::stop_profile
-        # Profiler__::print_profile($stderr)
-      end
-    end
-
-    def crawl_archived_deals!(range=nil)
-      division_links = divisions    
-      division_range = range ? division_links[range[0]..range[1]] : division_links
-
-      deals = division_range.collect do |dhash|
-        puts "Division: #{dhash[:url]}"
-        options = {}
-        div_url, div_name = dhash[:url], dhash[:name]        
-
-        find_or_create_division(div_name, div_url)
-        crawl_archived_deals_for_division(div_url)
-      end.flatten
-      options = {}
-      detect_absolute_path(deals.first, options)
-      
-      deals.map do |deal_link|
-        # Profiler__::start_profile
-        crawl_deal(deal_link, options)
-        # Profiler__::stop_profile
-        # Profiler__::print_profile($stderr)
-      end
-    end
-
-    def crawl_deal(url, options)
-      get(url, options)
-      super(url, options)
-    end
-    
-    def crawl_division(url)
-      options = {}
-      detect_absolute_path(url, options)
-      get(url, options)
-      full_deal_links
-    end
-
-    def crawl_archived_deals_for_division(url)
-      options = {}
-      detect_absolute_path(url, options)
-      get(url, options)
-      all_archive_deal_links
-    end
-
-    def all_archive_deal_links
-      deal_links.concat(capture_paginated_deal_links).uniq
-    end
-
-    def all_archive_deal_links
-      @doc.links_with(:text=>/Read More/).collect{|link| link.uri.to_s}.flatten.compact.uniq
-    end
-
     def deal_links
-      @doc.links_with(:text=>/Today's Deal/).collect{|link| link.uri.to_s}.reject{|link| link == "/"}.flatten.compact.uniq
-    end
-    
+      links = @doc.parser.css('.gbItem').collect do |deal|
+        if deal.css('.listViewGbStatus').count == 0
+          link = deal.xpath(".//span[@class='text']/a[@class='link']")[0].attributes["href"].value
+          link
+        end
+      end.flatten.compact
+      links
+    end    
+
     def pages_links
       match = @doc.content.match /initPagination\(\d+,\s?(\d+),\s?(\d+),/
       if match
@@ -101,6 +34,11 @@ module Snapshooter
         get(page, :full_path=>true)
         deal_links
       }.flatten
+    end
+
+    def buyers_count
+      count = @doc.parser.css(".peoplePurchasedValue").text.to_i
+      count
     end
 
     def get(resource, options = {})
