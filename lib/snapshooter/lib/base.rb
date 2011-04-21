@@ -44,7 +44,6 @@ module Snapshooter
       options[:full_path] = (url =~ /^http(.+)/i) ? true : false
     end
               
-    
     def self.split_address_telephone(address, country = :usa)
       telephone_regex = unless country == :usa || country.empty?
           self.const_get("#{country}_telephone_regex".upcase)

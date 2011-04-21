@@ -17,7 +17,11 @@ module Snapshooter
       @crawler_job = nil
       @strategy = :crawler # :api, #rss
       super
-    end    
+    end     
+    
+    def site
+      @site ||= Site.find(@site_id)
+    end                                                 
     
     def crawl_new_deals!(range = nil)
       @crawler_job = crawler_job
@@ -140,9 +144,6 @@ module Snapshooter
       deal.save!
     end            
 
-    def site
-      @site ||= Site.find(@site_id)
-    end                                                 
     
     # Methods for brute-scrapping old deals
     def crawl_old_deals_with_bruteforce
@@ -174,34 +175,39 @@ module Snapshooter
     #   url =~ /local-deals\/error/
     def error_page?(url)
     end    
-    
-    
+
+
     # Methods that needs to be implemented by subclasses
     # ==================================================
     # Capture divisions
-    def divisions
+    def divisions   
+      raise 'Abstract method [divisions] doesnt implemented'
     end       
     
     # Capture deal links from current page
     def deal_links
+      raise 'Abstract method [deal_links] doesnt implemented'
     end    
     
     # Capture pages links
     def pages_links   
+      raise 'Abstract method [pages_links] doesnt implemented'
     end
     
     # Deal links from other pages
     def capture_paginated_deal_links
+      raise 'Abstract method [capture_paginated_deal_links] doesnt implemented'
     end  
     
     def buyers_count    
       # Capture buyers_count in child
+      raise 'Abstract method [buyers_count] doesnt implemented'
     end
     
     def detect_deal_division
+      raise 'Abstract method [detect_deal_division] doesnt implemented'
       # Detect deal division(used with bruteforce crawling)
     end
     
-
   end
 end
