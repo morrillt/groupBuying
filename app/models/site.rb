@@ -77,25 +77,25 @@ class Site < ActiveRecord::Base
   #     <tt>options</tt>: {:range => } - range of elements
   #                       {:active => 1} - update active deals only?
   #                       {:attributes => 'max_sold_count expires_at'} - which attributes to update
-  def crawl_and_update_deals_info(options)
+  def crawl_and_update_deals_info(options = {}, update_deals_job = nil)
     range = options.delete(:range) || options.delete("range")
     active = options.delete(:active) || options.delete("active")
     attributes = options.delete(:attributes) || options.delete("attributes")
 
-    if deals.count > snapshooter.class::DEAL_LIMIT && range.nil?
-      enqueue_by_deals(UpdateDealsJob)
-    else
-      update_deals = deals
+    update_deals = deals
 
-      update_deals.where(options) unless options.empty?
-      update_deals.active if active && active == 1
+    update_deals.where(options) unless options.empty?
+    update_deals.active if active && active == 1
 
-      update_deals.limit(range[1] - range[0]).offset(range[0]) if range
-
-      update_deals.each{|deal|
-        snapshooter.update_deal_info(deal, attributes)
-      }
-    end
+    update_deals.limit(range[1] - range[0]).offset(range[0]) if range
+    total = update_deals.count
+    num = 0
+    update_deals.each{ |deal|
+      snapshooter.update_deal_info(deal, attributes)
+      
+      update_deals_job.report_status(num, total) if update_deals_job
+      num += 1
+    }
   end
   
   # Returns a mongoid collection of DealSnapshot belonging

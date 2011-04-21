@@ -123,9 +123,14 @@ module Snapshooter
       if attributes.to_s == '*'
         update_attributes = crawler_deal.to_hash
       else
-        attributes.map {|ab|
-          field = ab.to_sym
-          new_value = crawler_deal.send(field)
+        attributes.map {|ab|                   
+          field = ab.to_sym    
+          if field == :categories
+            deal.update_categories
+            new_value = nil
+          else
+            new_value = crawler_deal.send(field)
+          end
           if new_value
             update_attributes[field] = new_value
           end
@@ -133,8 +138,8 @@ module Snapshooter
       end
       deal.update_attributes(update_attributes)
       deal.save!
-    end
-    
+    end            
+
     def site
       @site ||= Site.find(@site_id)
     end                                                 

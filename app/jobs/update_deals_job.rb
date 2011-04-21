@@ -20,15 +20,11 @@ class UpdateDealsJob < BaseJob
   end
   
   def perform_for_site(site_id)
-    begin      
-      site = Site.find(site_id)         
-      site.crawl_and_update_deals_info(options)
-    rescue => e
-      puts "Error:"
-      puts "-"*90    
-      puts e.message
-      puts e.backtrace.join("\n")
-    end
+    site = Site.find(site_id)         
+    execute_or_enqueue(site) do |range, update_deals_job|
+      puts "Update Deals: [#{range.join('-')}]" if range
+      site.crawl_and_update_deals_info(options, update_deals_job)
+    end                                             
   end
   
 end

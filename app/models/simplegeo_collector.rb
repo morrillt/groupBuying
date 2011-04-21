@@ -16,14 +16,16 @@ class SimplegeoCollector
     tokens = YAML::load(File.open("#{RAILS_ROOT}/config/simplegeo.yml"))
     SimpleGeo::Client.set_credentials(tokens['token'],tokens['secret_token'])
   end
-  
+
+  # Params:
+  #   <tt>d</tt>: deal object
   def self.match_deal(d)
     if d.lat
       authenticate
-      places= SimpleGeo::Client.get_places(d.lat, d.lng, {'radius' => 0.1})
-      deal_phone= d.telephone ? d.telephone.gsub!(/\+1|\s|-|\.|\(|\)/,'') : 0
+      places = SimpleGeo::Client.get_places(d.lat, d.lng, {'radius' => 0.1})
+      deal_phone = d.telephone ? d.telephone.gsub(/\+1|\s|-|\.|\(|\)/,'') : 0
       places[:features].each do |p|
-        simplegeo_phone= p[:properties][:phone] ? p[:properties][:phone].gsub!(/\+1|\s|-|\.|\(|\)/,'') : 1
+        simplegeo_phone = p[:properties][:phone] ? p[:properties][:phone].gsub(/\+1|\s|-|\.|\(|\)/,'') : 1
         if simplegeo_phone == deal_phone
           create({
                    :deal_id => d.id,
@@ -35,6 +37,9 @@ class SimplegeoCollector
                    :address => p[:properties][:address],
                    :tags => p[:properties][:tags]
                  })
+          category = p[:properties][:classifiers].first[:category]
+          d.categories = category
+          return category
         end
       end
     else

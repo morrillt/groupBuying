@@ -9,6 +9,9 @@ class Deal < ActiveRecord::Base
   belongs_to :division
   belongs_to :site
   
+  has_many :categorizations
+  has_many :categories, :through => :categorizations
+  
   # Validations
   validates_presence_of :name
   validates_presence_of :permalink
@@ -263,6 +266,27 @@ class Deal < ActiveRecord::Base
       end
     end
   end 
+
+  # Updates current categories objects
+  # params:
+  #   <tt>cats</tt> - Array of categories names
+  def categories=(cats)
+    current = self.categories.collect(&:name)
+    cats.each{|cat|
+      unless current.include?(cat)
+        new_cat = Category.create(:name => cat)
+        self.categories << new_cat
+      end
+    }
+    self.save
+  end
+
+  # Updates only categories objects, doesn't save the deal object
+  def update_categories
+    yipit_category_lookup
+    simplegeo_category_lookup
+    self.save
+  end
   
 
   private
@@ -275,29 +299,32 @@ class Deal < ActiveRecord::Base
     end
   end
 
+  # FIXME: Check that YIPIT returns only 1 category
+  # Updates only categories objects, doesn't save the deal object
   def yipit_category_lookup
+    yipit_categories = []
     return false if !self.telephone
     phone= self.telephone.gsub(/\+1|\s|-|\.|\(|\)/,'')
     begin
       # The Yipit API key should be taken to config file
       json= RestClient.get "http://api.yipit.com/v1/deals/?key=aFvhQsjkqLfjqwhH&phone=#{phone}"
-      data= JSON.parse json
-      return false unless data['response']['deals']
-      unless data['response']['deals'].empty?
-        unless data['response']['deals']['tags'].empty?
-          self.yipit_categories= data['response']['deals']['tags'].collect do |t|
-            t['name']
-          end.join(";")
-        end
-        return true
+      data= JSON.parse(json)['response']
+      unless data['deals'].empty?
+        yipit_categories = data['deals'].collect{|d| 
+          if d['business']['locations']['phone'].gsub(/\+1|\s|-|\.|\(|\)/,'') == phone
+            d['tags'].collect{ |t| t['name'] }
+          end
+        }.flatten.compact
       end
-      return false
     rescue => e
       HoptoadNotifier.notify(e)
-      "Something happened"
+      "YIPIT category search failed: #{e.message}"
     end
+    self.categories = yipit_categories
+    yipit_categories
   end
 
+  # Updates only categories objects, doesn't save the deal object
   def simplegeo_category_lookup
     begin
       SimplegeoCollector.match_deal(self)

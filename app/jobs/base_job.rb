@@ -39,8 +39,17 @@ class BaseJob < Resque::JobWithStatus
       return 
     end
     
+    if self.class == UpdateDealsJob && site.deals.count > site.snapshooter_class::DEAL_LIMIT
+      if deals_range
+        yield deals_range, self
+      else
+        enqueue_by_deals(site, :count => site.deals.count)
+      end
+      return
+    end
+    
     yield nil, self
-  end  
+  end
   
   def enqueue_by_divisions(site, options = {})
     count = options.delete(:count)
