@@ -25,10 +25,8 @@ class Deal < ActiveRecord::Base
   before_create :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? || (d.lat && d.lng)}
   before_update :geocode_lat_lng!, :unless => Proc.new{|d| d.raw_address.blank? || (d.lat && d.lng)}
 
-  # Add categorization from Yipit
-  # after_create :yipit_category_lookup
-  # Add categorization from SimpleGeo
-  # after_create :simplegeo_category_lookup
+  # Categories lookup
+  after_create :update_categories
 
   before_create do
     self.deal_id = Digest::MD5.hexdigest(name + permalink + expires_at.to_s) unless self.deal_id.present?
