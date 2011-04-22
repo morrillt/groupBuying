@@ -274,7 +274,7 @@ class Deal < ActiveRecord::Base
     current = self.categories.collect(&:name)
     cats.each{|cat|
       unless current.include?(cat)
-        new_cat = Category.create(:name => cat)
+        new_cat = Category.find_or_create_by_name(cat)
         self.categories << new_cat
       end
     }
@@ -302,26 +302,7 @@ class Deal < ActiveRecord::Base
   # FIXME: Check that YIPIT returns only 1 category
   # Updates only categories objects, doesn't save the deal object
   def yipit_category_lookup
-    yipit_categories = []
-    return false if !self.telephone
-    phone= self.telephone.gsub(/\+1|\s|-|\.|\(|\)/,'')
-    begin
-      # The Yipit API key should be taken to config file
-      json= RestClient.get "http://api.yipit.com/v1/deals/?key=aFvhQsjkqLfjqwhH&phone=#{phone}"
-      data= JSON.parse(json)['response']
-      unless data['deals'].empty?
-        yipit_categories = data['deals'].collect{|d| 
-          if d['business']['locations']['phone'].gsub(/\+1|\s|-|\.|\(|\)/,'') == phone
-            d['tags'].collect{ |t| t['name'] }
-          end
-        }.flatten.compact
-      end
-    rescue => e
-      HoptoadNotifier.notify(e)
-      "YIPIT category search failed: #{e.message}"
-    end
-    self.categories = yipit_categories
-    yipit_categories
+    Yipit.get_categories(self)
   end
 
   # Updates only categories objects, doesn't save the deal object
@@ -330,7 +311,7 @@ class Deal < ActiveRecord::Base
       SimplegeoCollector.match_deal(self)
     rescue => e
       HoptoadNotifier.notify(e)
-      "Something happened"
+      "SimpleGeo category search failed: #{e.message}"
     end
   end
 end

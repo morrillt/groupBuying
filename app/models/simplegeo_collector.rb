@@ -13,7 +13,7 @@ class SimplegeoCollector
   field :tags, :type => Array
   
   def self.authenticate
-    tokens = YAML::load(File.open("#{RAILS_ROOT}/config/simplegeo.yml"))
+    tokens = CATEGORIES_API['simplegeo']
     SimpleGeo::Client.set_credentials(tokens['token'],tokens['secret_token'])
   end
 

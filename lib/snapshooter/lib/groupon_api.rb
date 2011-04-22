@@ -89,6 +89,41 @@ module Snapshooter
 
     def self.find_at_groupon_by_division_and_permalink(division, permalink)
       Groupon.deals(:division => division).detect{|d| d.deal_url == permalink }#.try(:first)
+    end 
+                         
+    # IMPORTANT: rewrote update_deal because deal deal can be retrieved from API or CRAWLER
+    # Crawl and update deal attributes
+    #   params:
+    #     <tt>attributes</tt>: array or string of attributes
+    def update_deal_info(deal, attributes = nil)
+      attributes ||= '*'
+
+      if attributes.is_a? String and attributes != '*'
+        attributes = attributes.split(' ')
+      end
+
+      crawler_deal = Grouponanalytics::Deal.new(nil, deal.permalink, @site.id)
+      new_attrs = crawler_deal.to_hash(deal.division.name, deal.permalink)
+      
+      update_attributes = {}
+      if attributes.to_s == '*'
+        update_attributes = new_attrs
+      else                     
+        attributes.map {|ab|                   
+          field = ab.to_sym    
+          if field == :categories
+            deal.update_categories
+            new_value = nil
+          else
+            new_value = new_attrs[field]
+          end
+          if new_value
+            update_attributes[field] = new_value
+          end
+        }
+      end
+      deal.update_attributes(update_attributes)
+      deal.save!
     end
     
   end

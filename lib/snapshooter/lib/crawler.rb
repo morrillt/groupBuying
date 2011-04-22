@@ -126,7 +126,7 @@ module Snapshooter
       update_attributes = {}
       if attributes.to_s == '*'
         update_attributes = crawler_deal.to_hash
-      else
+      else                     
         attributes.map {|ab|                   
           field = ab.to_sym    
           if field == :categories

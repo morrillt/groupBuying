@@ -11,7 +11,7 @@ class UpdateDealsJob < BaseJob
     
     unless site_id
       puts "Start UpdateDealsJob[#{Time.now}]"
-      enqueue_by_site
+      enqueue_by_site(options)
     else
       puts "UpdateDealsJob Start for #{site_id}"
       perform_for_site(site_id)
@@ -23,7 +23,13 @@ class UpdateDealsJob < BaseJob
     site = Site.find(site_id)         
     execute_or_enqueue(site) do |range, update_deals_job|
       puts "Update Deals: [#{range.join('-')}]" if range
-      site.crawl_and_update_deals_info(options, update_deals_job)
+      begin
+        site.crawl_and_update_deals_info(options, update_deals_job)
+      rescue => e
+        puts e.message
+        puts e.backtrace.join("\n")
+        raise e
+      end
     end                                             
   end
   

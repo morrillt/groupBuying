@@ -3,12 +3,12 @@ class BaseJob < Resque::JobWithStatus
   SPLIT_CRAWL_FOR     = ['living_social']
   SPLIT_SNAPSHOTS_FOR = ['groupon']#['travel_zoo']
 
-  def enqueue_by_site(*args)                 
+  def enqueue_by_site(options={})                 
     total = Site.active.count
     num = 0
     Site.active.each {|site|
       report_status(num, total)
-      self.class.create(:site_id => site.id)
+      self.class.create({:site_id => site.id}.merge(options))
       num += 1
     }
   end
