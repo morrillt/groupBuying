@@ -56,6 +56,7 @@ class Deal < ActiveRecord::Base
   end
   
   def calculate_hotness!
+    self.hotness = 0 and return true if self.expired?
     if has_more_than_one_snapshot?
       period_snapshots = snapshots.to_a.last(5)
       # initial_sold_count = snapshots.shift.try(:buyers_count).to_i
@@ -138,7 +139,8 @@ class Deal < ActiveRecord::Base
     self.take_last_mongo_snapshot!
     
     self.active = false
-    self.sold = true
+    self.sold = true           
+    self.hotness = 0 # Precaution
     save
   end      
        
