@@ -42,8 +42,17 @@ module Snapshooter
 
       def expires_at
         return @time_left if @time_left
-        time_left_pattern = @doc.parser.text.scan(%r[(((\d)d:)?(\d+)h:(\d+)m(:(\d+)s)?)]).flatten
-        return nil if time_left_pattern.size < 7
+        nbsp = Nokogiri::HTML("&nbsp;").text
+        doc_text = @doc.parser.text.gsub(nbsp, " ")
+        time_left_pattern = doc_text.scan(%r[(((\d)d:)?(\d+)h:(\d+)m(:(\d+)s)?)]).flatten
+        if time_left_pattern.size < 7
+          expired_or_soldout_deal_time_pattern = doc_text.strip.scan(%r[(\d+:\d+:\d+)\s+on\s+(\d+\/\d+\/\d+)]).flatten
+          if expired_or_soldout_deal_time_pattern.size < 2
+            return nil
+          end
+          @time_left = Time.parse(expired_or_soldout_deal_time_pattern[1] + ' ' + expired_or_soldout_deal_time_pattern[0])
+          return @time_left
+        end
         time_array = time_left_pattern[2..4] + [time_left_pattern[6]]
         time_array = time_array.collect{|f| f || 0}
         @time_left = Time.now

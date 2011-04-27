@@ -12,10 +12,10 @@ module Snapshooter
 
     def deal_links
       links = @doc.parser.css('.gbItem').collect do |deal|
-        if deal.css('.listViewGbStatus').count == 0
+        #if deal.css('.listViewGbStatus').count == 0
           link = deal.xpath(".//span[@class='text']/a[@class='link']")[0].attributes["href"].value
           link
-        end
+        #end
       end.flatten.compact
       links
     end    
