@@ -21,6 +21,10 @@ module Snapshooter
     def raw_address
     end
     
+    def zipcode
+      @zipcode ||= raw_address.match(/\d{5}/)
+    end
+
     def site
     end      
     
@@ -74,6 +78,7 @@ module Snapshooter
         :sale_price => sale_price,
         :actual_price => actual_price,
         :raw_address => raw_address,
+        :zipcode => zipcode,
         :lat => lat,
         :lng => lng,
         :expires_at => expires_at,

@@ -34,7 +34,7 @@ module Snapshooter
       end
 
       def raw_address
-        @raw_address = @doc.parser.search("div.meta span.street_1").try(:text)
+        @raw_address = @doc.parser.search("div.meta span.street_1").try(:text) + @doc.parser.search("div.meta br").try(:text)
       end       
 
       def telephone   

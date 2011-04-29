@@ -261,7 +261,7 @@ class Deal < ActiveRecord::Base
   class << self
     def export(query)
       FasterCSV.generate do |csv|
-        csv << CSV_FIELDS.join(',')
+        csv << CSV_FIELDS.collect{|c| ActiveSupport::Inflector.humanize(c)}
         Deal.where(query).map { |r| CSV_FIELDS.map { |m| r.send m }  }.each { |row| csv << row }
       end
     end
