@@ -50,6 +50,18 @@ class DealSnapshot
     }.compact
     deals
   end     
+
+  def self.last_snapshots_for(deal_ids = nil)
+    reduce = "function(doc,prev) {
+                if(doc.created_at > prev.created_at) {
+                  prev.created_at=doc.created_at;
+                  prev.buyers_count=doc.buyers_count
+                }
+              }"
+    results = DealSnapshot.collection.group(:key=> :deal_id, :initial=>{:created_at=>0}, :reduce=>reduce)
+    return results.select{|row| deal_ids.include?(row["deal_id"])} unless deal_ids.nil?
+    results
+  end
   
   def total_revenue
     (price.to_f * buyers_count.to_f)

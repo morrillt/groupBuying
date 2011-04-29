@@ -1,4 +1,6 @@
 require 'digest/md5'
+require 'benchmark'
+
 class Deal < ActiveRecord::Base
   include Geokit::Geocoders
   CSV_FIELDS = %w[ id name permalink sale_price actual_price division_name site_name active hotness lat lng expires_at raw_address buyers_count max_sold_count ]
@@ -259,14 +261,23 @@ class Deal < ActiveRecord::Base
   
   
   class << self
+
     def export(query)
       FasterCSV.generate do |csv|
         csv << CSV_FIELDS.collect{|c| ActiveSupport::Inflector.humanize(c)}
-        Deal.where(query).map { |r| CSV_FIELDS.map { |m| r.send m }  }.each { |row| csv << row }
+        deal_ids = deals.collect{|r| r.id}
+        snapshots = DealSnapshot.last_snapshots_for(deal_ids).group_by{|r| r["deal_id"].to_i}
+        deals.map { |r| r.columns_for_export(snapshots) }.each { |row| csv << row }
       end
-    end
+    end    
   end 
 
+  def columns_for_export(snapshots)
+    cols = (CSV_FIELDS-["buyers_count"]).map{|col| self.send col}
+    cols.insert(cols.count-1, snapshots[id][0]["buyers_count"])
+    cols
+  end
+  
   # Updates current categories objects
   # params:
   #   <tt>cats</tt> - Array of categories names
