@@ -261,10 +261,10 @@ class Deal < ActiveRecord::Base
   
   
   class << self
-
     def export(query)
       FasterCSV.generate do |csv|
         csv << CSV_FIELDS.collect{|c| ActiveSupport::Inflector.humanize(c)}
+        deals = Deal.where(query)
         deal_ids = deals.collect{|r| r.id}
         snapshots = DealSnapshot.last_snapshots_for(deal_ids).group_by{|r| r["deal_id"].to_i}
         deals.map { |r| r.columns_for_export(snapshots) }.each { |row| csv << row }
