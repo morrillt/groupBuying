@@ -25,6 +25,12 @@
     %tr
       %td Snapshots Captured
       %td=@snapshots.count
+    %tr
+      %td Categories
+      %td
+        = @deal.categories.collect(&:full_name).join(',')
+        = link_to 'Assign', admin_site_deal_deal_categories_path(@deal.site, @deal)
+    
 
 %hr
       

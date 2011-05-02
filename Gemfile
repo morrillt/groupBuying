@@ -21,7 +21,9 @@ gem "bson_ext", "~> 1.2"
 gem 'rest-client'
 gem 'devise'
 gem 'simplegeo'    
-gem 'hoptoad_notifier'
+gem 'hoptoad_notifier' 
+gem 'inherited_resources'
+gem 'inherited_resources_views'
 
 gem 'resque'
 gem 'resque-scheduler'

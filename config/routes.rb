@@ -33,15 +33,16 @@ Groupster::Application.routes.draw do
     match "/:model/table" => "application#table"
     
     resources :snapshots, :only => [:index, :show]
-
     resources :divisions, :only => [:index, :show]
-
-    resources :deals, :only => [:index, :show]
+    resources :categories
 
     resources :sites, :only => [:index, :show] do
       resources :deals, :only => [:index, :show] do
         get :export, :on => :collection
         resources :snapshots, :only => [:index, :show]
+        resources :deal_categories, :only => [:index] do 
+          post :update, :on => :collection
+        end
       end
       
       resources :divisions, :only => [:index, :show] do
