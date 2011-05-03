@@ -12,5 +12,4 @@ test/
 db/schema.rb
 dump.rdb
 Gemfile.lock
-lib/generators/haml
 .DS_Store
