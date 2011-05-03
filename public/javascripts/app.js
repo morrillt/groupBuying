@@ -97,7 +97,7 @@ $.widget("ui.chart", {
 function show_stats(i) {
 	$(".variation-table").hide();
 	$("#stats_" + i).show();
-}
+}          
 
 $(document).ready(function() {
     $("#coupons-counter").counter();
@@ -111,5 +111,5 @@ $(document).ready(function() {
 			
     }	
 
-    show_stats(0);
+    show_stats(0);		
 });

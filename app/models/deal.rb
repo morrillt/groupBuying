@@ -255,7 +255,16 @@ class Deal < ActiveRecord::Base
       deal
     }
     deals.sort_by(&:trending_order)[0..limit]
-  end 
+  end       
+  
+  def categories_names
+    if categories.empty? 
+      'None'
+    else
+      categories.collect(&:name).join(',')
+    end
+  end
+  
   
   # ================================== END: Statistics ==================================
   
@@ -324,5 +333,5 @@ class Deal < ActiveRecord::Base
       HoptoadNotifier.notify(e)
       "SimpleGeo category search failed: #{e.message}"
     end
-  end
+  end   
 end

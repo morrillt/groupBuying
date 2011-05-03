@@ -61,6 +61,7 @@
     %th Name
     %th Division  
     %th Permalink 
+    %th Categories 
     %th Active 
     %th Sale (Actual)
     %th Last Buyers Count
@@ -75,6 +76,7 @@
       %td=truncate(deal.name)
       %td=deal.division.try(:name)
       %td=link_to 'url', deal.permalink
+      %td= deal.categories_names
       %td=deal.active ? '1' : '0'
       %td="#{price(deal, :sale_price)}(#{price(deal, :actual_price)})"
       %td=deal.snapshots.last.try(:last_buyers_count)

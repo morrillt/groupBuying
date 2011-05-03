@@ -30,9 +30,11 @@ class Admin::DealCategoriesController < Admin::ApplicationController
     
     if @deal.save 
       flash[:notice] = "Successfully updated..."
+      # Redirect to next uncategorized item
     else
       flash[:error] = "Error occured during update..."
+      redirect_to :back
     end
-    redirect_to :back
+    
   end
 end

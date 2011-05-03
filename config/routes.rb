@@ -34,7 +34,9 @@ Groupster::Application.routes.draw do
     
     resources :snapshots, :only => [:index, :show]
     resources :divisions, :only => [:index, :show]
-    resources :categories
+    resources :categories do 
+      post :assign_to_deals, :on => :member
+    end
 
     resources :sites, :only => [:index, :show] do
       resources :deals, :only => [:index, :show] do

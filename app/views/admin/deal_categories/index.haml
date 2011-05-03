@@ -20,17 +20,22 @@
   %p
     = form_for :deal, :url => admin_site_deal_deal_categories_path(@deal.site.id, @deal.id) do |f|
       - @categories.each do |category|
-        %div.box
-          %h3
-            = check_box_tag 'deal[category_ids][]', category.id, @deal.categories.include?(category)
+        %div.box{:id => "category-#{category.id}"}
+          %span.toggle-link
+            = link_to_function '+', "toggle_sub_category('#sub_categories_#{category.id}')", {:class => 'toggle_sub_categories'}            
+          %span
+            / = check_box_tag 'deal[category_ids][]', category.id, @deal.categories.include?(category)            
             = category.name
+            
           - if @sub_categories.has_key?(category.id)
-            .sub_categories
+            = surround('(',')') do 
+              = @sub_categories[category.id].count
+            .sub_categories{:id => "sub_categories_#{category.id}"}
               - @sub_categories[category.id].each do |cat|
                 %div
                   = check_box_tag 'deal[category_ids][]', cat.id, @deal.categories.include?(cat)
                   = cat.name
-      .sub_categories
+      .new_sub_category
         %div
           New tag parent
           = select_tag 'new_category[parent_id]', options_for_select(@base_categories)
