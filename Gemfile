@@ -23,7 +23,6 @@ gem 'devise'
 gem 'simplegeo'    
 gem 'hoptoad_notifier' 
 gem 'inherited_resources'
-gem 'inherited_resources_views'
 
 gem 'resque'
 gem 'resque-scheduler'

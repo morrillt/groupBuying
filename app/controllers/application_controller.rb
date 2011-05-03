@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   # before_filter :authenticate_user!
-  before_filter :http_authenticate
+  # before_filter :http_authenticate
   before_filter :overall_trending
   
   def render_404

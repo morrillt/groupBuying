@@ -1,4 +1,5 @@
 class Admin::DealCategoriesController < Admin::ApplicationController
+  layout "admin"
   
   def index
     @deal = Deal.find(params[:deal_id])
