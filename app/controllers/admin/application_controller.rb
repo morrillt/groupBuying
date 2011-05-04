@@ -1,5 +1,6 @@
 class Admin::ApplicationController < ApplicationController
   # before_filter :authenticate_admin_rights!
+  skip_before_filter :overall_trending
   layout 'admin'
   
   def table

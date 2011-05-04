@@ -3,7 +3,7 @@ class Site < ActiveRecord::Base
   STATS_PERIODS = [1, 7, 30, 90]
   
   has_many :snapshots, :dependent => :destroy
-  has_many :deals, :through => :divisions
+  has_many :deals#, :through => :divisions
   has_many :divisions, :dependent => :destroy
   has_many :hourly_revenue_by_site
 
@@ -201,7 +201,11 @@ class Site < ActiveRecord::Base
       revenues[s.division_id] += ((s.buyers_count - s.last_buyers_count) * s.price.to_f)
     end
     revenues
-  end      
+  end  
+  
+  def total_revenue_from_deals
+    deals.collect{|deal| deal.max_sold_count * deal.sale_price}.sum
+  end    
    
   # ================================== Statistics ======================================
   

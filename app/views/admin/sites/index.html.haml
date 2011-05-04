@@ -16,9 +16,9 @@
 			%tr{:class => row_class}
 				%td=link_to(site.name, admin_site_path(site))
 				%td=site.active? ? 'Active' : 'Inactive'
-				%td=site.deals.active.count
-				%td=site.deals.count
-				%td=price(site, :total_revenue)
+				%td=site.deals.select(&:active).count
+				%td=site.deals.size
+				%td=price(site, :total_revenue_from_deals)
 				%td=site.last_snapshot_at
 				
 		

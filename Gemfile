@@ -46,8 +46,13 @@ end
 gem 'capistrano'
 
 # To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
-gem 'ruby-debug'
-# gem 'ruby-debug19', :require => 'ruby-debug'
+group :development do
+	gem 'ruby-debug'
+	# gem 'ruby-debug19', :require => 'ruby-debug'
+	
+	gem 'rails3-footnotes', :git => 'git://github.com/indirect/rails-footnotes.git'
+	
+end
 
 # Bundle the extra gems:
 # gem 'bj'

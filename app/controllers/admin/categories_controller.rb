@@ -6,9 +6,12 @@ class Admin::CategoriesController < InheritedResources::Base
 
    def show
      @category = Category.find(params[:id])
-     tags = @category.tags.split(',')
-     match_query = tags.collect{|tag| "name LIKE '%#{tag}%'"}.join(" OR ")
-     @matching_deals = Deal.where(match_query).paginate(:per_page => 30, :page => params[:page] || 1)
+     @matching_deals = []
+     if @category.tags
+       tags = @category.tags.split(',')
+       match_query = tags.collect{|tag| "name LIKE '%#{tag}%'"}.join(" OR ")
+       @matching_deals = Deal.includes(:categories).where(match_query).paginate(:per_page => 30, :page => params[:page] || 1)
+     end
    end    
    
    def assign_to_deals

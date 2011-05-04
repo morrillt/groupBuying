@@ -9,16 +9,16 @@
   %tbody
     %tr
       %td Active Deals
-      %td=@site.deals.active.count
+      %td=@active_deals.count
     %tr
       %td Total Deals
-      %td=@site.deals.count
+      %td=@deals.size
     %tr
       %td Snapshots Captured
       %td=@site.snapshots.count
     %tr
       %td Total Divisions
-      %td=@site.divisions.count
+      %td=@site.divisions.size
 
     %tr
       %td Last Upsell Change %
@@ -97,10 +97,10 @@
   %tbody
     %tr
       %td Closed Deals
-      %td=@site.deals.inactive.count
+      %td=@inactive_deals.size
     %tr
       %td Coupons puchased
-      %td=@site.deals.inactive.sum(:max_sold_count)
+      %td=@inactive_deals.sum(&:max_sold_count)
     %tr
       %td Total Spent on Deals
       %td=sprice(@site.deals.inactive.revenue_by_max_sold_count.first.revenue_ms, @site.currency)
