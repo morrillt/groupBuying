@@ -7,3 +7,6 @@ snapshot:
 others: 
   queues: "deals,chart"
   count: 1
+statistics:
+  queues: "statistics"
+  count: 1
