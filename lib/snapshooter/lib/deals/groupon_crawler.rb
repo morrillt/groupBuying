@@ -28,7 +28,7 @@ module Snapshooter
       end
 
       def buyers_count
-        @doc.parser.css("tr.sum .td.left span.number").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i
+        @doc.parser.css("tr.sum .td.left span.number").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_i || 0
       end
 
       def lat              
