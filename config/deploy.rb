@@ -17,7 +17,7 @@ set :use_sudo, false
 
 ssh_options[:username] = 'root'
 
-task :staging do
+task :production do
   set :rails_env, "production" # for now
   server "50.56.83.165", :app, :web, :db, :primary => true
   #set :bundle, "bundle"
@@ -27,7 +27,7 @@ task :staging do
   set :rvm_bin, "/home/#{ssh_options[:username]}/.rvm/bin"
 end
 
-task :dev do
+task :staging do
   set :rails_env, "production"
   server "66.228.33.23", :app, :web, :db, :primary => true
   set :deploy_to, '/home/deploy/groupie'
