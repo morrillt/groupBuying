@@ -6,10 +6,13 @@ class Chart
     hourly_revenues = HourlyRevenueBySite.all
     sites = Site.active
     
-    hourly_revenues.each do |hr|
-      site_name = sites.detect{|s| s.id == hr.site_id}.name
-      data = (0..23).to_a.reverse.collect{|k| hr.revenue["%02d"%k]} 
-      chart[:series] << { :name => site_name, :data => data } 
+    hourly_revenues.each do |hr|                       
+      site = sites.detect{|s| s.id == hr.site_id}
+      if site 
+        site_name = site.name
+        data = (0..23).to_a.reverse.collect{|k| hr.revenue["%02d"%k]} 
+        chart[:series] << { :name => site_name, :data => data } 
+      end
     end
     chart
   end
