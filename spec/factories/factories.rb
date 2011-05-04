@@ -6,11 +6,16 @@ Factory.sequence(:deal_name) do |n|
   "A great deal #{n}"
 end
 
+Factory.sequence(:permalink) do |n|
+  "http://someurl.com/#{n}"
+end
+
 Factory.define(:deal) do |f|
   f.name { Factory.next(:deal_name) }
-  f.permalink "http://someurl.com"
+  f.permalink {Factory.next(:permalink)}
   f.actual_price 1.99
   f.sale_price 0.99
+  f.expires_at DateTime.tomorrow
   f.division{ Factory(:division) }
 end
 

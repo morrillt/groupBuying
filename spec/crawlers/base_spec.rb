@@ -48,22 +48,13 @@ module Snapshooter
     end
     
     context "time_counter" do
-      it "should parse full time_counter and return expire time" do
-        time_counter = {'days' => 3, 'hours' => 2, 'minutes' => 30}
-        expires_at = Base.time_counter_to_expires_at(time_counter_to_expires_at)
-        time_difference = expires_at - Time.now
-        time_difference.days.should == 3
-        time_difference.hours.should == 2
-        time_difference.minutes.should == 30
-      end
-      
       it "should parse short time_counter and return expire time" do 
         time_counter = {'d' => 3, 'h' => 2, 'm' => 30}
-        expires_at = Base.time_counter_to_expires_at(time_counter_to_expires_at)
-        time_difference = expires_at - Time.now
-        time_difference.days.should == 3
-        time_difference.hours.should == 2
-        time_difference.minutes.should == 30
+        expires_at = Base.time_counter_to_expires_at(time_counter)
+        now = Time.now
+        expires_at.day.should == now.day + 3
+        expires_at.hour.should == now.hour + 2
+        expires_at.min.should == now.min + 30
       end
     end
 

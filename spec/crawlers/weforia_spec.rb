@@ -23,7 +23,7 @@ describe Snapshooter::Weforia do
 
     it "parses deal links" do
       @crawler.get('/deal/boston-ma/groupBuysList.action')
-      @crawler.deal_links.count.should == 2
+      @crawler.deal_links.count.should == 10
       @crawler.deal_links[0].should == "/deal/boston-ma/classic-sub-shop"
       @crawler.deal_links[1].should == "/deal/boston-ma/tl-massage-therapy-90-minute-citrus-scrub-and-swedish-massage"
     end

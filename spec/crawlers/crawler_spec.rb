@@ -4,7 +4,7 @@ module Snapshooter
   describe Crawler do
     before(:each) do
       @site = Site.create :name=> 'test', :source_name=> 'test', :base_url=> 'http://test.com', :active=>true
-      @crawler = Base.new('some_crawler')
+      @crawler = Crawler.new('test')
     end
 
     after(:each) do
@@ -12,8 +12,8 @@ module Snapshooter
     end
 
     it "should have LIMIT constants" do
-      Base.constants.should include('DIVISION_LIMIT')
-      Base.constants.should include('DEAL_LIMIT')
+      Crawler.constants.should include('DIVISION_LIMIT')
+      Crawler.constants.should include('DEAL_LIMIT')
     end                                         
     
     it "should return site" do

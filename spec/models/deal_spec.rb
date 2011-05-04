@@ -8,7 +8,11 @@ describe Deal do
   before(:each) do
     @deal = Factory(:deal)
   end
-  
+
+  after(:each) do
+    Deal.delete_all
+    DealSnapshot.delete_all
+  end
   
   context "calculations" do
     it "should calcuate revenue" do
@@ -19,23 +23,23 @@ describe Deal do
     
     it "should calculate hotness as 80.0%" do
       Factory(:deal_snapshot, :buyers_count => 20, :deal_id => @deal.id)
-      Factory(:deal_snapshot, :buyers_count => 100, :deal_id => @deal.id)
+      Factory(:deal_snapshot, :buyers_count => 100, :last_buyers_count=>20, :deal_id => @deal.id)
       @deal.calculate_hotness!
-      @deal.hotness.should == 80.0
+      @deal.hotness.should == 4.0
     end
     
     it "should calculate hotness as 65.0%" do
-      Factory(:deal_snapshot, :buyers_count => 35, :deal_id => @deal.id)
-      Factory(:deal_snapshot, :buyers_count => 100, :deal_id => @deal.id)
+      snap1 = Factory(:deal_snapshot, :buyers_count => 35, :deal_id => @deal.id)
+      snap2 = Factory(:deal_snapshot, :buyers_count => 100, :last_buyers_count=> 35, :deal_id => @deal.id)
       @deal.calculate_hotness!
-      @deal.hotness.should == 65.0
+      @deal.hotness.should == 7.0
     end
     
     it "should calculate hotness as 15.0%" do
       Factory(:deal_snapshot, :buyers_count => 85, :deal_id => @deal.id)
-      Factory(:deal_snapshot, :buyers_count => 100, :deal_id => @deal.id)
+      Factory(:deal_snapshot, :buyers_count => 100, :last_buyers_count=> 85, :deal_id => @deal.id)
       @deal.calculate_hotness!
-      @deal.hotness.should == 15.0
+      @deal.hotness.should == 17.0
     end
   end
   
@@ -84,9 +88,8 @@ describe Deal do
 
   context "geocoding" do
     describe "#geocode_lat_lng!" do
-      it "should capture all decimals for lat and lng" do
+      pending "should capture all decimals for lat and lng" do
         deal = Factory.create(:deal, :active => true, :raw_address => "Salon Roi 2602 Connecticut Ave. NW Washington, DC 20008")
-        puts deal.inspect
       end
     end
   end
