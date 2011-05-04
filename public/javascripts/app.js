@@ -111,5 +111,5 @@ $(document).ready(function() {
 			
     }	
 
-    show_stats(0);		
+    show_stats(1);		
 });
