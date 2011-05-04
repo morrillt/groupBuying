@@ -16,8 +16,8 @@ class Site < ActiveRecord::Base
     if snapshooter.strategy == :crawler
       deals_to_snapshot = deals.active 
       deals_to_snapshot = deals_to_snapshot.limit(range[1] - range[0]).offset(range[0]) if range
-      
-      total = deals_to_snapshot.count
+
+      total = deals_to_snapshot.length
       num = 0        
       
       deals_to_snapshot.each do |deal|
@@ -88,7 +88,7 @@ class Site < ActiveRecord::Base
     update_deals.active if active && active == 1
 
     update_deals.limit(range[1] - range[0]).offset(range[0]) if range
-    total = update_deals.count
+    total = update_deals.length
     num = 0
     update_deals.each{ |deal|
       snapshooter.update_deal_info(deal, attributes)

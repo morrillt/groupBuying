@@ -27,7 +27,7 @@ module Snapshooter
       divisions_to_process = divisions_to_process[range[0]..range[1]] if range
       
       # timeouted_divisions = divisions_to_process.map{|div|
-      total = divisions_to_process.count
+      total = divisions_to_process.length
       num = 0
       divisions_to_process.map{|div|
         update_snapshots_for_division(div)
