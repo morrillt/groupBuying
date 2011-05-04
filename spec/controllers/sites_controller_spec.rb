@@ -3,6 +3,8 @@ require 'spec_helper'
 describe SitesController do
   before :each do
     @site = Factory(:site)
+    credentials = ActionController::HttpAuthentication::Basic.encode_credentials 'admin', 'GBin2011'
+    request.env['HTTP_AUTHORIZATION'] = credentials
   end
   
   it "should render the index action" do
@@ -14,7 +16,7 @@ describe SitesController do
   
   it "should render the show action" do
     Site.should_receive(:find_by_source_name).with(@site.source_name).and_return(@site)
-    Deal.should_receive(:get_info).with(@site).and_return({})
+    @site.should_receive(:get_info).and_return({})
     Chart.should_receive(:hourly_revenue_by_divisions).with(@site.id)
     
     get :show, :id => @site.source_name

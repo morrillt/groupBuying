@@ -26,7 +26,7 @@ describe Site do
     it "should call snapshooter.crawl_new_deals! when site.crawl_new_deals" do
       @site.snapshooter.stub(:crawl_new_deals!).and_return(nil)
       @site.snapshooter.should_receive(:crawl_new_deals!)
-      @site.crawl_new_deals
+      @site.crawl_new_deals!
     end
     
     it "should return an instance of the correct snapshooter" do
