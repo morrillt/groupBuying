@@ -250,7 +250,7 @@ class Deal < ActiveRecord::Base
       buyers_count[s.deal_id] += s.buyers_count - s.last_buyers_count
     end           
 
-    deals = Deal.find_all_by_id(buyers_count.keys).collect{|deal| 
+    deals = Deal.active.find_all_by_id(buyers_count.keys).collect{|deal| 
       deal.trending_order = - buyers_count[deal.id]
       deal
     }

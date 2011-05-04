@@ -276,7 +276,7 @@ class Site < ActiveRecord::Base
   end  
 
   def currently_trending
-    Site.find_by_sql(["SELECT deals.name, deals.permalink, divisions.name as division, deals.hotness FROM deals, divisions WHERE deals.division_id = divisions.id AND deals.site_id = ? ORDER BY hotness DESC LIMIT 10", self.id])
+    Site.find_by_sql(["SELECT deals.name, deals.permalink, divisions.name as division, deals.hotness FROM deals, divisions WHERE deals.division_id = divisions.id AND deals.site_id = ? AND deals.active = 1 ORDER BY hotness DESC LIMIT 10", self.id])
   end
   
   def get_info
