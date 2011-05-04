@@ -52,9 +52,9 @@ module Snapshooter
         time_counter = {'d' => 3, 'h' => 2, 'm' => 30}
         expires_at = Base.time_counter_to_expires_at(time_counter)
         now = Time.now
-        expires_at.day.should == now.day + 3
-        expires_at.hour.should == now.hour + 2
-        expires_at.min.should == now.min + 30
+        expires_at.day.should == (now + 3.days).day
+        expires_at.hour.should == (now + 2.hours).hour
+        expires_at.min.should == (now + 30.minutes).min
       end
     end
 
