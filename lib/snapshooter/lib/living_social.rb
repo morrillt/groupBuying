@@ -1,7 +1,7 @@
 module Snapshooter
   class LivingSocial < Crawler   
     DIVISION_LIMIT = 30
-    DEAL_LIMIT = 200 # For the future
+    DEAL_LIMIT = 150
     
     def crawl_new_deals!(range = nil)
       puts "#{self.class.to_s} is crawling"

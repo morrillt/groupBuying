@@ -1,7 +1,7 @@
 require 'resque/job_with_status'
 class BaseJob < Resque::JobWithStatus
   SPLIT_CRAWL_FOR     = ['living_social']
-  SPLIT_SNAPSHOTS_FOR = ['groupon']#['travel_zoo']
+  SPLIT_SNAPSHOTS_FOR = ['groupon', 'living_social']#['travel_zoo']
 
   def enqueue_by_site(options={})                 
     total = Site.active.count
