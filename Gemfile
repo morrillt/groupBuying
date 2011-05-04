@@ -27,7 +27,8 @@ gem 'inherited_resources'
 gem 'resque'
 gem 'resque-scheduler'
 gem 'resque-meta'
-gem 'resque-status'
+gem 'redisk'
+gem 'uuid'
 
 group :test do
   gem 'json'
