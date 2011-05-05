@@ -5,11 +5,12 @@ module Snapshooter
       get("/local")
        # todo returing nil added || []
       @divisions = {}
-      @doc.search("div[@class='vertical-list'] ul li a").map{ |link|  
+      @doc.search("div[@class='vertical-list'] ul li a").each{ |link|  
         if link['href'][0..4] != "/deal"
           @divisions[link.text] = link['href']
         end
-      } || {}
+      }
+      @divisions
     end
     
     def deal_links
@@ -26,13 +27,13 @@ module Snapshooter
         
     # Capture buyers_count
     def buyers_count
-      @doc.to_s.scan(/\d+ bought\./).try(:first).to_i
+      @doc.parser.to_s.scan(/\d+ bought\./).try(:first).to_i
     end
     
     def crawl_new_deals!(range = nil)
       # Find the site
-      @site     = Site.find_by_source_name("homerun")
-      divisions.map do |division_name, division_path|
+      @site     = Site.find_by_source_name("homerun") 
+      divisions.each do |division_name, division_path|
         # Find the division
         @division = @site.divisions.find_or_initialize_by_name(division_name)
         @division.name, @division.url = division_name, division_path
@@ -60,18 +61,20 @@ module Snapshooter
             log "Expired"
             next
           end
-                    
+                  
+          raw_address = @doc.search("div[@class='spot']").children[0..-5].text.gsub("\n", '')
+
           save_deal!({
-            :name => @doc.search("div[@class='title rockwell']").first.try(:text).to_s.gsub("\n", ''),
+            :name => @doc.search("div[@class='content'] div[@class='title']").first.try(:text).to_s.gsub("\n", ''),
             :sale_price => @doc.search("a[@class='buy-button']").first.try(:text).to_s.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f,
-            :actual_price => @doc.search("span[@class='econ rockwell']").first.try(:text).to_s.gsub(/[^0-9]/,'').to_f,
+            :actual_price => @doc.search("span[@class='econ display-current-deal-value']").first.try(:text).to_s.gsub(/[^0-9]/,'').to_f,
             :expires_at => expires_at,
             :permalink => options[:full_path] ? deal_link : (base_url + deal_link),
             :site => @site,
             :division => @division,
             :expires_at => expires_at,
-            :raw_address => "",
-            :telephone => "",
+            :raw_address => raw_address,
+            :telephone => Snapshooter::Base.split_address_telephone(raw_address).try(:last),
             :active => true,
             :max_sold_count => buyers_count
           })          
