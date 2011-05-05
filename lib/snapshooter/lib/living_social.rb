@@ -6,7 +6,7 @@ module Snapshooter
     def crawl_new_deals!(range = nil)
       puts "#{self.class.to_s} is crawling"
       division_links = divisions    
-      division_range = range ? division_links[range[0]..range[1]] : division_links
+      division_range = range && range[1] != 0 ? division_links[range[0]..range[1]] : division_links
 
       deals = division_range.collect do |dhash|
         puts "Division: #{dhash[:url]}"
