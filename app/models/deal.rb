@@ -171,6 +171,10 @@ class Deal < ActiveRecord::Base
     }
     created_snapshots
   end
+
+  def update_info(attributes = nil)
+    site.snapshooter.update_deal_info(self, attributes)
+  end
   
   # ================================== Statistics ======================================
 

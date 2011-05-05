@@ -19,7 +19,8 @@ class DealCloserJob < BaseJob
     site = Site.find(site_id)
     site.deals.expired.active.map do |deal|
       begin
-        deal.close!
+        deal.update_info
+        deal.close! if deal.expired?
       rescue => e
         puts "Error:"
         puts "-"*90

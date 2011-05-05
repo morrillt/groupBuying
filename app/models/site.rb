@@ -91,8 +91,7 @@ class Site < ActiveRecord::Base
     total = update_deals.length
     num = 0
     update_deals.each{ |deal|
-      snapshooter.update_deal_info(deal, attributes)
-      
+      deal.update_info(attributes)
       update_deals_job.report_status(num, total) if update_deals_job
       num += 1
     }
