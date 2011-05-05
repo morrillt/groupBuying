@@ -5,7 +5,9 @@ module Snapshooter
     attr_reader :doc
     TELEPHONE_REGEX = /[0-9]*[\-\(\)]+[0-9\-\(\)]+/
     UK_TELEPHONE_REGEX = /[0-9]{3,5}\s+[0-9]{3,5}\s+[0-9]{3,5}/
+    ZIP_REGEX = /\d{5,5}/
     PRICE_REGEX = /[^0-9\.]/
+    
    
     def initialize(source)
       mechanize()
@@ -43,7 +45,8 @@ module Snapshooter
     def detect_absolute_path(url, options)
       options[:full_path] = (url =~ /^http(.+)/i) ? true : false
     end
-              
+                                                             
+    # DEPRECATED since 05.05.2011. Use split_address instead
     def self.split_address_telephone(address, country = :usa)
       telephone_regex = unless country == :usa || country.empty?
           self.const_get("#{country}_telephone_regex".upcase)
@@ -58,6 +61,25 @@ module Snapshooter
       else
         [address, nil]
       end
+    end  
+    
+    def self.split_address(address, country = :usa)
+      telephone_regex = unless country == :usa || country.empty?
+          self.const_get("#{country}_telephone_regex".upcase)
+        else
+          TELEPHONE_REGEX
+        end
+      
+      address ||= ''
+      zip_match = address.match(ZIP_REGEX)     
+      phone_match = address.match(telephone_regex)
+      
+      address.gsub!(ZIP_REGEX, '') if zip_match
+      address.gsub!(telephone_regex, '') if phone_match
+      
+      result  = {:phone  => phone_match.to_s, 
+                :zip     => zip_match.to_s, 
+                :address => address}
     end  
     
     def self.time_counter_to_expires_at(counter)

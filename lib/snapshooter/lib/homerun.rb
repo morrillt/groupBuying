@@ -62,8 +62,9 @@ module Snapshooter
             next
           end
                   
-          raw_address = @doc.search("div[@class='spot']").children[0..-5].text.gsub("\n", '')
-
+          raw_address = @doc.search("div[@class='spot']").children[0..-5].text.gsub(/\n+/, " ")
+          address = Snapshooter::Base.split_address(raw_address)  
+          
           save_deal!({
             :name => @doc.search("div[@class='content'] div[@class='title']").first.try(:text).to_s.gsub("\n", ''),
             :sale_price => @doc.search("a[@class='buy-button']").first.try(:text).to_s.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f,
@@ -74,7 +75,8 @@ module Snapshooter
             :division => @division,
             :expires_at => expires_at,
             :raw_address => raw_address,
-            :telephone => Snapshooter::Base.split_address_telephone(raw_address).try(:last),
+            :telephone => address[:phone],
+            :zipcode => address[:zip],
             :active => true,
             :max_sold_count => buyers_count
           })          

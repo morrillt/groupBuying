@@ -54,12 +54,13 @@ module Snapshooter
         :site_id => site_id,
         :sale_price => sale_price,
         :actual_price => actual_price,
-        :raw_address => raw_address,
+        :raw_address => address[:address],
+        :telephone => telephone.gsub('.', '-'),
+        :zipcode => zipcode,
         :lat => lat,
         :lng => lng,
         :expires_at => expires_at,
         :permalink => permalink,
-        :telephone => telephone,
         :max_sold_count => buyers_count
       }
     end

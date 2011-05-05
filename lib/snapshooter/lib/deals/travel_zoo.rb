@@ -47,7 +47,7 @@ module Snapshooter
     
       def telephone   
         country = site.source_name.scan /uk/
-        @telephone ||= Snapshooter::Base.split_address_telephone(raw_address, country).try(:last)
+        @telephone ||= Snapshooter::Base.split_address(raw_address, country)[:phone]
       end
   
       def buyers_count

@@ -21,8 +21,16 @@ module Snapshooter
     def raw_address
     end
     
+    def address
+      @address ||= Snapshooter::Base.split_address(raw_address)
+    end
+    
+    def telephone   
+      @telephone ||= address[:phone]
+    end
+    
     def zipcode
-      @zipcode ||= raw_address.match(/\d{5}/)
+      @zipcode ||= address[:zip]
     end
 
     def site
@@ -31,9 +39,6 @@ module Snapshooter
     def expires_at
     end
     
-    def telephone   
-      @telephone = Snapshooter::Base.split_address_telephone(raw_address).try(:last)
-    end
                 
     def buyers_count
     end
@@ -77,13 +82,13 @@ module Snapshooter
         :site_id => site_id,
         :sale_price => sale_price,
         :actual_price => actual_price,
-        :raw_address => raw_address,
-        :zipcode => zipcode,
+        :raw_address => address[:address],
+        :telephone => address[:phone],
+        :zipcode => address[:zip],
         :lat => lat,
         :lng => lng,
         :expires_at => expires_at,
         :permalink => permalink,
-        :telephone => telephone,
         :max_sold_count => buyers_count
       }
     end
