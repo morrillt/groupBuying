@@ -17,8 +17,9 @@ module Snapshooter
         crawl_division(div_url)        
       end.flatten  
       options = {}
-      detect_absolute_path(deals.first, options)
       
+      deals = deals.collect{|d| base_url + d}
+      detect_absolute_path(deals.first, options)
       deals = deals - site.deals.collect(&:permalink)
       
       total = deals.count
