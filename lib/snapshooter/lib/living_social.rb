@@ -19,6 +19,8 @@ module Snapshooter
       options = {}
       detect_absolute_path(deals.first, options)
       
+      deals = deals - site.deals.collect(&:permalink)
+      
       total = deals.count
       num = 0
       deals.map do |deal_link|  
