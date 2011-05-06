@@ -3,7 +3,7 @@ crawler:
   count: 2
 snapshot:
   queues: "snapshot"
-  count: 1
+  count: 2
 others: 
   queues: "deals,chart"
   count: 1
