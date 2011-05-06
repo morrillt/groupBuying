@@ -12,12 +12,8 @@ module Snapshooter
         @name ||= @doc.parser.search("div[@class='deal-title']").try(:text).gsub("\n", '').gsub(/\s+/, ' ')
       end
 
-      def sale_price
-        @sale_price = @doc.parser.search("div[@class='deal-price deal-price-lg']").try(:text).to_s.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f
-        if @sale_price == 0
-          @sale_price = @doc.parser.search("div[@class='deal-price deal-price-sm']").try(:text).to_s.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f 
-        end    
-        @sale_price
+      def sale_price                                                                
+        @sale_price = @doc.parser.css(".deal-price").text.gsub(Snapshooter::Base::PRICE_REGEX,'').to_f
       end
 
       def actual_price
@@ -29,7 +25,8 @@ module Snapshooter
           if savings > 0 && sale_price > 0
             @actual_price = sale_price / (1 - (savings * 0.01))
           end
-        end
+        end   
+        # debugger unless @actual_price
         @actual_price.try(:round)
       end
 
