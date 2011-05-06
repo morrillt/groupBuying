@@ -22,7 +22,7 @@ module Snapshooter
     end    
              
     def update_snapshots!(range = nil, snapshot_job = nil)
-      log "Update snapshots: [#{range.join(',')}]"
+      log "Update snapshots: [#{range.join(',')}]" if range
       divisions_to_process = divisions
       divisions_to_process = divisions_to_process[range[0]..range[1]] if range
       
