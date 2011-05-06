@@ -107,10 +107,10 @@ module Resque
     # If an error occurs within the job's work, it will set the status as failed and
     # re-raise the error.
     def safe_perform!
-      set_status({'status' => 'working'})
+      set_status({'status' => 'working', 'started_at' => Time.now.to_i})
       perform
       completed unless status && status.completed?
-      set_status({'completed_at' => Time.now.to_i})      
+      set_status({'completed_at' => Time.now.to_i})
       on_success if respond_to?(:on_success)
     rescue Killed
       logger.info "Job #{self} Killed at #{Time.now}"

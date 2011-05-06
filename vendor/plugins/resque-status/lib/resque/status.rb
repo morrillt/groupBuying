@@ -216,7 +216,9 @@ module Resque
     end     
     
     def execution_time
-      distance_of_time_in_words(Time.at(self['completed_at']), Time.at(self['time']), true) if self.has_key?('completed_at')
+      if self.has_key?('completed_at') && self.has_key?('started_at')
+        distance_of_time_in_words(Time.at(self['completed_at']), Time.at(self['started_at']), true) 
+      end
     end
 
     # Can the job be killed? 'failed', 'completed', and 'killed' jobs cant be killed
